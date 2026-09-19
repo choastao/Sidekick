@@ -232,6 +232,10 @@ public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, 
 /// 「装备 -&gt; 词缀池标签集」的映射。
 ///
 /// 规则（与权重表的 weightKey 对齐）：
+///   ⚠ 已知缺口：数据里还有 `ranged`（3 条）和 `genesis_tree_*`（83+68 条）等键，
+///   代码不产出它们 —— 后者是 0.5 赛季机制专用，前者语义未定（1 条 ilvl82 命中的就靠它）。
+///   审计（2026-09-19）记录在案，未擅自补，避免猜错把不该显示的词缀放出来。
+///
 ///   1. 槽位键：helmet | body_armour | gloves | boots | belt | amulet | ring | shield | focus | quiver；
 ///   2. 护甲槽位（helmet / body_armour / gloves / boots / shield）**额外加 armour 这把伞**——
 ///      抗性之类的词缀挂的就是 {armour, ring, amulet, belt}，只看 boots 会漏掉一大堆，
@@ -440,7 +444,37 @@ public static class AffixPoolTags
         }
 
         tags.Add(subtype);
+
+        // 盾牌的防御子类键和护甲部位不是同一族：
+        // 头盔/胸甲/手套/鞋用 str_armour 那一族，盾牌专用词缀挂的是 str_shield / str_dex_shield / str_int_shield。
+        // 漏了这三个键的后果是静默的 —— 盾牌能出的 16 条词缀（含「+X% 全部元素抗性」）会被搜索过滤藏掉，
+        // 界面上不会有任何提示；同一标签集进成本池还会让期望成本偏低。审计（2026-09-19）发现。
+        if (slotKey == Shield && ShieldSubtype(armour, evasion, energyShield) is { } shieldSubtype)
+        {
+            tags.Add(shieldSubtype);
+        }
+
         return new AffixPoolTagSet(tags, Degraded: false);
+    }
+
+    /// <summary>
+    /// 盾牌的防御子类键。数据里盾牌专用词缀只挂了 str_shield / str_dex_shield / str_int_shield 三种，
+    /// 没有纯敏 / 纯智 / 三属性盾的 shield 键 —— 不硬造，那几种盾交给 armour 伞和 *_armour 一族兜底。
+    /// 与 <see cref="DefenceSubtype"/> 分开写是故意的：两族的键名不同，合并会让人以为可以互换。
+    /// </summary>
+    private static string? ShieldSubtype(int armour, int evasion, int energyShield)
+    {
+        var hasArmour = armour > 0;
+        var hasEvasion = evasion > 0;
+        var hasEnergyShield = energyShield > 0;
+
+        return (hasArmour, hasEvasion, hasEnergyShield) switch
+        {
+            (true, false, false) => "str_shield",
+            (true, true, false) => "str_dex_shield",
+            (true, false, true) => "str_int_shield",
+            _ => null,
+        };
     }
 
     private static string? SlotKeyOf(Item? item)

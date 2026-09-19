@@ -109,7 +109,11 @@ public class AffixPoolChanceTests
         // 护甲槽位：槽位键 + armour 伞 + 防御值推出来的子类
         Assert.Equal(["boots", "armour", "dex_armour"], AffixPoolTags.Resolve("boots", 0, 120, 0).Tags);
         Assert.Equal(["helmet", "armour", "str_dex_int_armour"], AffixPoolTags.Resolve("helmet", 10, 20, 30).Tags);
-        Assert.Equal(["shield", "armour", "str_armour"], AffixPoolTags.Resolve("shield", 10, 0, 0).Tags);
+        // 盾牌的防御子类键是 str_shield 这一族（不是 str_armour）——
+        // 这条断言原来写死了 str_armour，把 bug 固化成了「预期行为」。审计（2026-09-19）抓出。
+        Assert.Equal(["shield", "armour", "str_armour", "str_shield"], AffixPoolTags.Resolve("shield", 10, 0, 0).Tags);
+        Assert.Equal(["shield", "armour", "str_dex_armour", "str_dex_shield"], AffixPoolTags.Resolve("shield", 10, 20, 0).Tags);
+        Assert.Equal(["shield", "armour", "str_int_armour", "str_int_shield"], AffixPoolTags.Resolve("shield", 10, 0, 30).Tags);
         Assert.Equal(["focus", "int_armour"], AffixPoolTags.Resolve("focus", 0, 0, 30).Tags);
 
         // 首饰没有 armour 伞，也没有防御值子类（戒指/项链加 armour 会让池变大、P 偏小）

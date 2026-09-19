@@ -50,7 +50,24 @@ public class CandidateBasketService
 
     public string FilePath => filePathOverride ?? SidekickPaths.GetDataFilePath("candidate-basket.json");
 
-    public IReadOnlyList<CandidateBasketItem> Items => file.Items;
+    /// <summary>
+    /// 备选列表的快照。
+    ///
+    /// 必须返回副本：入篮走快捷键（后台线程），面板在 UI 线程枚举，
+    /// 两者同时发生时直接返回 live 列表会抛 "Collection was modified"。
+    /// 异常被上层 catch 掉，表现是「这次没写盘 / 组件树渲染炸了」，偶发、难查。
+    /// 审计（2026-09-19）发现。
+    /// </summary>
+    public IReadOnlyList<CandidateBasketItem> Items
+    {
+        get
+        {
+            lock (fileLock)
+            {
+                return [.. file.Items];
+            }
+        }
+    }
 
     /// <summary>抗性上限，默认 75。改它只影响「✅ 达标 / ⚠️ 差 N」的判定，不改装备数据。</summary>
     public double ResistanceCap
@@ -186,7 +203,31 @@ public class CandidateBasketService
         catch (Exception ex)
         {
             logger.LogError(ex, "[Basket] Failed to load candidates from {Path}", FilePath);
+
+            // 先留档再重建。不留档的话，下一次任何变更都会把坏文件静默覆写成空篮子，
+            // 用户手工改坏或断电写半截的内容就永久没了。审计（2026-09-19）发现。
+            TryBackupBrokenFile();
             file = new CandidateBasketFile();
+        }
+    }
+
+    /// <summary>解析失败时把坏文件改名留档（.bad）。失败也不抛，重建流程照走。</summary>
+    private void TryBackupBrokenFile()
+    {
+        try
+        {
+            if (!File.Exists(FilePath))
+            {
+                return;
+            }
+
+            var backup = FilePath + ".bad";
+            File.Copy(FilePath, backup, overwrite: true);
+            logger.LogWarning("[Basket] 原文件解析失败，已留档到 {Backup}", backup);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "[Basket] 坏文件留档失败，继续重建");
         }
     }
 

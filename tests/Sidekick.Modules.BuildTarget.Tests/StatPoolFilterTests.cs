@@ -126,6 +126,59 @@ public class StatPoolFilterTests
         Assert.DoesNotContain(helmetHits, x => x.Text.Contains("全元素抗性"));
     }
 
+    /// <summary>
+    /// 审计（2026-09-19）抓到的回归：盾牌专用词缀挂的是 str_shield / str_dex_shield / str_int_shield，
+    /// 而 DefenceSubtype 产出的是 *_armour 那一族 —— 两边对不上时盾牌能出的词缀会被**静默**藏掉
+    /// （Degraded=false，界面不给任何提示），同一个标签集进成本池还会让期望成本偏低。
+    /// </summary>
+    [Fact]
+    public async Task Shield_can_see_its_own_affix_family()
+    {
+        var index = await IndexAsync();
+        var matched = await SearchAsync();
+
+        var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, armour: 200), "shield");
+
+        // 两族都要在：str_shield 是数据里真实用的键，str_armour 留着防止误藏
+        Assert.Contains(AffixPoolTags.Armour, shield.Tags);
+        Assert.Contains("str_shield", shield.Tags);
+        Assert.Contains("str_armour", shield.Tags);
+
+        var filtered = AffixSearchFilter.Apply(matched, index, shield.Tags);
+        output.WriteLine($"力量盾：未过滤 {matched.Count} 条，过滤后 {filtered.Count} 条 [{shield.TagText}]");
+
+        // 就是这条被藏过（AllResistances 的权重是 {str_int_shield, ring, amulet}）
+        Assert.Contains(filtered, x => x.Text.Contains("全元素抗性"));
+    }
+
+    [Fact]
+    public async Task StrInt_shield_uses_str_int_shield_key()
+    {
+        var index = await IndexAsync();
+        var matched = await SearchAsync();
+
+        // 力智盾：AllResistances1-6 的权重里只有 str_int_shield 这一个盾牌键
+        var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, armour: 100, energyShield: 50), "shield");
+
+        Assert.Contains("str_int_shield", shield.Tags);
+        Assert.DoesNotContain("str_shield", shield.Tags);
+
+        var filtered = AffixSearchFilter.Apply(matched, index, shield.Tags);
+        output.WriteLine($"力智盾：未过滤 {matched.Count} 条，过滤后 {filtered.Count} 条 [{shield.TagText}]");
+        Assert.Contains(filtered, x => x.Text.Contains("全元素抗性"));
+    }
+
+    /// <summary>纯敏盾在数据里没有对应的 shield 键，不许硬造 —— 只保留 armour 伞和 *_armour。</summary>
+    [Fact]
+    public async Task Dex_shield_does_not_invent_a_missing_key()
+    {
+        var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, evasion: 180), "shield");
+
+        Assert.Contains("dex_armour", shield.Tags);
+        Assert.DoesNotContain("dex_shield", shield.Tags);
+        Assert.DoesNotContain("str_shield", shield.Tags);
+    }
+
     [Fact]
     public async Task Search_without_item_context_is_not_filtered()
     {

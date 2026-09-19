@@ -163,8 +163,10 @@
                    没采集过基准时不传装备，搜索器会置灰开关并说明「没有正在看的装备」。
                    注意：StatPicker.Item 是 [CascadingParameter]，必须用 CascadingValue 传，
                    显式写 Item="..." 会抛 InvalidOperationException（整页崩）。 *@
-                <CascadingValue Value="@equippedItem"
-                                IsFixed="true">
+                @* 不要加 IsFixed="true"：equippedItem 会随选中部位变化，
+                   而 IsFixed 是「值永不改变」的承诺，框架据此关掉订阅通道
+                   （参见 ItemOverlay 是靠重挂载换值，不是原地改值）。审计（2026-09-19）指出。 *@
+                <CascadingValue Value="@equippedItem">
                     <StatPicker Label="@Resources["Search_Stat"]"
                                 OnPick="AddSlotStat"
                                 SlotKey="@selectedSlot"/>
@@ -525,6 +527,9 @@
             created.Equipped = result.Template.Equipped;
             created.EquippedStats = result.Template.EquippedStats;
             created.EquippedNames = result.Template.EquippedNames;
+            // 漏这一行会让导入的基准全部显示成「来源未知」，与「导入 BD 自带基准」的说法矛盾。
+            // 审计（2026-09-19）发现：测试测的是 importer 层，测不到这段逐字段拷贝。
+            created.EquippedSource = result.Template.EquippedSource;
             created.ImportedFrom = result.Template.ImportedFrom;
             Store.Save(created);
 

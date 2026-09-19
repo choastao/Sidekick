@@ -208,8 +208,15 @@
 
     private void OnChanged()
     {
-        Refresh();
-        _ = InvokeAsync(StateHasChanged);
+        // Refresh 会读写组件状态（Total / Comparisons）并枚举 Basket.Items，
+        // 而 OnChanged 是在调用方线程上触发的（快捷键入篮 = 后台线程）。
+        // 必须整体回 UI 线程 —— 之前只把 StateHasChanged 包进 InvokeAsync，
+        // 前半段等于在后台线程改组件状态。审计（2026-09-19）发现。
+        _ = InvokeAsync(() =>
+        {
+            Refresh();
+            StateHasChanged();
+        });
     }
 
     /// <summary>重算合计 + 需要做替换对比的部位。</summary>
