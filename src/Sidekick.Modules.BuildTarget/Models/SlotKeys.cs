@@ -8,6 +8,9 @@ namespace Sidekick.Modules.BuildTarget.Models;
 /// </summary>
 public static class SlotKeys
 {
+    /// <summary>部位判断不出来时用这个（物品类别缺失 / 不是装备）。</summary>
+    public const string Unknown = "unknown";
+
     public const string Weapon = "weapon";
     public const string Offhand = "offhand";
     public const string Helmet = "helmet";

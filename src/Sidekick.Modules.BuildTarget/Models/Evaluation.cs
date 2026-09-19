@@ -74,6 +74,12 @@ public class SlotEvaluation
 
     /// <summary>存了快照却解析不出来（通常是物品语言设置与游戏客户端不一致）。</summary>
     public bool EquippedUnparsable => HasSnapshot && !HasEquipped;
+
+    /// <summary>
+    /// 该部位基准的来源（bd / manual）；老数据没有来源标记时为 null。
+    /// 该部位没有基准时也是 null——用 <see cref="HasEquipped"/> 区分这两种 null。
+    /// </summary>
+    public string? BaselineSource { get; set; }
 }
 
 /// <summary>一次完整评估的输出。</summary>
@@ -88,6 +94,9 @@ public class BuildTargetResult
 
     /// <summary>角色级合计估算。</summary>
     public List<CharacterEstimate> Character { get; set; } = [];
+
+    /// <summary>当前装备基准的覆盖与来源统计。</summary>
+    public BaselineSummary Baseline { get; set; } = new();
 
     public Verdict Verdict { get; set; } = Verdict.Unknown;
 

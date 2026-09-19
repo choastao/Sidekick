@@ -27,6 +27,9 @@ public static class SettingKeys
     public const string KeyOpenWiki = nameof(KeyOpenWiki);
     public const string KeyOpenInCraftOfExile = nameof(KeyOpenInCraftOfExile);
 
+    /// <summary>把鼠标悬停的物品标记为备选（备选篮）。默认 Ctrl+B。</summary>
+    public const string KeyAddToBasket = nameof(KeyAddToBasket);
+
     public const string MouseWheelNavigateStash = nameof(MouseWheelNavigateStash);
     public const string MouseWheelNavigateStashReverse = nameof(MouseWheelNavigateStashReverse);
 

@@ -40,6 +40,9 @@ public class BuildTargetEvaluator
         result.HasTemplate = true;
         result.NewItemName = newItem.Name ?? newItem.Type;
 
+        // 基准统计：哪些部位有基准、分别来自导入的 BD 还是手动采集
+        result.Baseline = BaselineSummaryCalculator.Compute(template, slotKey => ParseEquipped(template, slotKey) != null);
+
         var slotKeys = SlotKeys.ResolveFor(newItem);
         if (slotKeys.Length == 0)
         {
@@ -56,7 +59,7 @@ public class BuildTargetEvaluator
             }
         }
 
-        result.Character = EvaluateCharacter(template, newItem, slotKeys);
+        result.Character = EvaluateCharacter(template, newItem, slotKeys, result.Baseline);
 
         var primary = result.Slots.FirstOrDefault();
         result.Verdict = primary?.Verdict ?? Verdict.Unknown;
@@ -79,6 +82,7 @@ public class BuildTargetEvaluator
             HasSnapshot = hasSnapshot || imported != null,
             HasEquipped = currentItem != null || imported != null,
             EquippedName = currentItem?.Name ?? currentItem?.Type ?? GetImportedName(template, slotKey),
+            BaselineSource = currentItem != null || imported != null ? BaselineSummaryCalculator.Source(template, slotKey) : null,
         };
 
         foreach (var target in targets)
@@ -169,7 +173,7 @@ public class BuildTargetEvaluator
         }
     }
 
-    private List<CharacterEstimate> EvaluateCharacter(BuildTargetTemplate template, Item newItem, string[] newItemSlotKeys)
+    private List<CharacterEstimate> EvaluateCharacter(BuildTargetTemplate template, Item newItem, string[] newItemSlotKeys, BaselineSummary baseline)
     {
         var results = new List<CharacterEstimate>();
         if (template.Character.Count == 0)
@@ -203,7 +207,8 @@ public class BuildTargetEvaluator
             }
         }
 
-        var collectedSlots = snapshots.Count + importedBySlot.Count;
+        // 和界面上的「X 个部位有基准」用同一个数，避免两处对不上
+        var collectedSlots = baseline.WithBaseline;
 
         foreach (var target in template.Character)
         {

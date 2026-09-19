@@ -95,7 +95,7 @@ public class BuildTargetStore
     /// <summary>把一件装备的原始文本记为某部位的当前装备快照。</summary>
     public void CaptureEquipped(BuildTargetTemplate template, string slotKey, string itemText)
     {
-        template.Equipped[slotKey] = itemText;
+        BaselineSources.MarkManual(template, slotKey, itemText);
         Save(template);
     }
 

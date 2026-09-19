@@ -54,6 +54,18 @@ public class BuildTargetTemplate
     /// <summary>导入 BD 时各部位的装备名（界面上「对比对象」显示用）。</summary>
     public Dictionary<string, string> EquippedNames { get; set; } = [];
 
+    private Dictionary<string, string> equippedSource = [];
+
+    /// <summary>
+    /// 各部位基准的来源：bd = 导入 BD 自带，manual = 游戏内悬停采集。
+    /// 老配置里没有这个字段：读出来是空字典（反序列化到 null 也当空字典用），界面上按「来源未知」显示。
+    /// </summary>
+    public Dictionary<string, string> EquippedSource
+    {
+        get => equippedSource ??= [];
+        set => equippedSource = value ?? [];
+    }
+
     /// <summary>来源：手动建立，或导入的 BD 标识。</summary>
     public string? ImportedFrom { get; set; }
 

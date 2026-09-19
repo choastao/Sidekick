@@ -57,6 +57,9 @@
   <data name="Key_FindItems" xml:space="preserve">
     <value>查找物品</value>
   </data>
+  <data name="Key_AddToBasket" xml:space="preserve">
+    <value>把悬停的物品加入备选篮</value>
+  </data>
   <data name="Key_Open_In_Craft_Of_Exile" xml:space="preserve">
     <value>在 CraftOfExile.com 中打开物品</value>
   </data>

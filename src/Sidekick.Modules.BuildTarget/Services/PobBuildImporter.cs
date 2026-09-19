@@ -230,6 +230,8 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
             // 快照：原文留着给用户看，数值单独存（客户端语言变了也能用）
             template.Equipped[slotKey] = parsed.NormalizedText;
             template.EquippedStats[slotKey] = parsed.Stats.ToDictionary(x => x.Key, x => x.Value);
+            // 来源标记：这份基准是 BD 自带的，界面上和手动悬停采来的区分开
+            template.EquippedSource[slotKey] = BaselineSources.Build;
 
             // 部位门槛：先按该部位的推荐顺序，再补上这件装备上有、但不在推荐表里的词缀。
             // 不能只扫推荐表 —— 搬砖号的装备常有取向特殊的词缀，漏掉就不是"照这套 BD 凑"了。

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <Version>1.0.0.0</Version>
         <AssemblyVersion>1.0.0.0</AssemblyVersion>
@@ -19,7 +19,7 @@
         <RepositoryUrl>https://github.com/Sidekick-Poe/Sidekick</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <StartupObject>Sidekick.Avalonia.Program</StartupObject>
-        <AssemblyName>Sidekick</AssemblyName>
+        <AssemblyName>TAO</AssemblyName>
         <ApplicationIcon>Assets/favicon.ico</ApplicationIcon>
     </PropertyGroup>
 

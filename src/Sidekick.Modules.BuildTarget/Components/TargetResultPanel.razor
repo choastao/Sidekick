@@ -26,6 +26,7 @@
                         @if (slot.HasEquipped)
                         {
                             @slot.EquippedName
+                            <span class="text-stone-500 text-xs ml-1">· @BaselineSourceTag(slot)</span>
                         }
                         else if (slot.EquippedUnparsable)
                         {
@@ -112,7 +113,7 @@
                     </tbody>
                 </table>
                 <TextBase Class="text-stone-500 text-xs mt-2">
-                    @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Estimate_Note"].Value, Result.Character[0].CollectedSlots)
+                    @Resources["Estimate_Note"]
                 </TextBase>
             </FormFieldset>
         }
@@ -121,6 +122,12 @@
         {
             <TextBase Class="text-amber-400 text-sm">@Resources["No_Baseline_Hint"]</TextBase>
         }
+
+        @* 基准从哪来：导入的 BD 自带 / 游戏内手动补。用户之前以为每个部位都得悬停采一次 *@
+        <div class="flex flex-col gap-1">
+            <TextBase Class="text-stone-400 text-xs">@BaselineNoteFormatter.Format(Result.Baseline, Resources)</TextBase>
+            <TextBase Class="text-stone-500 text-xs">@Resources["Baseline_Import_Note"]</TextBase>
+        </div>
 
     </div>
 }
@@ -178,6 +185,9 @@
         Store.CaptureEquipped(template, slotKey, Item.Text.Text);
         Evaluate();
     }
+
+    private string BaselineSourceTag(SlotEvaluation slot) =>
+        BaselineNoteFormatter.SourceLabel(slot.BaselineSource, Resources);
 
     private string VerdictLabel => Result?.Verdict switch
     {

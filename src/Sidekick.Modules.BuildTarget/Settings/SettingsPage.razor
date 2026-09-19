@@ -201,12 +201,13 @@
         @* ---------- 当前装备采集 ---------- *@
         <FormFieldset Legend="@Resources["Equipped"]">
             <TextBase Class="text-stone-400 text-sm">@Resources["Equipped_Help"]</TextBase>
+            <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Baseline_Import_Note"]</TextBase>
 
             <div class="flex items-center justify-between gap-3 mt-3">
                 <TextBase>
                     @SlotLabel(selectedSlot)：
                     <span class="text-stone-400">
-                        @(HasEquipped(selectedSlot) ? Resources["Equipped_Captured"].Value : Resources["Equipped_Missing"].Value)
+                        @EquippedStateLabel(selectedSlot)
                     </span>
                 </TextBase>
                 <ButtonLink OnClick="ClearEquipped" Disabled="@(!HasEquipped(selectedSlot))">@Resources["Equipped_Clear"]</ButtonLink>
@@ -399,6 +400,17 @@
 
     private bool HasEquipped(string slotKey) => active?.Equipped.ContainsKey(slotKey) == true;
 
+    /// <summary>这个部位的基准从哪来：未采集 / 导入的 BD / 游戏内手动采集 / 老数据来源未知。</summary>
+    private string EquippedStateLabel(string slotKey)
+    {
+        if (!HasEquipped(slotKey))
+        {
+            return Resources["Equipped_Missing"].Value;
+        }
+
+        return BaselineNoteFormatter.SourceLabel(BaselineSummaryCalculator.Source(active, slotKey), Resources);
+    }
+
     private void ClearEquipped()
     {
         if (active == null)
@@ -406,7 +418,11 @@
             return;
         }
 
+        // 清掉这个部位的基准：手动采的原文、导入 BD 抽好的数值、来源标记一起清，
+        // 否则「清除」之后界面还会说这个部位有基准（那只剩导入数值时看着像没清掉）。
         active.Equipped.Remove(selectedSlot);
+        active.EquippedStats.Remove(selectedSlot);
+        active.EquippedSource.Remove(selectedSlot);
         SaveActive();
     }
 

@@ -43,6 +43,7 @@
                                  OnChange="StateHasChanged">
                             <ChildContent>
                                 <BuildTargetTab/>
+                                <CandidateBasketTab/>
                                 <AreaTab/>
                                 <ExchangeTab/>
                                 <ValuationTab/>
@@ -69,6 +70,8 @@
                         case "buildtarget":
                             <TargetResultPanel/>
                             <CraftCostPanel/> break;
+                        case "basket":
+                            <CandidateBasketPanel/> break;
                         case "area":
                             <AreaResult/> break;
                         case "trade":

@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Name1" xml:space="preserve">
+    <value>this is my long string</value>
+  </data>
+  <data name="Bitmap1" xml:space="preserve">
+    <value>[base64 mime encoded serialized .NET Framework object]</value>
+  </data>
+  <data name="Icon1" xml:space="preserve">
+    <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+  </data>
+  <data name="Name1" xml:space="preserve">
+    <value>this is my long string</value>
+  </data>
+  <data name="Bitmap1" xml:space="preserve">
+    <value>[base64 mime encoded serialized .NET Framework object]</value>
+  </data>
+  <data name="Icon1" xml:space="preserve">
+    <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+  </data>
   <data name="Menu_Title" xml:space="preserve">
     <value>Target BD</value>
   </data>
@@ -160,16 +178,46 @@
     <value>Character-wide targets</value>
   </data>
   <data name="Character_Help" xml:space="preserve">
-    <value>Summed across all slots you have captured. Only additive stats (life, energy shield, resistances) can be estimated without a full damage engine.</value>
+    <value>Summed across the baseline of every slot (imported with the build, or captured in game). Only additive stats (life, energy shield, resistances) can be estimated without a full damage engine.</value>
   </data>
   <data name="Estimate_Title" xml:space="preserve">
     <value>Gear total (estimate)</value>
   </data>
   <data name="Estimate_Note" xml:space="preserve">
-    <value>Gear only, passives not included. Based on {0}/10 slots captured.</value>
+    <value>Gear only, passives not included.</value>
   </data>
   <data name="Estimate_Collected" xml:space="preserve">
     <value>Captured slots</value>
+  </data>
+  <data name="Baseline_Summary" xml:space="preserve">
+    <value>{1} of {0} slots have a baseline ({2}).</value>
+  </data>
+  <data name="Baseline_Summary_None" xml:space="preserve">
+    <value>No baseline yet for any of the {0} slots.</value>
+  </data>
+  <data name="Baseline_From_Bd" xml:space="preserve">
+    <value>{0} from the imported build</value>
+  </data>
+  <data name="Baseline_Manual" xml:space="preserve">
+    <value>{0} captured in game</value>
+  </data>
+  <data name="Baseline_Unknown" xml:space="preserve">
+    <value>{0} of unknown source</value>
+  </data>
+  <data name="Baseline_List_Separator" xml:space="preserve">
+    <value>, </value>
+  </data>
+  <data name="Baseline_Import_Note" xml:space="preserve">
+    <value>When you import a PoB share code or a poe.ninja link, the gear in that build comes in with it — one import is enough for a baseline, no hovering needed. Hovering in game is only for filling in slots the build does not have.</value>
+  </data>
+  <data name="Baseline_Source_Bd" xml:space="preserve">
+    <value>from the imported build</value>
+  </data>
+  <data name="Baseline_Source_Manual" xml:space="preserve">
+    <value>captured in game</value>
+  </data>
+  <data name="Baseline_Source_Unknown" xml:space="preserve">
+    <value>source unknown</value>
   </data>
   <data name="Current_Sum" xml:space="preserve">
     <value>Current</value>
@@ -229,7 +277,7 @@
     <value>Current gear</value>
   </data>
   <data name="Equipped_Help" xml:space="preserve">
-    <value>In game, hover each piece you already wear and press the item hotkey once per slot. That becomes the baseline new items are compared against.</value>
+    <value>Only needed for slots the build does not cover: hover that piece in game and press your item hotkey once — that becomes the baseline new items are compared against.</value>
   </data>
   <data name="Equipped_Missing" xml:space="preserve">
     <value>Not captured</value>
@@ -319,7 +367,7 @@
     <value>About the same as your current item.</value>
   </data>
   <data name="Result_Pass_No_Baseline" xml:space="preserve">
-    <value>Passes all required checks (no current item captured to compare).</value>
+    <value>All required minimums passed (no baseline yet — import a build or fill in the slots it is missing to see the upgrade).</value>
   </data>
   <data name="Result_Pass_No_Comparable" xml:space="preserve">
     <value>Passes all required checks.</value>
@@ -340,7 +388,7 @@
     <value>Compared with:</value>
   </data>
   <data name="No_Baseline_Hint" xml:space="preserve">
-    <value>Capture your current gear in Settings &gt; Target BD to compare upgrades.</value>
+    <value>No baseline yet. Import a build first (one import is enough), then hover in game only for the slots the build is missing.</value>
   </data>
   <data name="Slot_weapon" xml:space="preserve">
     <value>Weapon</value>
@@ -595,7 +643,7 @@
     <value>Affix weights come from Path of Building's recombinator experiments plus trade-site statistics (a community reverse-engineering estimate). The game does not publish success rates, so this is a reference value, not a promise.</value>
   </data>
   <data name="Craft_Prob_Note_Mean" xml:space="preserve">
-    <value>Expected attempts is an average: on average 1 in N attempts hits the target — it does not mean "N attempts is guaranteed".</value>
+    <value>Expected attempts is an average: on average 1 in N attempts hits the target — it does not mean &quot;N attempts is guaranteed&quot;.</value>
   </data>
   <data name="Craft_Prob_Note_Chaos" xml:space="preserve">
     <value>Replacement (Chaos Orb): every use removes a random existing affix, so repeated rolling can wipe other good affixes. The expected attempts below only describe how hard it is to hit the target — not how many good affixes survive.</value>
@@ -638,6 +686,108 @@
   </data>
   <data name="Craft_Prob_Value_Unknown" xml:space="preserve">
     <value>No affix in the pool can satisfy this target, so there is nothing to average.</value>
+  </data>
+  <data name="Tab_Basket" xml:space="preserve">
+    <value>Candidate Basket</value>
+  </data>
+  <data name="Basket_Empty" xml:space="preserve">
+    <value>The basket is empty. Hover an item in game and press {0} to mark it as a candidate; several of them are then added up together.</value>
+  </data>
+  <data name="Basket_Col_Name" xml:space="preserve">
+    <value>Item</value>
+  </data>
+  <data name="Basket_Col_Slot" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="Basket_Total" xml:space="preserve">
+    <value>Total</value>
+  </data>
+  <data name="Basket_Enabled_Count" xml:space="preserve">
+    <value>{0}/{1} checked</value>
+  </data>
+  <data name="Basket_Clear" xml:space="preserve">
+    <value>Clear all</value>
+  </data>
+  <data name="Basket_Slot_Unknown" xml:space="preserve">
+    <value>Unknown slot</value>
+  </data>
+  <data name="Basket_Cap" xml:space="preserve">
+    <value>Resistance cap</value>
+  </data>
+  <data name="Basket_Cap_Ok" xml:space="preserve">
+    <value>✅ capped</value>
+  </data>
+  <data name="Basket_Cap_Short" xml:space="preserve">
+    <value>⚠️ {0} short</value>
+  </data>
+  <data name="Basket_Cap_Note" xml:space="preserve">
+    <value>The cap depends on your character, ascendancy and gear - the default is 75, please double check it (+maximum resistance mods, for example).</value>
+  </data>
+  <data name="Basket_Attr_Strength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="Basket_Attr_Dexterity" xml:space="preserve">
+    <value>Dexterity</value>
+  </data>
+  <data name="Basket_Attr_Intelligence" xml:space="preserve">
+    <value>Intelligence</value>
+  </data>
+  <data name="Basket_Attribute_Note" xml:space="preserve">
+    <value>Attributes granted by the items only (no passives, ascendancy or quest rewards).</value>
+  </data>
+  <data name="Basket_Stat_FireResistance" xml:space="preserve">
+    <value>Fire</value>
+  </data>
+  <data name="Basket_Stat_ColdResistance" xml:space="preserve">
+    <value>Cold</value>
+  </data>
+  <data name="Basket_Stat_LightningResistance" xml:space="preserve">
+    <value>Lightning</value>
+  </data>
+  <data name="Basket_Stat_ChaosResistance" xml:space="preserve">
+    <value>Chaos</value>
+  </data>
+  <data name="Basket_Stat_Strength" xml:space="preserve">
+    <value>Str</value>
+  </data>
+  <data name="Basket_Stat_Dexterity" xml:space="preserve">
+    <value>Dex</value>
+  </data>
+  <data name="Basket_Stat_Intelligence" xml:space="preserve">
+    <value>Int</value>
+  </data>
+  <data name="Basket_Compare_Title" xml:space="preserve">
+    <value>After swapping (current item → candidates)</value>
+  </data>
+  <data name="Basket_Compare_Slot" xml:space="preserve">
+    <value>{0}: current &quot;{1}&quot; → the checked candidates for that slot</value>
+  </data>
+  <data name="Basket_Compare_Unparsable" xml:space="preserve">
+    <value>⚠️ The equipped snapshot yielded no resistance/attribute at all (often an imported English item text), so this before/after comparison can be wrong.</value>
+  </data>
+  <data name="Basket_No_Snapshot" xml:space="preserve">
+    <value>No baseline for that slot yet, so only the total is shown. Import a build (its gear becomes the baseline), or hover that piece in game, press your item hotkey and capture it here.</value>
+  </data>
+  <data name="Basket_Note_Scope" xml:space="preserve">
+    <value>Only resistances/attributes on the items are counted: no passive tree, no ascendancy, no quest rewards, no flasks.</value>
+  </data>
+  <data name="Basket_Note_AllEle" xml:space="preserve">
+    <value>&quot;+X% to all Elemental Resistances&quot; is counted once for fire, cold and lightning each - that is why the three numbers add up to more than the modifier.</value>
+  </data>
+  <data name="Basket_Note_Additive" xml:space="preserve">
+    <value>Only additive mods count (&quot;+X% resistance&quot; / &quot;+X attribute&quot;). Multiplicative mods such as &quot;increased resistance&quot; are ignored.</value>
+  </data>
+  <data name="Basket_Target_FromBd" xml:space="preserve">
+    <value> (BD target {0})</value>
+  </data>
+  <data name="Basket_Target_Default" xml:space="preserve">
+    <value> (default cap {0})</value>
+  </data>
+  <data name="Basket_Target_Note" xml:space="preserve">
+    <value>Resistance targets are taken from Settings &gt; Build Target &gt; Character totals when set; resistances without one fall back to the adjustable cap below.</value>
+  </data>
+  <data name="Basket_Cap_Note_Bd" xml:space="preserve">
+    <value>This cap only applies to resistances that have no Build Target value.</value>
   </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>Maximum life</value>

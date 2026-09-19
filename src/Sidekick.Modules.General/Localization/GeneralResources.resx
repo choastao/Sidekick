@@ -162,6 +162,9 @@
   <data name="Key_FindItems" xml:space="preserve">
     <value>Find Items</value>
   </data>
+  <data name="Key_AddToBasket" xml:space="preserve">
+    <value>Add hovered item to the candidate basket</value>
+  </data>
   <data name="Key_Open_In_Craft_Of_Exile" xml:space="preserve">
     <value>Open item in CraftOfExile.com</value>
   </data>

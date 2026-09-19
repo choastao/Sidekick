@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Name1" xml:space="preserve">
+    <value>this is my long string</value>
+  </data>
+  <data name="Bitmap1" xml:space="preserve">
+    <value>[base64 mime encoded serialized .NET Framework object]</value>
+  </data>
+  <data name="Icon1" xml:space="preserve">
+    <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+  </data>
+  <data name="Name1" xml:space="preserve">
+    <value>this is my long string</value>
+  </data>
+  <data name="Bitmap1" xml:space="preserve">
+    <value>[base64 mime encoded serialized .NET Framework object]</value>
+  </data>
+  <data name="Icon1" xml:space="preserve">
+    <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+  </data>
   <data name="Menu_Title" xml:space="preserve">
     <value>目标BD</value>
   </data>
@@ -160,16 +178,46 @@
     <value>角色总目标</value>
   </data>
   <data name="Character_Help" xml:space="preserve">
-    <value>把你已采集的各个部位加总后比较。不接完整的伤害引擎时，只有加法类词缀（生命、能量护盾、抗性）能算得准。</value>
+    <value>把各部位的基准值（导入的 BD 或游戏内采的）加总后比较。不接完整的伤害引擎时，只有加法类词缀（生命、能量护盾、抗性）能算得准。</value>
   </data>
   <data name="Estimate_Title" xml:space="preserve">
     <value>装备合计（估算）</value>
   </data>
   <data name="Estimate_Note" xml:space="preserve">
-    <value>只含装备部分，不含天赋被动。基于已采集的 {0}/10 个部位。</value>
+    <value>只含装备部分，不含天赋被动。</value>
   </data>
   <data name="Estimate_Collected" xml:space="preserve">
     <value>已采集部位</value>
+  </data>
+  <data name="Baseline_Summary" xml:space="preserve">
+    <value>{0} 个部位中 {1} 个有基准（{2}）。</value>
+  </data>
+  <data name="Baseline_Summary_None" xml:space="preserve">
+    <value>{0} 个部位还没有基准。</value>
+  </data>
+  <data name="Baseline_From_Bd" xml:space="preserve">
+    <value>{0} 个来自导入的 BD</value>
+  </data>
+  <data name="Baseline_Manual" xml:space="preserve">
+    <value>{0} 个手动采集</value>
+  </data>
+  <data name="Baseline_Unknown" xml:space="preserve">
+    <value>{0} 个来源未知</value>
+  </data>
+  <data name="Baseline_List_Separator" xml:space="preserve">
+    <value>，</value>
+  </data>
+  <data name="Baseline_Import_Note" xml:space="preserve">
+    <value>导入 PoB 分享码 / poe.ninja 链接时，BD 里自带的装备会一起进来 —— 导入一次就有基准了，不用手动悬停。手动悬停只是 BD 里缺某个部位时的补充。</value>
+  </data>
+  <data name="Baseline_Source_Bd" xml:space="preserve">
+    <value>来自导入的 BD</value>
+  </data>
+  <data name="Baseline_Source_Manual" xml:space="preserve">
+    <value>手动采集</value>
+  </data>
+  <data name="Baseline_Source_Unknown" xml:space="preserve">
+    <value>来源未知</value>
   </data>
   <data name="Current_Sum" xml:space="preserve">
     <value>当前</value>
@@ -229,7 +277,7 @@
     <value>当前装备</value>
   </data>
   <data name="Equipped_Help" xml:space="preserve">
-    <value>在游戏里鼠标悬停你身上穿的每一件，逐个按一次物品热键。这些会作为之后对比新装备的基准。</value>
+    <value>只用来补 BD 里缺的部位：在游戏里悬停那件装备，按一次物品热键，它就会作为之后对比新装备的基准。</value>
   </data>
   <data name="Equipped_Missing" xml:space="preserve">
     <value>未采集</value>
@@ -319,7 +367,7 @@
     <value>和你现在穿的差不多。</value>
   </data>
   <data name="Result_Pass_No_Baseline" xml:space="preserve">
-    <value>硬性门槛全过（还没采集当前装备，无法对比提升）。</value>
+    <value>硬性门槛全过（还没有基准——先导入 BD，或补上 BD 里缺的部位，才能看提升）。</value>
   </data>
   <data name="Result_Pass_No_Comparable" xml:space="preserve">
     <value>硬性门槛全过。</value>
@@ -340,7 +388,7 @@
     <value>对比对象：</value>
   </data>
   <data name="No_Baseline_Hint" xml:space="preserve">
-    <value>到「设置 - 目标BD」采集一下你现在穿的装备，才能判断提升多少。</value>
+    <value>还没有基准。先导入一份 BD（导入一次就有），BD 里缺的部位再去游戏里悬停补上。</value>
   </data>
   <data name="Slot_weapon" xml:space="preserve">
     <value>武器</value>
@@ -638,6 +686,108 @@
   </data>
   <data name="Craft_Prob_Value_Unknown" xml:space="preserve">
     <value>池里没有条目能满足这个目标，没有可平均的结果。</value>
+  </data>
+  <data name="Tab_Basket" xml:space="preserve">
+    <value>备选篮</value>
+  </data>
+  <data name="Basket_Empty" xml:space="preserve">
+    <value>备选篮是空的。把鼠标移到游戏里的物品上按 {0}，就能把它标记为备选；收集几件之后这里会把它们的抗性 / 属性加在一起算。</value>
+  </data>
+  <data name="Basket_Col_Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Basket_Col_Slot" xml:space="preserve">
+    <value>部位</value>
+  </data>
+  <data name="Basket_Total" xml:space="preserve">
+    <value>合计</value>
+  </data>
+  <data name="Basket_Enabled_Count" xml:space="preserve">
+    <value>已勾选 {0}/{1} 件</value>
+  </data>
+  <data name="Basket_Clear" xml:space="preserve">
+    <value>全部清空</value>
+  </data>
+  <data name="Basket_Slot_Unknown" xml:space="preserve">
+    <value>未知部位</value>
+  </data>
+  <data name="Basket_Cap" xml:space="preserve">
+    <value>抗性上限</value>
+  </data>
+  <data name="Basket_Cap_Ok" xml:space="preserve">
+    <value>✅ 达标</value>
+  </data>
+  <data name="Basket_Cap_Short" xml:space="preserve">
+    <value>⚠️ 差 {0}</value>
+  </data>
+  <data name="Basket_Cap_Note" xml:space="preserve">
+    <value>上限因角色、升华、装备而异，默认 75 请自己核对（例如带 +最大抗性的装备）。</value>
+  </data>
+  <data name="Basket_Attr_Strength" xml:space="preserve">
+    <value>力量</value>
+  </data>
+  <data name="Basket_Attr_Dexterity" xml:space="preserve">
+    <value>敏捷</value>
+  </data>
+  <data name="Basket_Attr_Intelligence" xml:space="preserve">
+    <value>智慧</value>
+  </data>
+  <data name="Basket_Attribute_Note" xml:space="preserve">
+    <value>这里只算装备提供的属性加值，不含天赋树、升华、任务奖励。</value>
+  </data>
+  <data name="Basket_Stat_FireResistance" xml:space="preserve">
+    <value>火</value>
+  </data>
+  <data name="Basket_Stat_ColdResistance" xml:space="preserve">
+    <value>冰</value>
+  </data>
+  <data name="Basket_Stat_LightningResistance" xml:space="preserve">
+    <value>电</value>
+  </data>
+  <data name="Basket_Stat_ChaosResistance" xml:space="preserve">
+    <value>混</value>
+  </data>
+  <data name="Basket_Stat_Strength" xml:space="preserve">
+    <value>力</value>
+  </data>
+  <data name="Basket_Stat_Dexterity" xml:space="preserve">
+    <value>敏</value>
+  </data>
+  <data name="Basket_Stat_Intelligence" xml:space="preserve">
+    <value>智</value>
+  </data>
+  <data name="Basket_Compare_Title" xml:space="preserve">
+    <value>替换后对比（当前装备 → 备选）</value>
+  </data>
+  <data name="Basket_Compare_Slot" xml:space="preserve">
+    <value>{0}：当前装备「{1}」→ 该部位已勾选的备选合计</value>
+  </data>
+  <data name="Basket_Compare_Unparsable" xml:space="preserve">
+    <value>⚠️ 当前装备快照一个抗性 / 属性都没解析出来（常见于导入 BD 的英文物品文本），这个替换前后对比可能不准。</value>
+  </data>
+  <data name="Basket_No_Snapshot" xml:space="preserve">
+    <value>这个部位还没有基准，所以这里只显示合计。导入一份 BD（BD 自带的装备就是基准），或者在游戏里悬停那件装备按一次物品热键再在这里采集。</value>
+  </data>
+  <data name="Basket_Note_Scope" xml:space="preserve">
+    <value>只统计装备上的抗性 / 属性：不含天赋树、升华、任务奖励、药剂。</value>
+  </data>
+  <data name="Basket_Note_AllEle" xml:space="preserve">
+    <value>「+X% 全部元素抗性」已按火 / 冰 / 电各计一次，所以这三条加起来会比词缀数值大。</value>
+  </data>
+  <data name="Basket_Note_Additive" xml:space="preserve">
+    <value>只认「+X% 抗性 / +X 属性」这类加法词缀；「提高 X% 抗性」这类乘法词缀不计。</value>
+  </data>
+  <data name="Basket_Target_FromBd" xml:space="preserve">
+    <value>（BD目标 {0}）</value>
+  </data>
+  <data name="Basket_Target_Default" xml:space="preserve">
+    <value>（默认上限 {0}）</value>
+  </data>
+  <data name="Basket_Target_Note" xml:space="preserve">
+    <value>抗性目标优先取「设置 → 目标BD → 角色总目标」里设的值；没设过的才用下面那个可调上限。</value>
+  </data>
+  <data name="Basket_Cap_Note_Bd" xml:space="preserve">
+    <value>上面这个上限只在「目标BD 里没设该抗性目标」时生效。</value>
   </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>最大生命</value>

@@ -1,0 +1,30 @@
+@* 物品悬浮窗里的「备选篮」页签，和「目标BD」并列。件数直接写在标签上，按快捷键加进去能马上看到。 *@
+<TabItem Id="basket" Text="@Text"/>
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject CandidateBasketService Basket
+@implements IDisposable
+
+@code {
+
+    private string Text => Basket.Items.Count == 0
+                               ? Resources["Tab_Basket"]
+                               : $"{Resources["Tab_Basket"]} ({Basket.Items.Count})";
+
+    protected override void OnInitialized()
+    {
+        Basket.OnChanged += OnBasketChanged;
+        base.OnInitialized();
+    }
+
+    private void OnBasketChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        Basket.OnChanged -= OnBasketChanged;
+    }
+
+}
