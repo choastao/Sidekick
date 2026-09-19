@@ -22,15 +22,32 @@ public static class ItemTextComparer
             return false;
         }
 
-        return Key(a) == Key(b);
+        var keyA = Key(a);
+        var keyB = Key(b);
+
+        return keyA != null && keyA == keyB;
     }
 
-    /// <summary>清洗 + 按行归一化：统一换行、去掉空行与每行首尾空白。</summary>
-    private static string Key(string text)
+    /// <summary>
+    /// 清洗 + 按行归一化：统一换行、去掉空行与每行首尾空白。清洗失败返回 null。
+    ///
+    /// ⚠ 这里绝不能往外抛：快照存的是用户粘贴的原文，可能是任何东西
+    /// （`ItemNameTokenizer` 遇到「行首是 &lt; 且该行没有 &gt;」会抛 KeyNotFoundException）。
+    /// 一旦抛出去，评估整体失败、**面板整块消失**，而坏快照已经落盘、重启也不会好——
+    /// 用户还得先去设置页清掉那个部位的基准才能恢复，可面板已经空了。
+    /// </summary>
+    private static string? Key(string text)
     {
-        var cleaned = new OriginalText(text).Text;
-        return string.Join(
-            "\n",
-            cleaned.Replace("\r\n", "\n").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0));
+        try
+        {
+            var cleaned = new OriginalText(text).Text;
+            return string.Join(
+                "\n",
+                cleaned.Replace("\r\n", "\n").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0));
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

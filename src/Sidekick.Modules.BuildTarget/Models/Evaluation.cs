@@ -6,7 +6,7 @@ public enum Verdict
     /// <summary>信息不足（没建模板 / 没采集当前装备）。</summary>
     Unknown = 0,
 
-    /// <summary>建议换上：硬性门槛全过，且对标当前装备有提升。</summary>
+    /// <summary>建议换上：没有未过的硬性门槛，且相对当前装备有提升。</summary>
     Good,
 
     /// <summary>可留观：硬性门槛过了但有短板，或与当前装备互有来回。</summary>

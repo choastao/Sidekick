@@ -132,6 +132,25 @@ public class BuildTargetStore
     }
 
     /// <summary>
+    /// JSON 读坏了就先把原文件改名备份再重置 —— 直接 `file = new BuildTargetFile()` 会让
+    /// 用户的整个模板库静默消失（CC 审计指出）。备份之后至少还能人工抢救。
+    /// </summary>
+    private void BackupCorruptFile()
+    {
+        try
+        {
+            if (System.IO.File.Exists(FilePath))
+            {
+                System.IO.File.Move(FilePath, FilePath + ".bad", overwrite: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "[BuildTarget] Failed to back up the corrupt file {Path}", FilePath);
+        }
+    }
+
+    /// <summary>
     /// 迁移要回写文件，但「一机两号」时另一个实例可能同时在写同一个文件。
     /// 只有磁盘内容还是我们刚读到的这一份时才允许回写；否则放弃落盘
     /// （内存里的迁移照旧生效，下次真正保存时再落）。
@@ -182,6 +201,7 @@ public class BuildTargetStore
         }
         catch (Exception ex)
         {
+            BackupCorruptFile();
             logger.LogError(ex, "[BuildTarget] Failed to load templates from {Path}", FilePath);
             file = new BuildTargetFile();
         }

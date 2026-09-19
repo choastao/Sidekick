@@ -26,9 +26,15 @@ public static class TargetNormalizer
             return false;
         }
 
-        var wasImported = template.EquippedStats.Count > 0
+        // 判据只能看「导入来源 / 来源标记」，绝不能看「有没有数值」：
+        // MarkManual（游戏内采集）也会写 EquippedStats，所以一条手建模板只要采过一次基准，
+        // 就会被误判成导入模板，用户勾的硬性要求会在下次启动时被静默清零且不可逆
+        // （CC 复审发现的阻断项）。
+        var wasImported = !string.IsNullOrWhiteSpace(template.ImportedFrom)
                           || template.EquippedSource.Values.Contains(BaselineSources.Build)
-                          || !string.IsNullOrWhiteSpace(template.ImportedFrom);
+                          // EquippedStats 只有导入器与 MarkManual 两个写入方，而 MarkManual 必定写
+                          // Manual 标记，所以「有数值、却没有对应标记」只可能是旧版导入的遗留数据。
+                          || template.EquippedStats.Keys.Any(k => !template.EquippedSource.ContainsKey(k));
 
         if (!wasImported)
         {

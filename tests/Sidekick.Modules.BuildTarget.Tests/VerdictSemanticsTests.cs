@@ -166,6 +166,24 @@ public class VerdictSemanticsTests
     }
 
     [Fact]
+    public void A_reference_target_never_blocks_an_item_that_lacks_it()
+    {
+        // CC 第一轮那条误判的最小原型：界面「添加 / 预设 / 词缀搜索器」建的行走的是默认值，
+        // 默认 Required=true + MinValue=0 + 装备没有这条 → 直接判「不建议」。
+        // 这条测试锁住默认值必须是 false（把两处默认值改回 true 就会红）。
+        Assert.False(new ModTarget().Required);
+        Assert.False(new ModCheck().Required);
+
+        var evaluation = new SlotEvaluation
+        {
+            HasEquipped = true,
+            Checks = [Check("最大生命", 0, newValue: null)],   // 不勾硬性
+        };
+
+        Assert.NotEqual(Verdict.Bad, VerdictDecider.Decide(evaluation, Zh).Verdict);
+    }
+
+    [Fact]
     public void New_strings_exist_in_both_languages()
     {
         var english = new TestLocalizer(System.Globalization.CultureInfo.InvariantCulture);
@@ -174,19 +192,10 @@ public class VerdictSemanticsTests
         {
             Assert.False(Zh[key].ResourceNotFound, $"{key} 缺中文");
             Assert.False(english[key].ResourceNotFound, $"{key} 缺英文");
+
+            // 光看 ResourceNotFound 查不出「只在中文里缺」：zh 卫星缺键会回退到中性（英文）资源，
+            // 于是仍然是绿的（CC 审计指出）。真正的守卫是比较两份取值。
+            Assert.True(Zh[key].Value != english[key].Value, $"{key} 中英取值相同，中文文案可能没落进资源");
         }
-    }
-
-    [Fact]
-    public void The_current_item_verdict_is_not_green_equip_it()
-    {
-        // Good 的标签是「建议换上」，而这里的结论是「不用换」——必须用中性档（CC 审计指出）。
-        var evaluation = new SlotEvaluation
-        {
-            IsCurrentItem = true,
-            Checks = [Check("最大生命", 70, newValue: 60, current: 60)],
-        };
-
-        Assert.Equal(Verdict.Warn, VerdictDecider.Decide(evaluation, Zh).Verdict);
     }
 }
