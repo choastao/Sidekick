@@ -160,11 +160,15 @@
 
             <div class="mt-4">
                 @* 带上当前选中部位 + 这个部位的「当前装备」快照：搜索器才有部位上下文做过滤。
-                   没采集过基准时不传装备，搜索器会置灰开关并说明「没有正在看的装备」。 *@
-                <StatPicker Label="@Resources["Search_Stat"]"
-                            OnPick="AddSlotStat"
-                            SlotKey="@selectedSlot"
-                            Item="@equippedItem"/>
+                   没采集过基准时不传装备，搜索器会置灰开关并说明「没有正在看的装备」。
+                   注意：StatPicker.Item 是 [CascadingParameter]，必须用 CascadingValue 传，
+                   显式写 Item="..." 会抛 InvalidOperationException（整页崩）。 *@
+                <CascadingValue Value="@equippedItem"
+                                IsFixed="true">
+                    <StatPicker Label="@Resources["Search_Stat"]"
+                                OnPick="AddSlotStat"
+                                SlotKey="@selectedSlot"/>
+                </CascadingValue>
             </div>
 
             <table class="w-full text-sm mt-3 border-collapse">
