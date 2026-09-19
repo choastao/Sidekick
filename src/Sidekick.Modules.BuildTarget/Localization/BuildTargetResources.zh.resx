@@ -555,6 +555,90 @@
   <data name="Craft_Note_Annul" xml:space="preserve">
     <value>想先腾出位置：無效石随机移除 1 条词缀（配左旋/右旋廢止之兆可指定一侧）。本估算未计入。</value>
   </data>
+  <data name="Craft_Prob_Title" xml:space="preserve">
+    <value>期望成本（社区估算）</value>
+  </data>
+  <data name="Craft_Prob_Pool" xml:space="preserve">
+    <value>命中 {0} / 池 {1} 条</value>
+  </data>
+  <data name="Craft_Prob_Rate" xml:space="preserve">
+    <value>P = {0}% · 平均 1/{1} 次</value>
+  </data>
+  <data name="Craft_Prob_Expected_Cost" xml:space="preserve">
+    <value>期望成本 ≈ {0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Prob_Expected_Cost_Chaos" xml:space="preserve">
+    <value>若该侧已满（走混沌石）：期望成本 ≈ {0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Prob_Reroll_Range" xml:space="preserve">
+    <value>重掷到 ≥ {0}：本 tier 区间 {1}-{2}，区间内均匀分布</value>
+  </data>
+  <data name="Craft_Prob_Reroll_Pool" xml:space="preserve">
+    <value>命中 {0} / 该 tier 共 {1} 个取值</value>
+  </data>
+  <data name="Craft_Prob_Total_Title" xml:space="preserve">
+    <value>期望成本（平均次数 × 单次成本）</value>
+  </data>
+  <data name="Craft_Prob_Total" xml:space="preserve">
+    <value>硬门槛期望成本合计：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Prob_Total_Optional" xml:space="preserve">
+    <value>加分项目标期望成本合计：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Prob_Total_None" xml:space="preserve">
+    <value>暂时算不出期望成本 —— 缺词缀权重数据或价格数据。</value>
+  </data>
+  <data name="Craft_Prob_Source_Data" xml:space="preserve">
+    <value>权重数据来源：{0}</value>
+  </data>
+  <data name="Craft_Prob_Note_Source" xml:space="preserve">
+    <value>词缀权重来自 Path of Building 的重组器实验与交易站统计（社区逆向估算）。官方不公布成功率，所以这里算的是参考值，不是保证。</value>
+  </data>
+  <data name="Craft_Prob_Note_Mean" xml:space="preserve">
+    <value>期望次数是均值：平均 1/N 次能出，不等于「N 次必出」。</value>
+  </data>
+  <data name="Craft_Prob_Note_Chaos" xml:space="preserve">
+    <value>替换场景（混沌石）：每次都会随机删掉一条已有词缀，反复洗可能把其他好词缀洗掉；下面的期望次数只描述「出目标」的难度，不描述「洗完还剩几条好词缀」。</value>
+  </data>
+  <data name="Craft_Prob_Note_Degraded" xml:space="preserve">
+    <value>⚠ 拿不到防御值，池按槽位估算（标签：{0}），结果偏乐观。</value>
+  </data>
+  <data name="Craft_Prob_Note_Degraded_Short" xml:space="preserve">
+    <value>⚠ 池按槽位估算，结果偏乐观。</value>
+  </data>
+  <data name="Craft_Prob_Tags" xml:space="preserve">
+    <value>建池用的标签：{0}</value>
+  </data>
+  <data name="Craft_Prob_No_Weights" xml:space="preserve">
+    <value>未找到词缀权重数据（affix-weights.json）—— 不显示成功率与期望成本。</value>
+  </data>
+  <data name="Craft_Prob_Weights_Hint" xml:space="preserve">
+    <value>已在这些位置查找 affix-weights.json：</value>
+  </data>
+  <data name="Craft_Prob_Weights_Load_Failed" xml:space="preserve">
+    <value>词缀权重文件读取失败：{0}</value>
+  </data>
+  <data name="Craft_Prob_No_Tags" xml:space="preserve">
+    <value>这个部位在权重数据里没有对应标签，建不出池，也算不出概率。</value>
+  </data>
+  <data name="Craft_Prob_No_Item_Level" xml:space="preserve">
+    <value>读不到物品等级 —— 词缀有 ilvl 门槛，建不出池，也算不出概率。</value>
+  </data>
+  <data name="Craft_Prob_No_Side" xml:space="preserve">
+    <value>词缀类型（前缀/后缀）未知，建不出池。</value>
+  </data>
+  <data name="Craft_Prob_No_Tier" xml:space="preserve">
+    <value>判不出当前 tier 的数值区间，重掷概率无法估算。</value>
+  </data>
+  <data name="Craft_Prob_No_Target" xml:space="preserve">
+    <value>池里（{0} 条）没有与目标匹配的词缀，无法估算概率。</value>
+  </data>
+  <data name="Craft_Prob_Target_Too_High" xml:space="preserve">
+    <value>池里有 {0} 条同名同类词缀，但物品等级 {1} 下没有一条的数值上限 ≥ {2}，无法估算。</value>
+  </data>
+  <data name="Craft_Prob_Value_Unknown" xml:space="preserve">
+    <value>池里没有条目能满足这个目标，没有可平均的结果。</value>
+  </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>最大生命</value>
   </data>

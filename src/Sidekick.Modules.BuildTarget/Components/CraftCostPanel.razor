@@ -27,6 +27,25 @@
                 </div>
             }
 
+            @* 0.5 词缀权重数据（概率 / 期望成本）：缺失时同样如实说出来 *@
+            @if (!AffixWeights.HasData)
+            {
+                <div class="mt-2 flex flex-col gap-1">
+                    <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Prob_No_Weights"]</TextBase>
+                    @if (!string.IsNullOrEmpty(AffixWeights.LoadError))
+                    {
+                        <TextBase Class="text-stone-400 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Weights_Load_Failed"].Value, AffixWeights.LoadError)
+                        </TextBase>
+                    }
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Weights_Hint"]</TextBase>
+                    @foreach (var path in AffixWeights.SearchedPaths)
+                    {
+                        <TextBase Class="text-stone-500 text-xs pl-3">@path</TextBase>
+                    }
+                </div>
+            }
+
             @* 1. 价格来源 *@
             @if (Prices.Data is not null)
             {
@@ -147,6 +166,28 @@
                     <TextBase Class="mt-1 text-stone-500 text-xs">@Resources["Craft_Cost_Note"]</TextBase>
                 </div>
 
+                @* 3.5 期望成本：平均要洗几次、花多少钱才成功（社区估算，非官方） *@
+                <div class="mt-3 flex flex-col gap-1">
+                    <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Prob_Total_Title"]</TextBase>
+
+                    @if (Prices.Data is null || !AffixWeights.HasData)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Total_None"]</TextBase>
+                    }
+                    else
+                    {
+                        @if (HasAnyChance(RequiredNeeds))
+                        {
+                            <TextBase Class="text-sm font-medium">@SumText("Craft_Prob_Total", ExpectedTotal(RequiredNeeds))</TextBase>
+                        }
+                        @if (OptionalNeeds.Count > 0 && HasAnyChance(OptionalNeeds))
+                        {
+                            <TextBase Class="text-stone-400 text-sm">@SumText("Craft_Prob_Total_Optional", ExpectedTotal(OptionalNeeds))</TextBase>
+                        }
+                    }
+
+                </div>
+
                 @* 前提与免责：不能省 *@
                 <div class="mt-2 flex flex-col gap-1">
                     <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Note_Space"]</TextBase>
@@ -162,6 +203,37 @@
                     @if (RequiredNeeds.Concat(OptionalNeeds).Any(x => x.Side == AffixSide.Unknown))
                     {
                         <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Type_Unknown_No_Omen"]</TextBase>
+                    }
+                </div>
+            }
+
+            @* 3.5 概率层的诚实提示：数据来路、均值不是保证、混沌石会删词缀、退化池偏乐观 —— 一条都不能省 *@
+            @if (AffixWeights.HasData && (RequiredNeeds.Count > 0 || OptionalNeeds.Count > 0))
+            {
+                <div class="mt-2 flex flex-col gap-1">
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Source"]</TextBase>
+                    @if (!string.IsNullOrWhiteSpace(AffixWeights.Source))
+                    {
+                        <TextBase Class="text-stone-500 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Source_Data"].Value, AffixWeights.Source)
+                        </TextBase>
+                    }
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Mean"]</TextBase>
+                    @if (ShowChaosCaveat)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Chaos"]</TextBase>
+                    }
+                    @if (PoolTags.Degraded)
+                    {
+                        <TextBase Class="text-amber-400 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Note_Degraded"].Value, PoolTags.TagText)
+                        </TextBase>
+                    }
+                    @if (!PoolTags.IsEmpty)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Tags"].Value, PoolTags.TagText)
+                        </TextBase>
                     }
                 </div>
             }
@@ -242,6 +314,7 @@
 @inject BuildTargetEvaluator Evaluator
 @inject CurrencyPriceService Prices
 @inject AffixTypeService AffixTypes
+@inject AffixWeightService AffixWeights
 
 @code {
 
@@ -272,6 +345,9 @@
     /// <summary>加分目标（Required=false，锦上添花）。</summary>
     private List<Need> OptionalNeeds { get; set; } = [];
 
+    /// <summary>当前装备的词缀池标签集（槽位 + armour 伞 + 防御值子类）。</summary>
+    private AffixPoolTagSet PoolTags { get; set; } = new([], Degraded: false);
+
     private List<CurrencyPriceLine> Rows { get; set; } = [];
 
     private string search = "";
@@ -293,6 +369,9 @@
     private string FetchedAtText => Prices.Data?.FetchedAt is { } fetchedAt
                                         ? fetchedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
                                         : "-";
+
+    /// <summary>物品等级：拿不到（0）就不给概率估算，不猜。</summary>
+    private int ItemLevel => Item?.Properties?.ItemLevel ?? 0;
 
     protected override void OnInitialized()
     {
@@ -328,6 +407,7 @@
         Slot = null;
         RequiredNeeds = [];
         OptionalNeeds = [];
+        PoolTags = new AffixPoolTagSet([], Degraded: false);
         RefreshRows();
 
         BuildTargetResult? result;
@@ -347,6 +427,9 @@
         }
 
         Slot = equipped.FirstOrDefault(x => x.Checks.Count > 0) ?? equipped[0];
+
+        // 词缀池的标签集：从物品类别 + 解析出来的防御值推导，不按基底名查表。
+        PoolTags = AffixPoolTags.Resolve(Item, Slot.SlotKey);
 
         foreach (var check in Slot.Checks)
         {
@@ -379,6 +462,12 @@
                 OptionalNeeds.Add(need);
             }
         }
+
+        // 概率层：每条需求「平均要操作几次、花多少才出目标」。
+        foreach (var need in RequiredNeeds.Concat(OptionalNeeds))
+        {
+            need.Chance = BuildChance(need);
+        }
     }
 
     /// <summary>
@@ -409,6 +498,14 @@
             Label = check.Label,
             Kind = kind,
             Side = side,
+            // 目标词缀的匹配模式：模板里的关键词（可能是中文整行）+ 词缀类型表里的英文关键词。
+            // 权重表里只有英文文本，中文关键词匹配不上，靠英文关键词兜底。
+            Patterns =
+            [
+                .. check.Match.Where(x => !string.IsNullOrWhiteSpace(x)),
+                preset?.EnglishKeyword ?? "",
+                preset?.Label ?? "",
+            ],
             CurrentValue = check.Current ?? 0,
             TargetValue = check.MinValue,
             TierNumber = advice?.Tier?.Number,
@@ -436,6 +533,86 @@
             AltOmen = kind == NeedKind.Add ? Prices.Find(IdOmenWhittling) : null,
         };
     }
+
+    /// <summary>
+    /// 这条需求的概率与期望成本。
+    ///
+    /// 改造/替换（崇高石 / 混沌石）走词缀池：P = 命中条数 / 池条数；
+    /// 重掷数值（神圣石）走当前 tier 的均匀分布：P = (上限 - 目标 + 1) / (上限 - 下限 + 1)。
+    /// 任何一步数据不够（没有权重数据 / 认不出部位 / 读不到物品等级 / 判不出 tier），
+    /// 都退化成一条「为什么算不出来」的说明，不编数字。
+    /// </summary>
+    private NeedChance BuildChance(Need need)
+    {
+        var singleCost = SingleOperationCost(need.Primary, need.Omen);
+        var altCost = need.Kind == NeedKind.Add ? SingleOperationCost(need.AltCurrency, need.AltOmen) : 0;
+        var isReroll = need.Kind == NeedKind.Reroll;
+
+        if (!AffixWeights.HasData)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Weights", singleCost, altCost, isReroll);
+        }
+
+        if (PoolTags.IsEmpty)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
+        }
+
+        if (ItemLevel <= 0)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Item_Level", singleCost, altCost, isReroll);
+        }
+
+        if (isReroll)
+        {
+            if (need.TierMin is not { } tierMin || need.TierMax is not { } tierMax)
+            {
+                return NeedChance.Unavailable("Craft_Prob_No_Tier", singleCost, altCost, isReroll);
+            }
+
+            var reroll = ExpectedCostCalculator.EstimateReroll(tierMin, tierMax, need.TargetValue, singleCost);
+            return new NeedChance
+            {
+                IsReroll = true,
+                Result = reroll,
+                TierMin = tierMin,
+                TierMax = tierMax,
+                PrimaryCost = singleCost,
+                AltCost = altCost,
+            };
+        }
+
+        if (need.Side == AffixSide.Unknown)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Side", singleCost, altCost, isReroll);
+        }
+
+        var pool = AffixWeights.GetPool(PoolTags.Tags, need.Side, ItemLevel);
+        var estimate = ExpectedCostCalculator.Estimate(pool, need.Patterns, need.TargetValue, singleCost);
+
+        // 池里有同名词缀、但没有一条数值够得着目标（当前物品等级下 tier 上限不够）也要说清楚，
+        // 这和「目标文本跟权重表对不上」是两种不同的情况。
+        var patternHits = estimate.TargetCount > 0
+                              ? estimate.TargetCount
+                              : ExpectedCostCalculator.CountPatternHits(pool, need.Patterns);
+
+        if (patternHits == 0)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Target", singleCost, altCost, isReroll, pool.Count);
+        }
+
+        return new NeedChance
+        {
+            Result = estimate,
+            PatternHits = patternHits,
+            PrimaryCost = singleCost,
+            AltCost = altCost,
+        };
+    }
+
+    /// <summary>一次操作的成本（神聖石计价）：通货 + 预兆（面板里展示预兆建议时才计入）。</summary>
+    private double SingleOperationCost(CurrencyPriceLine? currency, CurrencyPriceLine? omen) =>
+        DivineOf(currency) + (ShowOmens ? DivineOf(omen) : 0);
 
     /// <summary>
     /// 一条需求：目标 + 走法（新增 / 重掷 / 换掉词缀），带各自的通货与预兆。
@@ -505,6 +682,12 @@
             {
                 <TextBase Class="text-stone-500 text-xs pl-2">@CurrencyText(need.Primary, need.Label)</TextBase>
             }
+        }
+
+        @* 概率层：平均要几次、花多少才出目标（社区估算，非官方） *@
+        @foreach (var line in ChanceLines(need))
+        {
+            <TextBase Class="@($"text-xs {line.Class}")">@line.Text</TextBase>
         }
     </div>;
 
@@ -597,6 +780,129 @@
     }
 
     private sealed record CostLine(string Text, string Class);
+
+    private sealed record ChanceLine(string Text, string Class);
+
+    /// <summary>
+    /// 一条需求的概率展示行：命中/池、P、平均次数、期望成本。
+    /// 算不出来时只给一行「为什么算不出来」，绝不编数字。
+    /// </summary>
+    private List<ChanceLine> ChanceLines(Need need)
+    {
+        if (need.Chance is not { } chance)
+        {
+            return [];
+        }
+
+        // 整份权重数据都缺失时，面板顶部已经用醒目的方式说过了，不必每条需求再重复一遍。
+        if (chance.UnavailableKey == "Craft_Prob_No_Weights")
+        {
+            return [];
+        }
+
+        var culture = CultureInfo.CurrentCulture;
+        var lines = new List<ChanceLine>
+        {
+            new(Resources["Craft_Prob_Title"].Value, "text-stone-400 text-xs pl-2"),
+        };
+
+        if (chance.UnavailableKey is { } key)
+        {
+            var reason = string.Format(culture, Resources[key].Value, chance.UnavailableArgs);
+            lines.Add(new ChanceLine(reason, "text-stone-500 text-xs pl-4"));
+            return lines;
+        }
+
+        if (chance.Result is not { } estimate)
+        {
+            lines.Add(new ChanceLine(Resources["Craft_Prob_Value_Unknown"].Value, "text-stone-500 text-xs pl-4"));
+            return lines;
+        }
+
+        // 命中 / 池。重掷是「区间里的取值个数」，措辞不一样。
+        if (chance.IsReroll && chance.TierMin is { } tierMin && chance.TierMax is { } tierMax)
+        {
+            lines.Add(new ChanceLine(
+                string.Format(
+                    culture,
+                    Resources["Craft_Prob_Reroll_Range"].Value,
+                    FormatValue(need.TargetValue),
+                    FormatValue(tierMin),
+                    FormatValue(tierMax)),
+                "text-stone-500 text-xs pl-4"));
+            lines.Add(new ChanceLine(
+                string.Format(culture, Resources["Craft_Prob_Reroll_Pool"].Value, estimate.TargetCount, estimate.PoolCount),
+                "text-stone-500 text-xs pl-4"));
+        }
+        else
+        {
+            lines.Add(new ChanceLine(
+                string.Format(culture, Resources["Craft_Prob_Pool"].Value, estimate.TargetCount, estimate.PoolCount),
+                "text-stone-500 text-xs pl-4"));
+        }
+
+        if (!estimate.IsUsable)
+        {
+            // 池里没有一条够得着目标：说清楚，不给期望值。
+            if (!chance.IsReroll && chance.PatternHits > 0)
+            {
+                lines.Add(new ChanceLine(
+                    string.Format(
+                        culture,
+                        Resources["Craft_Prob_Target_Too_High"].Value,
+                        chance.PatternHits,
+                        ItemLevel,
+                        FormatValue(need.TargetValue)),
+                    "text-stone-500 text-xs pl-4"));
+            }
+            else
+            {
+                lines.Add(new ChanceLine(Resources["Craft_Prob_Value_Unknown"].Value, "text-stone-500 text-xs pl-4"));
+            }
+
+            return lines;
+        }
+
+        lines.Add(new ChanceLine(
+            string.Format(
+                culture,
+                Resources["Craft_Prob_Rate"].Value,
+                estimate.ProbabilityPercent.ToString("0.00", CultureInfo.InvariantCulture),
+                estimate.ExpectedTries.ToString("0.0", CultureInfo.InvariantCulture)),
+            "text-stone-500 text-xs pl-4"));
+
+        if (Prices.Data is not null)
+        {
+            lines.Add(new ChanceLine(SumText("Craft_Prob_Expected_Cost", estimate.ExpectedCost), "text-stone-500 text-xs pl-4"));
+
+            // 「该侧已满 → 混沌石替换」是另一种走法，单次成本不一样，单独给一条。
+            if (need.Kind == NeedKind.Add && chance.AltCost > 0)
+            {
+                lines.Add(new ChanceLine(
+                    SumText("Craft_Prob_Expected_Cost_Chaos", estimate.ExpectedTries * chance.AltCost),
+                    "text-stone-500 text-xs pl-4"));
+            }
+        }
+
+        if (PoolTags.Degraded && !chance.IsReroll)
+        {
+            lines.Add(new ChanceLine(Resources["Craft_Prob_Note_Degraded_Short"].Value, "text-amber-400 text-xs pl-4"));
+        }
+
+        return lines;
+    }
+
+    /// <summary>一组需求的期望成本合计（神聖石）。算不出来的条目按 0 计，另用 <see cref="AnyChance"/> 说明。</summary>
+    private double ExpectedTotal(List<Need> needs) =>
+        needs.Sum(x => x.Chance?.Result is { IsUsable: true } estimate ? estimate.ExpectedCost : 0);
+
+    /// <summary>这组需求里有没有能算出期望值的条目。</summary>
+    private bool HasAnyChance(List<Need> needs) =>
+        needs.Any(x => x.Chance?.Result is { IsUsable: true });
+
+    /// <summary>有替换/新增走法时才有「混沌石会删词缀」这条提醒。</summary>
+    private bool ShowChaosCaveat =>
+        RequiredNeeds.Concat(OptionalNeeds).Any(x => x.Kind != NeedKind.Reroll);
 
     /// <summary>
     /// 一组需求的小计：通货与预兆分开列，再给合计——预兆的价格量级差得远，得让人看清钱花在哪。
@@ -739,6 +1045,12 @@
         /// <summary>词缀显示名（来自 BuildTargetResult 的检查项）。</summary>
         public string Label { get; init; } = "";
 
+        /// <summary>
+        /// 目标词缀的匹配模式（模板关键词 + 词缀类型表的英文关键词 / 显示名）。
+        /// 权重表里是英文文本，中文关键词匹配不上，所以要两边的模式都带上。
+        /// </summary>
+        public List<string> Patterns { get; init; } = [];
+
         /// <summary>走法：新增 / 重掷数值 / 换掉词缀。</summary>
         public NeedKind Kind { get; init; }
 
@@ -780,6 +1092,50 @@
 
         /// <summary>true = 数据缺失 / 数值区间解析不出来，重掷建议上要标注「无法判定等阶上限」。</summary>
         public bool CapUnknown { get; init; }
+
+        /// <summary>概率层：平均几次、花多少才出目标（在 Evaluate 里回填）。</summary>
+        public NeedChance? Chance { get; set; }
+    }
+
+    /// <summary>
+    /// 一条需求的概率估算：要么有结果，要么带着「为什么算不出来」的资源键。
+    /// </summary>
+    private sealed class NeedChance
+    {
+        /// <summary>估算结果（改造走词缀池，重掷走当前 tier 的均匀分布）。</summary>
+        public ExpectedCostEstimate? Result { get; init; }
+
+        /// <summary>算不出来时的说明资源键（界面照实展示，不编数字）。</summary>
+        public string? UnavailableKey { get; init; }
+
+        /// <summary>算不出来时的说明参数。</summary>
+        public object[] UnavailableArgs { get; init; } = [];
+
+        /// <summary>true = 神圣石重掷数值（不是改造池）。</summary>
+        public bool IsReroll { get; init; }
+
+        /// <summary>当前 tier 的数值区间（重掷用）。</summary>
+        public double? TierMin { get; init; }
+
+        public double? TierMax { get; init; }
+
+        /// <summary>池里有几条词缀的文本命中目标（但可能数值够不着）。</summary>
+        public int PatternHits { get; init; }
+
+        /// <summary>单次操作成本：主走法（新增/替换用混沌石，重掷用神圣石）。</summary>
+        public double PrimaryCost { get; init; }
+
+        /// <summary>单次操作成本：新增时该侧已满改走混沌石的走法（0 = 没有）。</summary>
+        public double AltCost { get; init; }
+
+        public static NeedChance Unavailable(string key, double primaryCost, double altCost, bool isReroll, params object[] args) => new()
+        {
+            UnavailableKey = key,
+            UnavailableArgs = args,
+            PrimaryCost = primaryCost,
+            AltCost = altCost,
+            IsReroll = isReroll,
+        };
     }
 
     public void Dispose()

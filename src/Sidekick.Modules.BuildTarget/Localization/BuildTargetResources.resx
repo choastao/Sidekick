@@ -555,6 +555,90 @@
   <data name="Craft_Note_Annul" xml:space="preserve">
     <value>To free a slot first: Orb of Annulment removes 1 random affix (with a Sinistral/Dextral Annulment omen, from one chosen side). Not counted in this estimate.</value>
   </data>
+  <data name="Craft_Prob_Title" xml:space="preserve">
+    <value>Expected cost (community estimate)</value>
+  </data>
+  <data name="Craft_Prob_Pool" xml:space="preserve">
+    <value>Matched {0} of {1} affixes in the pool</value>
+  </data>
+  <data name="Craft_Prob_Rate" xml:space="preserve">
+    <value>P = {0}% · on average 1 in {1} attempts</value>
+  </data>
+  <data name="Craft_Prob_Expected_Cost" xml:space="preserve">
+    <value>Expected cost ≈ {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Prob_Expected_Cost_Chaos" xml:space="preserve">
+    <value>If that side is already full (Chaos Orb path): expected cost ≈ {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Prob_Reroll_Range" xml:space="preserve">
+    <value>Reroll to ≥ {0}: this tier spans {1}-{2}, evenly distributed</value>
+  </data>
+  <data name="Craft_Prob_Reroll_Pool" xml:space="preserve">
+    <value>Matched {0} of {1} possible values in that tier</value>
+  </data>
+  <data name="Craft_Prob_Total_Title" xml:space="preserve">
+    <value>Expected cost (average attempts × cost per attempt)</value>
+  </data>
+  <data name="Craft_Prob_Total" xml:space="preserve">
+    <value>Hard requirements, expected cost: {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Prob_Total_Optional" xml:space="preserve">
+    <value>Bonus targets, expected cost: {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Prob_Total_None" xml:space="preserve">
+    <value>No expected cost to show — the affix weight data or the price data is missing.</value>
+  </data>
+  <data name="Craft_Prob_Source_Data" xml:space="preserve">
+    <value>Weight data source: {0}</value>
+  </data>
+  <data name="Craft_Prob_Note_Source" xml:space="preserve">
+    <value>Affix weights come from Path of Building's recombinator experiments plus trade-site statistics (a community reverse-engineering estimate). The game does not publish success rates, so this is a reference value, not a promise.</value>
+  </data>
+  <data name="Craft_Prob_Note_Mean" xml:space="preserve">
+    <value>Expected attempts is an average: on average 1 in N attempts hits the target — it does not mean "N attempts is guaranteed".</value>
+  </data>
+  <data name="Craft_Prob_Note_Chaos" xml:space="preserve">
+    <value>Replacement (Chaos Orb): every use removes a random existing affix, so repeated rolling can wipe other good affixes. The expected attempts below only describe how hard it is to hit the target — not how many good affixes survive.</value>
+  </data>
+  <data name="Craft_Prob_Note_Degraded" xml:space="preserve">
+    <value>⚠ Defence values unavailable — the pool is estimated from the slot only (tags: {0}), so the result is optimistic.</value>
+  </data>
+  <data name="Craft_Prob_Note_Degraded_Short" xml:space="preserve">
+    <value>⚠ Pool estimated from the slot only — optimistic.</value>
+  </data>
+  <data name="Craft_Prob_Tags" xml:space="preserve">
+    <value>Pool tags used: {0}</value>
+  </data>
+  <data name="Craft_Prob_No_Weights" xml:space="preserve">
+    <value>No affix weight data found (affix-weights.json) — success chance and expected cost are hidden.</value>
+  </data>
+  <data name="Craft_Prob_Weights_Hint" xml:space="preserve">
+    <value>Looked for affix-weights.json in:</value>
+  </data>
+  <data name="Craft_Prob_Weights_Load_Failed" xml:space="preserve">
+    <value>Could not read the affix weight file: {0}</value>
+  </data>
+  <data name="Craft_Prob_No_Tags" xml:space="preserve">
+    <value>This slot has no matching weight keys, so the pool (and the chance) cannot be built.</value>
+  </data>
+  <data name="Craft_Prob_No_Item_Level" xml:space="preserve">
+    <value>Item level unavailable — the pool cannot be built (affixes are gated by item level).</value>
+  </data>
+  <data name="Craft_Prob_No_Side" xml:space="preserve">
+    <value>Affix type (prefix/suffix) unknown — the pool cannot be built.</value>
+  </data>
+  <data name="Craft_Prob_No_Tier" xml:space="preserve">
+    <value>Cannot tell the current tier's value range, so the reroll chance is unknown.</value>
+  </data>
+  <data name="Craft_Prob_No_Target" xml:space="preserve">
+    <value>No affix in the pool ({0} affixes) matches this target — the chance cannot be estimated.</value>
+  </data>
+  <data name="Craft_Prob_Target_Too_High" xml:space="preserve">
+    <value>{0} affixes in the pool share this name, but none of them can roll {2} or higher at item level {1} — the chance cannot be estimated.</value>
+  </data>
+  <data name="Craft_Prob_Value_Unknown" xml:space="preserve">
+    <value>No affix in the pool can satisfy this target, so there is nothing to average.</value>
+  </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>Maximum life</value>
   </data>

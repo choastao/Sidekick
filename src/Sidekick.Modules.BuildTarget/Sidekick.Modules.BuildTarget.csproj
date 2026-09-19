@@ -17,6 +17,11 @@
           Condition="Exists('currency-prices.json')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- 词缀权重数据随程序发布：复制到主程序根目录，供 AffixWeightService 读取 -->
+    <None Include="affix-weights.json"
+          Condition="Exists('affix-weights.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- 词缀类型数据（前缀/后缀）随程序发布：复制到主程序根目录，供 AffixTypeService 读取 -->
     <None Include="affix-types.json"
           Condition="Exists('affix-types.json')">

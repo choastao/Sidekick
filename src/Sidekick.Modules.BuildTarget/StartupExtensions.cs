@@ -18,6 +18,7 @@ public static class StartupExtensions
         services.AddSingleton<PobBuildImporter>();
         services.AddSingleton<CurrencyPriceService>();
         services.AddSingleton<AffixTypeService>();
+        services.AddSingleton<AffixWeightService>();
 
         return services;
     }
