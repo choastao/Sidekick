@@ -30,12 +30,13 @@ public static class TargetNormalizer
                           || template.EquippedSource.Values.Contains(BaselineSources.Build)
                           || !string.IsNullOrWhiteSpace(template.ImportedFrom);
 
-        template.ImportedTargetsOptional = true;
-
         if (!wasImported)
         {
+            // 手建模板不打「已迁移」的戳：将来若要再跑一轮迁移，还能覆盖到它。
             return false;
         }
+
+        template.ImportedTargetsOptional = true;
 
         foreach (var targets in template.Slots.Values)
         {

@@ -50,9 +50,26 @@ public class VerdictSemanticsTests
         var (verdict, headline) = VerdictDecider.Decide(evaluation, Zh);
 
         // 关键：不能判「不建议」——这件装备只是不涉及这几条，不是不合格。
-        Assert.NotEqual(Verdict.Bad, verdict);
+        // （下面那条相等断言更严，足以覆盖；这里只留一条说明意图的注释。）
         Assert.Equal(Verdict.Warn, verdict);
         Assert.Equal(Zh["Result_None_Provided"].Value, headline);
+    }
+
+    [Fact]
+    public void A_required_minimum_the_item_does_not_provide_at_all_is_a_failure()
+    {
+        // 用户明确勾了「这个部位必须有 ≥75 火抗」，而装备连火抗都没有 → 未达标，该红。
+        // 这是有意为之：Required 只可能来自用户显式勾选（模型默认 false）。
+        var evaluation = new SlotEvaluation
+        {
+            HasEquipped = true,
+            Checks = [Check("火焰抗性", 75, newValue: null, current: 30, required: true)],
+        };
+
+        var (verdict, headline) = VerdictDecider.Decide(evaluation, Zh);
+
+        Assert.Equal(Verdict.Bad, verdict);
+        Assert.Contains("火焰抗性", headline, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -84,7 +101,8 @@ public class VerdictSemanticsTests
 
         var (verdict, headline) = VerdictDecider.Decide(evaluation, Zh);
 
-        Assert.Equal(Verdict.Good, verdict);
+        // Warn（可留观）而不是 Good：Good 的标签是「建议换上」，和「不用换」矛盾。
+        Assert.Equal(Verdict.Warn, verdict);
         Assert.Equal(Zh["Result_Is_Current"].Value, headline);
     }
 
@@ -148,7 +166,7 @@ public class VerdictSemanticsTests
     }
 
     [Fact]
-    public void New_strings_exist_in_both_languages_with_no_placeholders()
+    public void New_strings_exist_in_both_languages()
     {
         var english = new TestLocalizer(System.Globalization.CultureInfo.InvariantCulture);
 
@@ -157,5 +175,18 @@ public class VerdictSemanticsTests
             Assert.False(Zh[key].ResourceNotFound, $"{key} 缺中文");
             Assert.False(english[key].ResourceNotFound, $"{key} 缺英文");
         }
+    }
+
+    [Fact]
+    public void The_current_item_verdict_is_not_green_equip_it()
+    {
+        // Good 的标签是「建议换上」，而这里的结论是「不用换」——必须用中性档（CC 审计指出）。
+        var evaluation = new SlotEvaluation
+        {
+            IsCurrentItem = true,
+            Checks = [Check("最大生命", 70, newValue: 60, current: 60)],
+        };
+
+        Assert.Equal(Verdict.Warn, VerdictDecider.Decide(evaluation, Zh).Verdict);
     }
 }

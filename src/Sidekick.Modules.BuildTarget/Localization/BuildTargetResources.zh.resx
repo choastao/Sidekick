@@ -412,7 +412,7 @@
     <value>这件装备不提供该部位的任何目标属性，没有能和当前装备比较的项目。</value>
   </data>
   <data name="Stat_Not_Provided_Note" xml:space="preserve">
-    <value>「—」= 这件装备不提供该条属性，「没有这条」不等于「不达标」。</value>
+    <value>「—」= 这件装备不提供该条属性；如果这条是你自己勾的硬性要求，则算未达标。</value>
   </data>
   <data name="Verdict_Good" xml:space="preserve">
     <value>建议换上</value>

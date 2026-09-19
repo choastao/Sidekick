@@ -70,14 +70,17 @@
                                     }
                                 </td>
                                 <td class="py-1 text-right text-stone-400">@Format(check.Current)</td>
-                                <td class="py-1 text-right @NewValueClass(check)">@FormatNew(check)</td>
+                                <td class="py-1 text-right @StatDisplay.Class(check)">@StatDisplay.Value(check)</td>
                                 <td class="py-1 text-right @DeltaClass(check.Delta)">@FormatDelta(check.Delta)</td>
                                 <td class="py-1 text-right text-stone-400">@Format(check.MinValue)</td>
                             </tr>
                         }
                         </tbody>
                     </table>
-                    <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Stat_Not_Provided_Note"]</TextBase>
+                    @if (slot.Checks.Any(x => !x.Provided))
+                    {
+                        <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Stat_Not_Provided_Note"]</TextBase>
+                    }
                 }
                 else
                 {
@@ -215,28 +218,6 @@
     };
 
     private static string Format(double? value) => value.HasValue ? value.Value.ToString("0.##") : "-";
-
-    /// <summary>
-    /// 「换装后」这一列。这件装备不提供该条属性时显示「—」而不是「-」，
-    /// 颜色也不标红——「没有这条」不等于「不达标」。
-    /// </summary>
-    private static string FormatNew(ModCheck check) => check.Provided ? Format(check.New) : "—";
-
-    private static string NewValueClass(ModCheck check)
-    {
-        if (!check.Provided)
-        {
-            return "text-stone-500";
-        }
-
-        if (check.Pass)
-        {
-            return "";
-        }
-
-        // 只有「用户自己设的硬性目标」没达到才标红；参考值没到用琥珀色提示。
-        return check.Required ? "text-red-400" : "text-amber-400";
-    }
 
     private static string FormatDelta(double? value)
     {

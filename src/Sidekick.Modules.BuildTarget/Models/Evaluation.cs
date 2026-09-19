@@ -24,7 +24,13 @@ public class ModCheck
     /// <summary>目标下限。</summary>
     public double MinValue { get; set; }
 
-    public bool Required { get; set; } = true;
+    /// <summary>
+    /// 是否是硬性要求。**默认 false**：界面上「添加 / 预设 / 词缀搜索器」这些入口都不写这个字段，
+    /// 默认 true 会让用户随手加的一条属性变成硬性门槛 —— 装备没有这条就直接判「不建议」
+    /// （CC 审计发现：`MinValue=0` + `Required=true` + 装备没这条 = 误判）。
+    /// 硬性必须是用户显式勾选的。
+    /// </summary>
+    public bool Required { get; set; }
 
     /// <summary>新装备上该词缀的取值；没找到为 null。</summary>
     public double? New { get; set; }

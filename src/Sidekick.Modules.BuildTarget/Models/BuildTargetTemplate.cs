@@ -18,7 +18,7 @@ public class ModTarget
     public double MinValue { get; set; }
 
     /// <summary>true=硬性门槛（不达标即红）；false=加分项（只显示不拦）。</summary>
-    public bool Required { get; set; } = true;
+    public bool Required { get; set; }
 }
 
 /// <summary>

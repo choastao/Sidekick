@@ -412,7 +412,7 @@
     <value>This item provides none of this slot's target stats, so there is nothing to compare with your current item.</value>
   </data>
   <data name="Stat_Not_Provided_Note" xml:space="preserve">
-    <value>「—」means this item does not provide that stat (which is not the same as failing the target).</value>
+    <value>An em dash (—) means the item does not provide that stat; if you marked it as a required minimum, that counts as failed.</value>
   </data>
   <data name="Verdict_Good" xml:space="preserve">
     <value>Equip it</value>

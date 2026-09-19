@@ -83,8 +83,9 @@ public class BuildTargetEvaluator
             HasEquipped = currentItem != null || imported != null,
             EquippedName = currentItem?.Name ?? currentItem?.Type ?? GetImportedName(template, slotKey),
             BaselineSource = currentItem != null || imported != null ? BaselineSummaryCalculator.Source(template, slotKey) : null,
-            // 用户把自己身上那件复制了一遍：文本一模一样就认定是同一件，不再给换装建议。
-            IsCurrentItem = hasSnapshot && TextKey(newItem.Text.Text) == TextKey(snapshotText!),
+            // 用户把自己身上那件复制了一遍：两边过同样的清洗后一致，就认定是同一件。
+            // 不能直接比字符串——快照存的是原始粘贴文本，而这里的文本已被 OriginalText 清洗过。
+            IsCurrentItem = hasSnapshot && ItemTextComparer.AreSame(newItem.Text.Text, snapshotText),
         };
 
         foreach (var target in targets)
@@ -334,13 +335,6 @@ public class BuildTargetEvaluator
 
         return null;
     }
-
-    /// <summary>
-    /// 物品文本比对用的归一化键：统一换行、去掉空行和每行首尾空白。
-    /// 用来判断「复制进来的这件」是不是就是某部位已采集的当前装备。
-    /// </summary>
-    private static string TextKey(string text) =>
-        string.Join("\n", text.Replace("\r\n", "\n").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0));
 
     private string SlotLabel(string slotKey) => resources["Slot_" + slotKey];
 }

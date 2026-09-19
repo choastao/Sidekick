@@ -44,10 +44,11 @@ public static class VerdictDecider
                 string.Join("、", failed.Select(x => x.Label))));
         }
 
-        // ② 就是身上那件。
+        // ② 就是身上那件。用 Warn（可留观）而不是 Good：Good 的标签是「建议换上」，
+        //    而这里的结论恰恰是「不用换」——配绿色自相矛盾（CC 审计指出）。
         if (evaluation.IsCurrentItem)
         {
-            return (Verdict.Good, resources["Result_Is_Current"]);
+            return (Verdict.Warn, resources["Result_Is_Current"]);
         }
 
         // ③ 相对增减。某条目标词缀在新装备上不存在 → New 为 null → Delta 也是 null，

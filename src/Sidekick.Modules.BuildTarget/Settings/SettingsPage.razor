@@ -543,6 +543,8 @@
             // 审计（2026-09-19）发现：测试测的是 importer 层，测不到这段逐字段拷贝。
             created.EquippedSource = result.Template.EquippedSource;
             created.ImportedFrom = result.Template.ImportedFrom;
+            // 同上面那行一样：漏拷这面旗子，新模板会被当成「手建模板」，将来再跑迁移就够不着它。
+            created.ImportedTargetsOptional = result.Template.ImportedTargetsOptional;
             Store.Save(created);
 
             active = created;

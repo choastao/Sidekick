@@ -100,8 +100,12 @@ public class BuildTargetStore
         Save(template);
     }
 
-    /// <summary>只在面板上改了值、还没点保存时的落盘。</summary>
-    public void Persist()
+    /// <summary>
+    /// 只在面板上改了值、还没点保存时的落盘。
+    /// <paramref name="notify"/> 为 false 时不触发 OnChanged —— 加载期的迁移落盘用它，
+    /// 免得以后有人在构造函数里订阅了 OnChanged 而被意外回调。
+    /// </summary>
+    public void Persist(bool notify = true)
     {
         lock (this)
         {
@@ -121,7 +125,28 @@ public class BuildTargetStore
             }
         }
 
-        OnChanged?.Invoke();
+        if (notify)
+        {
+            OnChanged?.Invoke();
+        }
+    }
+
+    /// <summary>
+    /// 迁移要回写文件，但「一机两号」时另一个实例可能同时在写同一个文件。
+    /// 只有磁盘内容还是我们刚读到的这一份时才允许回写；否则放弃落盘
+    /// （内存里的迁移照旧生效，下次真正保存时再落）。
+    /// </summary>
+    private bool FileStillMatches(string jsonWeRead)
+    {
+        try
+        {
+            return System.IO.File.Exists(FilePath) && System.IO.File.ReadAllText(FilePath) == jsonWeRead;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "[BuildTarget] Failed to verify {Path} before the migration write", FilePath);
+            return false;
+        }
     }
 
     private void Load()
@@ -148,9 +173,9 @@ public class BuildTargetStore
                 }
             }
 
-            if (migratedCount > 0)
+            if (migratedCount > 0 && FileStillMatches(json))
             {
-                Persist();
+                Persist(notify: false);
             }
 
             logger.LogInformation("[BuildTarget] Loaded {Count} template(s) from {Path} (migrated {Migrated})", file.Templates.Count, FilePath, migratedCount);
