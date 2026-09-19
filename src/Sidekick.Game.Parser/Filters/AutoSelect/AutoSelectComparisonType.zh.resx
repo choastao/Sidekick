@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="GreaterThan" xml:space="preserve">
+    <value>大于</value>
+  </data>
+  <data name="LesserThan" xml:space="preserve">
+    <value>小于</value>
+  </data>
+  <data name="GreaterThanOrEqual" xml:space="preserve">
+    <value>大于或等于</value>
+  </data>
+  <data name="LesserThanOrEqual" xml:space="preserve">
+    <value>小于或等于</value>
+  </data>
+  <data name="IsContainedIn" xml:space="preserve">
+    <value>包含于</value>
+  </data>
+  <data name="IsNotContainedIn" xml:space="preserve">
+    <value>不包含于</value>
+  </data>
+  <data name="Equals" xml:space="preserve">
+    <value>等于</value>
+  </data>
+  <data name="DoesNotEqual" xml:space="preserve">
+    <value>不等于</value>
+  </data>
+  <data name="MatchesRegex" xml:space="preserve">
+    <value>匹配正则</value>
+  </data>
+  <data name="DoesNotMatchRegex" xml:space="preserve">
+    <value>不匹配正则</value>
+  </data>
+  <data name="True" xml:space="preserve">
+    <value>为真</value>
+  </data>
+  <data name="False" xml:space="preserve">
+    <value>为假</value>
+  </data>
+</root>

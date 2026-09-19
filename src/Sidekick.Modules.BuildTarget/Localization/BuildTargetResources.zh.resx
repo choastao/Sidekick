@@ -1,0 +1,597 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Menu_Title" xml:space="preserve">
+    <value>目标BD</value>
+  </data>
+  <data name="Page_Title" xml:space="preserve">
+    <value>目标BD</value>
+  </data>
+  <data name="Page_Description" xml:space="preserve">
+    <value>先写好你的BD要什么样的装备，之后在游戏里复制的每一件装备都会拿它来对照判断。</value>
+  </data>
+  <data name="Template" xml:space="preserve">
+    <value>模板</value>
+  </data>
+  <data name="Template_Active" xml:space="preserve">
+    <value>当前使用的模板</value>
+  </data>
+  <data name="Template_Name" xml:space="preserve">
+    <value>模板名称</value>
+  </data>
+  <data name="Template_New" xml:space="preserve">
+    <value>新建模板</value>
+  </data>
+  <data name="Template_Duplicate" xml:space="preserve">
+    <value>复制一份</value>
+  </data>
+  <data name="Template_Delete" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Template_None" xml:space="preserve">
+    <value>还没有模板。</value>
+  </data>
+  <data name="Template_Placeholder" xml:space="preserve">
+    <value>新模板</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>已保存</value>
+  </data>
+  <data name="Character_Targets" xml:space="preserve">
+    <value>角色总目标</value>
+  </data>
+  <data name="Character_Help" xml:space="preserve">
+    <value>把你已采集的各个部位加总后比较。不接完整的伤害引擎时，只有加法类词缀（生命、能量护盾、抗性）能算得准。</value>
+  </data>
+  <data name="Estimate_Title" xml:space="preserve">
+    <value>装备合计（估算）</value>
+  </data>
+  <data name="Estimate_Note" xml:space="preserve">
+    <value>只含装备部分，不含天赋被动。基于已采集的 {0}/10 个部位。</value>
+  </data>
+  <data name="Estimate_Collected" xml:space="preserve">
+    <value>已采集部位</value>
+  </data>
+  <data name="Current_Sum" xml:space="preserve">
+    <value>当前</value>
+  </data>
+  <data name="New_Sum" xml:space="preserve">
+    <value>换装后</value>
+  </data>
+  <data name="Delta" xml:space="preserve">
+    <value>增减</value>
+  </data>
+  <data name="Slot_Targets" xml:space="preserve">
+    <value>各部位门槛</value>
+  </data>
+  <data name="Slot_Help" xml:space="preserve">
+    <value>设定每个部位至少要有多少，不达标的直接不推荐。</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Keywords" xml:space="preserve">
+    <value>匹配关键词（逗号分隔）</value>
+  </data>
+  <data name="Min_Value" xml:space="preserve">
+    <value>目标值</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>硬性</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>加分</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="Preset_Add" xml:space="preserve">
+    <value>快速添加</value>
+  </data>
+  <data name="Preset_Pick" xml:space="preserve">
+    <value>选择常用词缀</value>
+  </data>
+  <data name="Search_Stat" xml:space="preserve">
+    <value>搜索词缀（输入关键字过滤）</value>
+  </data>
+  <data name="Search_No_Match" xml:space="preserve">
+    <value>没有匹配的词缀。</value>
+  </data>
+  <data name="Search_Library" xml:space="preserve">
+    <value>词缀库已载入 {0} 条（跟随你的物品语言）。</value>
+  </data>
+  <data name="Search_More" xml:space="preserve">
+    <value>共 {0} 条匹配，已显示前 {1} 条。多打几个字可缩小范围。</value>
+  </data>
+  <data name="Equipped" xml:space="preserve">
+    <value>当前装备</value>
+  </data>
+  <data name="Equipped_Help" xml:space="preserve">
+    <value>在游戏里鼠标悬停你身上穿的每一件，逐个按一次物品热键。这些会作为之后对比新装备的基准。</value>
+  </data>
+  <data name="Equipped_Missing" xml:space="preserve">
+    <value>未采集</value>
+  </data>
+  <data name="Equipped_Unparsable" xml:space="preserve">
+    <value>已采集，但解析失败——请检查「物品语言」设置是否和游戏客户端一致。</value>
+  </data>
+  <data name="Equipped_Capture" xml:space="preserve">
+    <value>记为该部位当前装备</value>
+  </data>
+  <data name="Equipped_Captured" xml:space="preserve">
+    <value>已采集</value>
+  </data>
+  <data name="Equipped_Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="Import_Title" xml:space="preserve">
+    <value>导入 BD（Path of Building）</value>
+  </data>
+  <data name="Import_Help" xml:space="preserve">
+    <value>粘贴 PoB 分享码或 pobb.in 链接，整套模板由这份 BD 自动填好：各部位门槛取自它的装备、角色总目标取自它全身装备合计，并且它的装备会作为之后对比新装备的基准。</value>
+  </data>
+  <data name="Import_Label" xml:space="preserve">
+    <value>BD 分享码 或 pobb.in 链接</value>
+  </data>
+  <data name="Import_Placeholder" xml:space="preserve">
+    <value>https://pobb.in/xxxx  或  eNrtPWtz27ayn6tfwfHMudMz...</value>
+  </data>
+  <data name="Import_Button" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="Import_Working" xml:space="preserve">
+    <value>导入中…</value>
+  </data>
+  <data name="Import_Source_Hint" xml:space="preserve">
+    <value>在 PoB 里：导入/导出 → 生成分享码。也可以从 poe.ninja 任意 BD 页面复制「IMPORT CODE FOR PATH OF BUILDING」——同一种格式，直接可用。</value>
+  </data>
+  <data name="Import_From_Ninja" xml:space="preserve">
+    <value>提示：poe.ninja 的 BD 可直接导入——它的分享码带完整装备词缀，所以各部位门槛算出来是准的。</value>
+  </data>
+  <data name="Import_Invalid_Code" xml:space="preserve">
+    <value>分享码解析失败，请确认复制完整、没有缺行。</value>
+  </data>
+  <data name="Import_Failed" xml:space="preserve">
+    <value>导入失败：{0}</value>
+  </data>
+  <data name="Import_No_Items" xml:space="preserve">
+    <value>这份 BD 在本工具跟踪的部位里没有可用的装备。</value>
+  </data>
+  <data name="Import_Note_Skipped_Slot" xml:space="preserve">
+    <value>已跳过本工具不跟踪的部位：{0}</value>
+  </data>
+  <data name="Import_Note_No_Stats" xml:space="preserve">
+    <value>已跳过 {0}（{1}）：没有可识别的词缀</value>
+  </data>
+  <data name="Import_Note_Slot_Fallback" xml:space="preserve">
+    <value>{0}：没有识别到已知词缀（一般是独特装），已放入推荐词缀、数值留空待你填</value>
+  </data>
+  <data name="Import_Note_Summary" xml:space="preserve">
+    <value>已导入 {0} 个部位、{1} 条角色目标。角色合计只含装备、不含天赋被动。</value>
+  </data>
+  <data name="Tab_Title" xml:space="preserve">
+    <value>目标对比</value>
+  </data>
+  <data name="Result_No_Template" xml:space="preserve">
+    <value>还没有目标模板，请到「设置 - 目标BD」里建一个。</value>
+  </data>
+  <data name="Result_Unknown_Slot" xml:space="preserve">
+    <value>认不出这件装备是哪个部位的。</value>
+  </data>
+  <data name="Result_No_Slot_Target" xml:space="preserve">
+    <value>这个部位还没有设门槛。</value>
+  </data>
+  <data name="Result_Failed" xml:space="preserve">
+    <value>硬性门槛未达标：{0}</value>
+  </data>
+  <data name="Result_Better" xml:space="preserve">
+    <value>比你现在穿的更好：{0} 项提升。</value>
+  </data>
+  <data name="Result_Mixed" xml:space="preserve">
+    <value>互有来回：{0} 项提升、{1} 项下降。</value>
+  </data>
+  <data name="Result_Worse" xml:space="preserve">
+    <value>比你现在穿的差：{0} 项下降。</value>
+  </data>
+  <data name="Result_Even" xml:space="preserve">
+    <value>和你现在穿的差不多。</value>
+  </data>
+  <data name="Result_Pass_No_Baseline" xml:space="preserve">
+    <value>硬性门槛全过（还没采集当前装备，无法对比提升）。</value>
+  </data>
+  <data name="Result_Pass_No_Comparable" xml:space="preserve">
+    <value>硬性门槛全过。</value>
+  </data>
+  <data name="Verdict_Good" xml:space="preserve">
+    <value>建议换上</value>
+  </data>
+  <data name="Verdict_Warn" xml:space="preserve">
+    <value>可留观</value>
+  </data>
+  <data name="Verdict_Bad" xml:space="preserve">
+    <value>不建议</value>
+  </data>
+  <data name="Verdict_Unknown" xml:space="preserve">
+    <value>信息不足</value>
+  </data>
+  <data name="Compare_Against" xml:space="preserve">
+    <value>对比对象：</value>
+  </data>
+  <data name="No_Baseline_Hint" xml:space="preserve">
+    <value>到「设置 - 目标BD」采集一下你现在穿的装备，才能判断提升多少。</value>
+  </data>
+  <data name="Slot_weapon" xml:space="preserve">
+    <value>武器</value>
+  </data>
+  <data name="Slot_offhand" xml:space="preserve">
+    <value>副手</value>
+  </data>
+  <data name="Slot_helmet" xml:space="preserve">
+    <value>头盔</value>
+  </data>
+  <data name="Slot_bodyarmour" xml:space="preserve">
+    <value>胸甲</value>
+  </data>
+  <data name="Slot_gloves" xml:space="preserve">
+    <value>手套</value>
+  </data>
+  <data name="Slot_boots" xml:space="preserve">
+    <value>鞋子</value>
+  </data>
+  <data name="Slot_amulet" xml:space="preserve">
+    <value>项链</value>
+  </data>
+  <data name="Slot_ring1" xml:space="preserve">
+    <value>戒指1</value>
+  </data>
+  <data name="Slot_ring2" xml:space="preserve">
+    <value>戒指2</value>
+  </data>
+  <data name="Slot_belt" xml:space="preserve">
+    <value>腰带</value>
+  </data>
+  <data name="Craft_Title" xml:space="preserve">
+    <value>改造 / 洗装成本估算</value>
+  </data>
+  <data name="Craft_Source" xml:space="preserve">
+    <value>价格数据：{0}，抓取于 {1}</value>
+  </data>
+  <data name="Craft_Source_Stale" xml:space="preserve">
+    <value>价格可能已过期，建议更新分发包。</value>
+  </data>
+  <data name="Craft_No_Data" xml:space="preserve">
+    <value>未找到价格数据。</value>
+  </data>
+  <data name="Craft_No_Data_Hint" xml:space="preserve">
+    <value>已在这些位置查找 currency-prices.json：</value>
+  </data>
+  <data name="Craft_No_Data_Load_Failed" xml:space="preserve">
+    <value>价格文件读取失败：{0}</value>
+  </data>
+  <data name="Craft_Needs_Title" xml:space="preserve">
+    <value>改造需求</value>
+  </data>
+  <data name="Craft_Need_Add" xml:space="preserve">
+    <value>需要新增词缀：{0}</value>
+  </data>
+  <data name="Craft_Need_Reroll" xml:space="preserve">
+    <value>需要重掷数值：{0}</value>
+  </data>
+  <data name="Craft_Need_Replace" xml:space="preserve">
+    <value>需要换掉词缀 —— 重掷永远达不到目标：{0}</value>
+  </data>
+  <data name="Craft_Reroll_Cap_Unknown" xml:space="preserve">
+    <value>（无法判定等阶上限 —— 重掷也可能达不到）</value>
+  </data>
+  <data name="Craft_Replace_Detail" xml:space="preserve">
+    <value>{0}：当前 {1} 属于 {2}（{3}-{4}），目标 {5} 高于该等阶上限、需要 {6} 以上才够；神圣石不会改变等阶，重掷永远达不到。</value>
+  </data>
+  <data name="Craft_Replace_Higher_Tier" xml:space="preserve">
+    <value>更高等阶</value>
+  </data>
+  <data name="Craft_Replace_Random_Note" xml:space="preserve">
+    <value>⚠ 混沌石会移除 1 条随机词缀、再新增 1 条随机词缀 —— 新增的那条是随机的，不保证出你要的词缀。（本工具不预测成功率。）</value>
+  </data>
+  <data name="Craft_Replace_Omen_Note" xml:space="preserve">
+    <value>可选预兆：削切之兆（必定移除等阶最低的一条）或左旋／右旋抹除之兆（按前/后缀只删那一侧）。</value>
+  </data>
+  <data name="Craft_Up_To_Date" xml:space="preserve">
+    <value>当前装备已达标，无需改造。</value>
+  </data>
+  <data name="Craft_Cost_Title" xml:space="preserve">
+    <value>成本估算（下界）</value>
+  </data>
+  <data name="Craft_Cost" xml:space="preserve">
+    <value>约 {0} {1} ≈ {2} {3}</value>
+  </data>
+  <data name="Craft_Cost_Formula" xml:space="preserve">
+    <value>{0} × {1} + {2} × {3}</value>
+  </data>
+  <data name="Craft_Cost_Note" xml:space="preserve">
+    <value>按「每个词条操作 1 次」估算，未计入失败重试；实际成本通常更高。本工具不预测成功率。</value>
+  </data>
+  <data name="Craft_Table_Title" xml:space="preserve">
+    <value>通货价格速查</value>
+  </data>
+  <data name="Craft_Search_Placeholder" xml:space="preserve">
+    <value>搜索通货名称（中文或英文）</value>
+  </data>
+  <data name="Craft_Search_Scope" xml:space="preserve">
+    <value>共 {0} 条，覆盖通货 / 精髓 / 符文三类。</value>
+  </data>
+  <data name="Craft_Search_No_Match" xml:space="preserve">
+    <value>没有匹配的通货。</value>
+  </data>
+  <data name="Craft_Search_More" xml:space="preserve">
+    <value>共 {1} 条匹配，已显示前 {0} 条。</value>
+  </data>
+  <data name="Craft_Volume_Top" xml:space="preserve">
+    <value>成交量最高的 {0} 条</value>
+  </data>
+  <data name="Craft_Col_Name" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Craft_Col_Divine" xml:space="preserve">
+    <value>折合神聖石</value>
+  </data>
+  <data name="Craft_Col_Chaos" xml:space="preserve">
+    <value>折合混沌石</value>
+  </data>
+  <data name="Craft_Col_Change" xml:space="preserve">
+    <value>7 天涨跌</value>
+  </data>
+  <data name="Craft_No_Affix_Data" xml:space="preserve">
+    <value>未找到词缀类型数据 —— 不显示前/后缀与预兆建议。</value>
+  </data>
+  <data name="Craft_No_Affix_Data_Load_Failed" xml:space="preserve">
+    <value>词缀类型文件读取失败：{0}</value>
+  </data>
+  <data name="Craft_No_Affix_Data_Hint" xml:space="preserve">
+    <value>已在这些位置查找 affix-types.json：</value>
+  </data>
+  <data name="Craft_Hard_Title" xml:space="preserve">
+    <value>硬门槛缺口（不满足就不能用）</value>
+  </data>
+  <data name="Craft_Hard_None" xml:space="preserve">
+    <value>硬门槛已全部达标。</value>
+  </data>
+  <data name="Craft_Bonus_Title" xml:space="preserve">
+    <value>加分目标（可选提升）</value>
+  </data>
+  <data name="Craft_Bonus_None" xml:space="preserve">
+    <value>没有设置加分项。</value>
+  </data>
+  <data name="Craft_Side_Prefix" xml:space="preserve">
+    <value>前缀</value>
+  </data>
+  <data name="Craft_Side_Suffix" xml:space="preserve">
+    <value>后缀</value>
+  </data>
+  <data name="Craft_Side_Unknown" xml:space="preserve">
+    <value>（类型未知）</value>
+  </data>
+  <data name="Craft_Type_Format" xml:space="preserve">
+    <value>（{0}）</value>
+  </data>
+  <data name="Craft_Tier_Format" xml:space="preserve">
+    <value>T{0}</value>
+  </data>
+  <data name="Craft_Type_Unknown_No_Omen" xml:space="preserve">
+    <value>词缀类型未知 —— 这一条不给预兆建议。</value>
+  </data>
+  <data name="Craft_Op_Add_Space" xml:space="preserve">
+    <value>若该侧还有空位 —— 新增 1 条词缀：{0}</value>
+  </data>
+  <data name="Craft_Op_Replace_Full" xml:space="preserve">
+    <value>若该侧已满 —— 替换成：{0}</value>
+  </data>
+  <data name="Craft_Op_Replace_Chaos" xml:space="preserve">
+    <value>用混沌石 —— 移除 1 条随机词缀并新增 1 条随机词缀：{0}</value>
+  </data>
+  <data name="Craft_Op_Reroll" xml:space="preserve">
+    <value>重掷数值（不改词缀种类）：{0}</value>
+  </data>
+  <data name="Craft_Line_Currency" xml:space="preserve">
+    <value>通货：{0} ×1 ≈ {1} {2}（≈ {3} {4}）</value>
+  </data>
+  <data name="Craft_Line_Omen" xml:space="preserve">
+    <value>可选预兆：{0} ≈ {1} {2}（≈ {3} {4}）</value>
+  </data>
+  <data name="Craft_Line_Omen_None" xml:space="preserve">
+    <value>此操作没有可搭配的预兆。</value>
+  </data>
+  <data name="Craft_Missing_Price" xml:space="preserve">
+    <value>{0}：价格表里没有这一项，按 0 计。</value>
+  </data>
+  <data name="Craft_Must_Title" xml:space="preserve">
+    <value>必须花（硬门槛缺口）</value>
+  </data>
+  <data name="Craft_Optional_Title" xml:space="preserve">
+    <value>若加分项也全部达标（参考）</value>
+  </data>
+  <data name="Craft_Sum_Currency" xml:space="preserve">
+    <value>通货：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Sum_Omen" xml:space="preserve">
+    <value>预兆（选配）：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Sum_Total" xml:space="preserve">
+    <value>合计：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Sum_IfFull" xml:space="preserve">
+    <value>若该侧已满、改走「替换」：{0} {1}（≈ {2} {3}）</value>
+  </data>
+  <data name="Craft_Note_Space" xml:space="preserve">
+    <value>估算对象是你当前穿着的这件。本工具判断不出它已经用了几条前缀/后缀，所以两种走法都列出，请对照游戏里的装备自己选。</value>
+  </data>
+  <data name="Craft_Note_Omen_Activate" xml:space="preserve">
+    <value>⚠ 预兆必须先在背包内右键激活才生效。</value>
+  </data>
+  <data name="Craft_Note_BodyArmour" xml:space="preserve">
+    <value>⚠ 身体护甲当前不支持预兆（0.5 版本），该部位请忽略预兆建议。</value>
+  </data>
+  <data name="Craft_Note_Annul" xml:space="preserve">
+    <value>想先腾出位置：無效石随机移除 1 条词缀（配左旋/右旋廢止之兆可指定一侧）。本估算未计入。</value>
+  </data>
+  <data name="Preset_Life" xml:space="preserve">
+    <value>最大生命</value>
+  </data>
+  <data name="Preset_EnergyShield" xml:space="preserve">
+    <value>能量护盾</value>
+  </data>
+  <data name="Preset_Mana" xml:space="preserve">
+    <value>最大魔力</value>
+  </data>
+  <data name="Preset_FireRes" xml:space="preserve">
+    <value>火焰抗性</value>
+  </data>
+  <data name="Preset_ColdRes" xml:space="preserve">
+    <value>冰霜抗性</value>
+  </data>
+  <data name="Preset_LightningRes" xml:space="preserve">
+    <value>闪电抗性</value>
+  </data>
+  <data name="Preset_ChaosRes" xml:space="preserve">
+    <value>混沌抗性</value>
+  </data>
+  <data name="Preset_AllEleRes" xml:space="preserve">
+    <value>全部元素抗性</value>
+  </data>
+  <data name="Preset_MoveSpeed" xml:space="preserve">
+    <value>移动速度</value>
+  </data>
+  <data name="Preset_AttackSpeed" xml:space="preserve">
+    <value>攻击速度</value>
+  </data>
+  <data name="Preset_CastSpeed" xml:space="preserve">
+    <value>施法速度</value>
+  </data>
+  <data name="Preset_Rarity" xml:space="preserve">
+    <value>物品稀有度</value>
+  </data>
+  <data name="Preset_Spirit" xml:space="preserve">
+    <value>精神</value>
+  </data>
+</root>

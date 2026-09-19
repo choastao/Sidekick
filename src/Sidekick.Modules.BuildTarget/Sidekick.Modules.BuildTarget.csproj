@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sidekick.Common.Ui\Sidekick.Common.Ui.csproj" />
+    <ProjectReference Include="..\Sidekick.Game.Parser\Sidekick.Game.Parser.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 通货价格数据随程序发布：复制到主程序根目录，供 CurrencyPriceService 读取 -->
+    <None Include="currency-prices.json"
+          Condition="Exists('currency-prices.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- 词缀类型数据（前缀/后缀）随程序发布：复制到主程序根目录，供 AffixTypeService 读取 -->
+    <None Include="affix-types.json"
+          Condition="Exists('affix-types.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

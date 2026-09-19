@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -15,7 +15,7 @@ public partial class SplashWindow : Window
 
     public SplashWindow()
     {
-        Title = "Sidekick";
+        Title = "TAO";
         Width = WIDTH;
         Height = HEIGHT;
         Background = Brushes.Transparent;

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -137,7 +137,7 @@ public partial class App : Application
             }),
             Menu = new NativeMenu
             {
-                new NativeMenuItem("Sidekick - " + RequiredServerAppHost.Application.Services.GetRequiredService<IApplicationService>().GetVersion())
+                new NativeMenuItem("TAO - " + RequiredServerAppHost.Application.Services.GetRequiredService<IApplicationService>().GetVersion())
                 {
                     IsEnabled = false,
                 },

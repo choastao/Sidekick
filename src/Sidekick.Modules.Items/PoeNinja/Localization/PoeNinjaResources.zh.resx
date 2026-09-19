@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UniquePrice" xml:space="preserve">
+    <value>传奇物品价格</value>
+  </data>
+  <data name="Listings" xml:space="preserve">
+    <value>在售数量</value>
+  </data>
+  <data name="VolumeTraded" xml:space="preserve">
+    <value>成交额</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>涨跌</value>
+  </data>
+  <data name="LowConfidence" xml:space="preserve">
+    <value>置信度低。价格基于很少的在售数量。</value>
+  </data>
+  <data name="MediumConfidence" xml:space="preserve">
+    <value>置信度中等。价格基于相对较少的在售数量。</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>未找到该物品的 poe.ninja 数据。</value>
+  </data>
+  <data name="BaseType_Description" xml:space="preserve">
+    <value>poe.ninja 只根据物品的特定信息定价，目前参考底材、物品等级和影响。</value>
+  </data>
+</root>

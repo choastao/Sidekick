@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="All_Settings" xml:space="preserve">
+    <value>全部设置</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>加载中</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>首页</value>
+  </data>
+  <data name="PoeApiDown" xml:space="preserve">
+    <value>交易站似乎宕机了。等交易站恢复后重启 TAO。</value>
+  </data>
+  <data name="BuyMeACoffee" xml:space="preserve">
+    <value>通过 buymeacoffee.com 支持 TAO</value>
+  </data>
+  <data name="XselPackageMissing" xml:space="preserve">
+    <value>TAO 需要 xsel 组件才能读取剪贴板内容。请用 "apt-get install xsel" 安装。</value>
+  </data>
+  <data name="Age_Seconds" xml:space="preserve">
+    <value>{0} 秒</value>
+  </data>
+  <data name="Age_Now" xml:space="preserve">
+    <value>刚刚</value>
+  </data>
+  <data name="Age_Minute" xml:space="preserve">
+    <value>{0} 分钟</value>
+  </data>
+  <data name="Age_Minutes" xml:space="preserve">
+    <value>{0} 分钟</value>
+  </data>
+  <data name="Age_Hours" xml:space="preserve">
+    <value>{0} 小时</value>
+  </data>
+  <data name="Age_Hour" xml:space="preserve">
+    <value>{0} 小时</value>
+  </data>
+  <data name="Age_Days" xml:space="preserve">
+    <value>{0} 天</value>
+  </data>
+  <data name="Age_Day" xml:space="preserve">
+    <value>{0} 天</value>
+  </data>
+  <data name="Age_Never" xml:space="preserve">
+    <value>从未</value>
+  </data>
+  <data name="WealthTracker" xml:space="preserve">
+    <value>财富统计</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="Game" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="Application" xml:space="preserve">
+    <value>程序</value>
+  </data>
+  <data name="Chat_Commands" xml:space="preserve">
+    <value>聊天指令</value>
+  </data>
+  <data name="Regex_Hotkeys" xml:space="preserve">
+    <value>正则快捷键</value>
+  </data>
+  <data name="Development" xml:space="preserve">
+    <value>开发</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="Keybind_Already_In_Use" xml:space="preserve">
+    <value>快捷键 {0} 已被占用，请换一个。</value>
+  </data>
+  <data name="Keybind_Active" xml:space="preserve">
+    <value>&lt;请按键&gt;</value>
+  </data>
+  <data name="Keybind_Unset" xml:space="preserve">
+    <value>&lt;未设置&gt;</value>
+  </data>
+  <data name="Reset" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="Keybind" xml:space="preserve">
+    <value>快捷键</value>
+  </data>
+  <data name="Restore_Defaults" xml:space="preserve">
+    <value>恢复默认</value>
+  </data>
+  <data name="Keybindings" xml:space="preserve">
+    <value>快捷键设置</value>
+  </data>
+  <data name="Regex_Hint" xml:space="preserve">
+    <value>用 "|" 分隔多个词缀。词缀不需要完全匹配，且忽略大小写。内容必须与游戏语言一致。例如 "maximum life|resistance|regen"</value>
+  </data>
+  <data name="Api_Status" xml:space="preserve">
+    <value>API 状态</value>
+  </data>
+  <data name="Api_RateLimit" xml:space="preserve">
+    <value>请求频率限制</value>
+  </data>
+  <data name="Api_RateLimit_In" xml:space="preserve">
+    <value>剩余</value>
+  </data>
+  <data name="Api_RateLimit_Seconds" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="Api_Working" xml:space="preserve">
+    <value>正常</value>
+  </data>
+  <data name="Api_Throttled" xml:space="preserve">
+    <value>已被限流</value>
+  </data>
+  <data name="Api_Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Item_Overlay" xml:space="preserve">
+    <value>物品悬浮窗</value>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>帮助</value>
+  </data>
+  <data name="Logs" xml:space="preserve">
+    <value>日志</value>
+  </data>
+  <data name="Confirmation_Title" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="Open_Settings" xml:space="preserve">
+    <value>打开设置</value>
+  </data>
+  <data name="Build_Target" xml:space="preserve">
+    <value>目标BD</value>
+  </data>
+</root>

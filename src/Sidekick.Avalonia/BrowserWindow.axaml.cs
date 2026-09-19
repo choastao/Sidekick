@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -22,7 +22,7 @@ public partial class BrowserWindow : Window
         this.logger = logger;
         this.args = args;
 
-        Title = "Sidekick";
+        Title = "TAO";
         Width = WIDTH;
         Height = HEIGHT;
         MinWidth = WIDTH;

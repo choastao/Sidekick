@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="General_RetainClipboard" xml:space="preserve">
+    <value>保留剪贴板内容</value>
+  </data>
+  <data name="Key_Close" xml:space="preserve">
+    <value>关闭窗口</value>
+  </data>
+  <data name="SaveWindowPositions" xml:space="preserve">
+    <value>记住悬浮窗的位置。不勾选则每次居中显示。</value>
+  </data>
+  <data name="OverlayCloseWithMouse" xml:space="preserve">
+    <value>点击鼠标关闭悬浮窗</value>
+  </data>
+  <data name="EscapeClosesOverlays" xml:space="preserve">
+    <value>按 Escape 关闭悬浮窗</value>
+  </data>
+  <data name="Language_UI" xml:space="preserve">
+    <value>界面语言</value>
+  </data>
+  <data name="Zoom" xml:space="preserve">
+    <value>缩放</value>
+  </data>
+  <data name="Zoom_Hint" xml:space="preserve">
+    <value>调整缩放后，建议同时调整窗口尺寸。</value>
+  </data>
+  <data name="Wiki_Key_Open" xml:space="preserve">
+    <value>打开 Wiki</value>
+  </data>
+  <data name="Wiki" xml:space="preserve">
+    <value>Wiki 设置</value>
+  </data>
+  <data name="MouseWheelNavigateStash" xml:space="preserve">
+    <value>{0} 切换仓库页</value>
+  </data>
+  <data name="MouseWheelNavigateStashReverse" xml:space="preserve">
+    <value>反转滚轮切换仓库页的方向</value>
+  </data>
+  <data name="DisableMovementWhenScreenshotting" xml:space="preserve">
+    <value>使用截图快捷键时不让角色移动</value>
+  </data>
+  <data name="DisableMovementWhenScreenshotting_Tooltip" xml:space="preserve">
+    <value>防止角色在使用 Win+Shift+S 等截图快捷键时移动。适用于在仓库里查看物品的情况：TAO 会短暂把焦点移出游戏、刷新物品提示框，然后打开截图工具。</value>
+  </data>
+  <data name="Key_FindItems" xml:space="preserve">
+    <value>查找物品</value>
+  </data>
+  <data name="Key_Open_In_Craft_Of_Exile" xml:space="preserve">
+    <value>在 CraftOfExile.com 中打开物品</value>
+  </data>
+  <data name="Wiki_Preferred" xml:space="preserve">
+    <value>首选 Wiki</value>
+  </data>
+  <data name="poedb" xml:space="preserve">
+    <value>poedb.tw / poe2db.tw</value>
+  </data>
+  <data name="poewiki" xml:space="preserve">
+    <value>poewiki.net / poe2wiki.net</value>
+  </data>
+</root>

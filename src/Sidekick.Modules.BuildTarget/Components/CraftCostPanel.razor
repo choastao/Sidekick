@@ -1,0 +1,790 @@
+@using System.Globalization
+@using Sidekick.Game.Parser.Items
+@implements IDisposable
+
+@* 改造 / 洗装成本估算：只在当前装备已有快照（有基准）时出现。 *@
+@if (Slot != null)
+{
+    <div class="mt-4">
+        <FormFieldset Legend="@Resources["Craft_Title"]">
+
+            @* 0. 词缀类型数据（前缀/后缀）：缺失时如实说出来，面板其余部分照常工作 *@
+            @if (!AffixTypes.HasData)
+            {
+                <div class="flex flex-col gap-1">
+                    <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_No_Affix_Data"]</TextBase>
+                    @if (!string.IsNullOrEmpty(AffixTypes.LoadError))
+                    {
+                        <TextBase Class="text-stone-400 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_No_Affix_Data_Load_Failed"].Value, AffixTypes.LoadError)
+                        </TextBase>
+                    }
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_No_Affix_Data_Hint"]</TextBase>
+                    @foreach (var path in AffixTypes.SearchedPaths)
+                    {
+                        <TextBase Class="text-stone-500 text-xs pl-3">@path</TextBase>
+                    }
+                </div>
+            }
+
+            @* 1. 价格来源 *@
+            @if (Prices.Data is not null)
+            {
+                <div class="mt-2 flex flex-col gap-1">
+                    <TextBase Class="text-stone-400 text-xs">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Source"].Value, Prices.Data.League, FetchedAtText)
+                    </TextBase>
+                    @if (Prices.IsStale)
+                    {
+                        <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Source_Stale"]</TextBase>
+                    }
+                </div>
+            }
+
+            @* 2. 改造需求：硬门槛缺口与加分目标分开列，不混进同一个数 *@
+            <div class="mt-3 flex flex-col gap-2">
+                <TextBase Class="text-stone-400 text-sm font-medium">@Resources["Craft_Needs_Title"]</TextBase>
+
+                @if (RequiredNeeds.Count == 0 && OptionalNeeds.Count == 0)
+                {
+                    <TextBase Class="text-green-400 text-sm">@Resources["Craft_Up_To_Date"]</TextBase>
+                }
+                else
+                {
+                    <div class="flex flex-col gap-1">
+                        <TextBase Class="text-stone-300 text-sm">@Resources["Craft_Hard_Title"]</TextBase>
+                        @if (RequiredNeeds.Count == 0)
+                        {
+                            <TextBase Class="text-stone-500 text-xs pl-2">@Resources["Craft_Hard_None"]</TextBase>
+                        }
+                        else
+                        {
+                            @foreach (var need in RequiredNeeds)
+                            {
+                                @RenderNeed(need)
+                            }
+                        }
+                    </div>
+
+                    <div class="flex flex-col gap-1">
+                        <TextBase Class="text-stone-300 text-sm">@Resources["Craft_Bonus_Title"]</TextBase>
+                        @if (OptionalNeeds.Count == 0)
+                        {
+                            <TextBase Class="text-stone-500 text-xs pl-2">@Resources["Craft_Bonus_None"]</TextBase>
+                        }
+                        else
+                        {
+                            @foreach (var need in OptionalNeeds)
+                            {
+                                @RenderNeed(need)
+                            }
+                        }
+                    </div>
+                }
+            </div>
+
+            @* 3. 成本估算：只有硬门槛算「必须花」，加分项单独给参考值 *@
+            @if (Prices.Data is null)
+            {
+                @* 找不到价格数据时说清楚，不静默失败 *@
+                <div class="mt-3 flex flex-col gap-1">
+                    <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_No_Data"]</TextBase>
+                    @if (!string.IsNullOrEmpty(Prices.LoadError))
+                    {
+                        <TextBase Class="text-stone-400 text-xs">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_No_Data_Load_Failed"].Value, Prices.LoadError)
+                        </TextBase>
+                    }
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_No_Data_Hint"]</TextBase>
+                    @foreach (var path in Prices.SearchedPaths)
+                    {
+                        <TextBase Class="text-stone-500 text-xs pl-3">@path</TextBase>
+                    }
+                </div>
+            }
+            else if (RequiredNeeds.Count > 0 || OptionalNeeds.Count > 0)
+            {
+                <div class="mt-3 flex flex-col gap-1">
+                    <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Cost_Title"]</TextBase>
+
+                    @* 必须花：只含硬门槛缺口 *@
+                    <TextBase Class="mt-1 text-sm font-medium">@Resources["Craft_Must_Title"]</TextBase>
+                    @if (RequiredNeeds.Count == 0)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Hard_None"]</TextBase>
+                    }
+                    else
+                    {
+                        @foreach (var line in CostLines(RequiredNeeds))
+                        {
+                            <TextBase Class="@($"text-sm {line.Class}")">@line.Text</TextBase>
+                        }
+                        @if (RequiredNeeds.Any(x => x.Kind == NeedKind.Add))
+                        {
+                            var replaceTotal = AltTotal(RequiredNeeds);
+                            <TextBase Class="text-stone-400 text-xs">
+                                @string.Format(
+                                    CultureInfo.CurrentCulture,
+                                    Resources["Craft_Sum_IfFull"].Value,
+                                    FormatPrice(replaceTotal),
+                                    DivineName,
+                                    FormatPrice(ToChaos(replaceTotal)),
+                                    ChaosName)
+                            </TextBase>
+                        }
+                    }
+
+                    @* 加分项：参考值，不算进「必须花」 *@
+                    @if (OptionalNeeds.Count > 0)
+                    {
+                        <TextBase Class="mt-2 text-sm font-medium">@Resources["Craft_Optional_Title"]</TextBase>
+                        @foreach (var line in CostLines(OptionalNeeds))
+                        {
+                            <TextBase Class="@($"text-sm {line.Class}")">@line.Text</TextBase>
+                        }
+                    }
+
+                    <TextBase Class="mt-1 text-stone-500 text-xs">@Resources["Craft_Cost_Note"]</TextBase>
+                </div>
+
+                @* 前提与免责：不能省 *@
+                <div class="mt-2 flex flex-col gap-1">
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Note_Space"]</TextBase>
+                    <TextBase Class="text-amber-400 text-xs">@Resources["Craft_Note_Omen_Activate"]</TextBase>
+                    @if (IsBodyArmour)
+                    {
+                        <TextBase Class="text-amber-400 text-xs">@Resources["Craft_Note_BodyArmour"]</TextBase>
+                    }
+                    @if (RequiredNeeds.Concat(OptionalNeeds).Any(x => x.Kind == NeedKind.Add))
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Note_Annul"]</TextBase>
+                    }
+                    @if (RequiredNeeds.Concat(OptionalNeeds).Any(x => x.Side == AffixSide.Unknown))
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Type_Unknown_No_Omen"]</TextBase>
+                    }
+                </div>
+            }
+
+            @* 4. 通货价格速查 *@
+            @if (Prices.Data is not null)
+            {
+                <div class="mt-3 flex flex-col gap-1">
+                    <TextBase Class="text-stone-400 text-sm font-medium">@Resources["Craft_Table_Title"]</TextBase>
+
+                    @* 原生 input 绑 oninput：边打边搜，不用失焦 *@
+                    <input type="text"
+                           value="@search"
+                           @oninput="OnSearchInput"
+                           placeholder="@Resources["Craft_Search_Placeholder"]"
+                           class="@UiClasses.FormInputClasses p-2 text-base w-full" />
+
+                    <TextBase Class="text-stone-500 text-xs">
+                        @if (string.IsNullOrWhiteSpace(search))
+                        {
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Volume_Top"].Value, TopVolumeRows)
+                        }
+                        else
+                        {
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Search_Scope"].Value, TotalLineCount)
+                        }
+                    </TextBase>
+
+                    @if (Rows.Count == 0)
+                    {
+                        <TextBase Class="mt-1 text-stone-500 text-sm">@Resources["Craft_Search_No_Match"]</TextBase>
+                    }
+                    else
+                    {
+                        <table class="mt-1 w-full text-sm border-collapse">
+                            <thead>
+                            <tr class="text-stone-400 text-left">
+                                <th class="font-normal py-1">@Resources["Craft_Col_Name"]</th>
+                                <th class="font-normal py-1 text-right w-28">@Resources["Craft_Col_Divine"]</th>
+                                <th class="font-normal py-1 text-right w-28">@Resources["Craft_Col_Chaos"]</th>
+                                <th class="font-normal py-1 text-right w-24">@Resources["Craft_Col_Change"]</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var line in Rows)
+                            {
+                                <tr class="border-t border-stone-700">
+                                    <td class="py-1">
+                                        @line.Name
+                                        @if (!string.IsNullOrWhiteSpace(line.NameEn))
+                                        {
+                                            <span class="text-stone-500 text-xs ml-1">@line.NameEn</span>
+                                        }
+                                    </td>
+                                    <td class="py-1 text-right">@FormatPrice(line.Primary)</td>
+                                    <td class="py-1 text-right text-stone-400">@FormatPrice(line.Secondary)</td>
+                                    <td class="py-1 text-right @ChangeClass(line.Change7d)">@FormatChange(line.Change7d)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+
+                        @if (!string.IsNullOrWhiteSpace(search) && TotalMatches > Rows.Count)
+                        {
+                            <TextBase Class="text-stone-500 text-xs">
+                                @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Search_More"].Value, Rows.Count, TotalMatches)
+                            </TextBase>
+                        }
+                    }
+                </div>
+            }
+        </FormFieldset>
+    </div>
+}
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject BuildTargetStore Store
+@inject BuildTargetEvaluator Evaluator
+@inject CurrencyPriceService Prices
+@inject AffixTypeService AffixTypes
+
+@code {
+
+    /// <summary>速查表默认显示成交量最高的几条。</summary>
+    private const int TopVolumeRows = 10;
+
+    /// <summary>搜索最多显示的行数。</summary>
+    private const int MaxSearchRows = 20;
+
+    // ---- 通货与预兆 id（价格一律从数据文件现取，代码里不写死数字） ----
+
+    private const string IdExalted = "exalted";
+    private const string IdChaos = "chaos";
+    private const string IdDivine = "divine";
+    private const string IdOmenPrefixExalt = "omen-of-sinistral-exaltation";
+    private const string IdOmenSuffixExalt = "omen-of-dextral-exaltation";
+    private const string IdOmenWhittling = "omen-of-whittling";
+
+    [CascadingParameter]
+    public required Item Item { get; set; }
+
+    /// <summary>有当前装备快照的那个部位；没有就是 null，整个面板不显示。</summary>
+    private SlotEvaluation? Slot { get; set; }
+
+    /// <summary>硬门槛缺口（Required=true，不满足就不能用）。</summary>
+    private List<Need> RequiredNeeds { get; set; } = [];
+
+    /// <summary>加分目标（Required=false，锦上添花）。</summary>
+    private List<Need> OptionalNeeds { get; set; } = [];
+
+    private List<CurrencyPriceLine> Rows { get; set; } = [];
+
+    private string search = "";
+
+    private int TotalMatches { get; set; }
+
+    private int TotalLineCount => Prices.TotalLineCount;
+
+    private string DivineName => string.IsNullOrWhiteSpace(Prices.Divine?.Name) ? "divine" : Prices.Divine!.Name;
+
+    private string ChaosName => string.IsNullOrWhiteSpace(Prices.Chaos?.Name) ? "chaos" : Prices.Chaos!.Name;
+
+    /// <summary>身体护甲 0.5 版本不支持预兆，这个部位不给预兆建议。</summary>
+    private bool IsBodyArmour => Slot?.SlotKey == SlotKeys.BodyArmour;
+
+    /// <summary>预兆建议是否有效：类型数据在，且不是身体护甲。</summary>
+    private bool ShowOmens => AffixTypes.HasData && !IsBodyArmour;
+
+    private string FetchedAtText => Prices.Data?.FetchedAt is { } fetchedAt
+                                        ? fetchedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)
+                                        : "-";
+
+    protected override void OnInitialized()
+    {
+        Store.OnChanged += OnStoreChanged;
+        Evaluate();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Evaluate();
+        base.OnParametersSet();
+    }
+
+    private void OnStoreChanged()
+    {
+        Evaluate();
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// 复用 BuildTargetResult：只挑「已采集当前装备」的部位，按词缀检查的当前取值分类。
+    /// 判定逻辑不在这里重写——数值全部来自 <see cref="ModCheck"/>。
+    ///
+    /// 这一版的两处修正：
+    /// 1. Required=true / false 分成两组，不再混进同一个金额；
+    /// 2. 「新增」按机制走崇高石（该侧还有空位时），只有该侧满了才用混沌石替换——
+    ///    解析结果判断不出已用了几条前/后缀，所以两种走法都列出来让用户自己看装备定。
+    ///    词缀是前缀还是后缀从 affix-types.json 查（决定配左旋还是右旋预兆）。
+    /// </summary>
+    private void Evaluate()
+    {
+        Slot = null;
+        RequiredNeeds = [];
+        OptionalNeeds = [];
+        RefreshRows();
+
+        BuildTargetResult? result;
+        try
+        {
+            result = Evaluator.Evaluate(Store.Active, Item);
+        }
+        catch
+        {
+            return;
+        }
+
+        var equipped = result.Slots.Where(x => x.HasEquipped).ToList();
+        if (equipped.Count == 0)
+        {
+            return;
+        }
+
+        Slot = equipped.FirstOrDefault(x => x.Checks.Count > 0) ?? equipped[0];
+
+        foreach (var check in Slot.Checks)
+        {
+            var current = check.Current;
+
+            Need? need;
+
+            if (current == null || current.Value <= 0)
+            {
+                // 完全没有这个词条 → 需要新增
+                need = BuildNeed(check, NeedKind.Add);
+            }
+            else if (current.Value < check.MinValue)
+            {
+                // 词条在、数值不够。神圣石只在**这条词缀自己的 tier 区间内**重掷，不会改变等阶：
+                // 目标若高过该 tier 的上限，重掷到死也够不到，必须换掉这条词缀。
+                need = BuildNeed(check, NeedKind.Reroll);
+            }
+            else
+            {
+                continue;
+            }
+
+            if (check.Required)
+            {
+                RequiredNeeds.Add(need);
+            }
+            else
+            {
+                OptionalNeeds.Add(need);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 词条在、只是数值不够时，判断重掷数值到底够不够得着目标。
+    ///
+    /// 神圣石只重置**当前这条词缀所属 tier 的数值区间**，不会造成等阶变化，所以：
+    ///   目标 ≤ 当前 tier 的上限 → 重掷（神圣石）能到；
+    ///   目标 &gt; 当前 tier 的上限 → 只能换掉这条词缀（混沌石）。
+    /// 数据缺失 / 数值区间解析不出来 → 退化为重掷建议，并在文案里标注「无法判定等阶上限」。
+    /// 判定本身在 <see cref="AffixRerollAdvisor"/> 里（界面与探针共用同一份规则）。
+    /// </summary>
+    private Need BuildNeed(ModCheck check, NeedKind kind)
+    {
+        var preset = AffixTypes.Resolve(check.Match, check.Label);
+        var side = preset?.Side ?? AffixSide.Unknown;
+
+        var advice = kind == NeedKind.Reroll && check.Current is { } current
+                         ? AffixRerollAdvisor.Decide(preset, current, check.MinValue)
+                         : null;
+
+        if (advice is { CanReroll: false })
+        {
+            kind = NeedKind.Replace;
+        }
+
+        return new Need
+        {
+            Label = check.Label,
+            Kind = kind,
+            Side = side,
+            CurrentValue = check.Current ?? 0,
+            TargetValue = check.MinValue,
+            TierNumber = advice?.Tier?.Number,
+            TierMin = advice?.Tier?.Min,
+            TierMax = advice?.Tier?.Max,
+            NeedsTierNumber = advice?.NeededTier?.Number,
+            CapUnknown = advice?.CapUnknown ?? false,
+            Primary = Prices.Find(kind switch
+            {
+                NeedKind.Add => IdExalted,
+                NeedKind.Replace => IdChaos,
+                _ => IdDivine,
+            }),
+            Omen = kind switch
+            {
+                // 该侧还有空位时用方向提升之兆；侧别未知就不给。
+                NeedKind.Add when side != AffixSide.Unknown => Prices.Find(
+                    side == AffixSide.Prefix ? IdOmenPrefixExalt : IdOmenSuffixExalt),
+                // 换掉词缀：用削切之兆（必定移除等阶最低的一条）。类型未知时不给预兆建议，
+                // 与面板底部那条「类型未知 —— 不给预兆建议」保持一致。
+                NeedKind.Replace when side != AffixSide.Unknown => Prices.Find(IdOmenWhittling),
+                _ => null,
+            },
+            AltCurrency = kind == NeedKind.Add ? Prices.Find(IdChaos) : null,
+            AltOmen = kind == NeedKind.Add ? Prices.Find(IdOmenWhittling) : null,
+        };
+    }
+
+    /// <summary>
+    /// 一条需求：目标 + 走法（新增 / 重掷 / 换掉词缀），带各自的通货与预兆。
+    ///
+    /// 需求摘要（「需要…」）自带前/后缀，是这一段的主句；操作说明只在需要区分
+    /// 「该侧还有空位 / 已满」两种走法时才出现，不再把同一件事说两遍。
+    /// </summary>
+    private RenderFragment RenderNeed(Need need) => @<div class="mt-1 border-l border-stone-700 pl-2 flex flex-col gap-0.5">
+        <TextBase Class="text-sm">
+            @NeedSummary(need)
+            @if (need.Kind == NeedKind.Reroll && need.CapUnknown)
+            {
+                <span class="text-amber-400 text-xs ml-1">@Resources["Craft_Reroll_Cap_Unknown"]</span>
+            }
+        </TextBase>
+
+        @if (need.Kind == NeedKind.Add)
+        {
+            @* 该侧还有空位 → 崇高石新增 *@
+            <TextBase Class="text-stone-400 text-xs">
+                @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Op_Add_Space"].Value, NameWithSide(need))
+            </TextBase>
+            @if (Prices.Data is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@CurrencyText(need.Primary, need.Label)</TextBase>
+            }
+            @if (ShowOmens && need.Omen is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@OmenText(need.Omen)</TextBase>
+            }
+
+            @* 该侧已满 → 混沌石替换（我们判断不出是哪种，两种都列出来） *@
+            <TextBase Class="text-stone-400 text-xs">
+                @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Op_Replace_Full"].Value, NameWithSide(need))
+            </TextBase>
+            @if (Prices.Data is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@CurrencyText(need.AltCurrency, need.Label)</TextBase>
+            }
+            @if (ShowOmens && need.AltOmen is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@OmenText(need.AltOmen)</TextBase>
+            }
+        }
+        else if (need.Kind == NeedKind.Replace)
+        {
+            @* 换掉词缀：重掷达不到 → 混沌石（删 1 条加 1 条），新词缀随机 *@
+            <TextBase Class="text-stone-400 text-xs">@ReplaceDetail(need)</TextBase>
+            <TextBase Class="text-stone-400 text-xs">
+                @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Op_Replace_Chaos"].Value, NameWithSide(need))
+            </TextBase>
+            @if (Prices.Data is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@CurrencyText(need.Primary, need.Label)</TextBase>
+            }
+            @if (ShowOmens && need.Omen is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@OmenText(need.Omen)</TextBase>
+            }
+            <TextBase Class="text-amber-400 text-xs">@Resources["Craft_Replace_Random_Note"]</TextBase>
+            <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Replace_Omen_Note"]</TextBase>
+        }
+        else
+        {
+            <TextBase Class="text-stone-500 text-xs pl-2">@Resources["Craft_Line_Omen_None"]</TextBase>
+            @if (Prices.Data is not null)
+            {
+                <TextBase Class="text-stone-500 text-xs pl-2">@CurrencyText(need.Primary, need.Label)</TextBase>
+            }
+        }
+    </div>;
+
+    /// <summary>需求摘要那一行：新增 / 重掷数值 / 换掉词缀。</summary>
+    private string NeedSummary(Need need) => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources[need.Kind switch
+        {
+            NeedKind.Add => "Craft_Need_Add",
+            NeedKind.Replace => "Craft_Need_Replace",
+            _ => "Craft_Need_Reroll",
+        }].Value,
+        NameWithSide(need));
+
+    /// <summary>
+    /// 「当前 60 属于 T5（60-69），目标 70 需要 T6 以上」——把为什么重掷到不了说清楚。
+    /// </summary>
+    private string ReplaceDetail(Need need)
+    {
+        var tier = need.TierNumber is { } number
+                       ? string.Format(CultureInfo.CurrentCulture, Resources["Craft_Tier_Format"].Value, number)
+                       : Resources["Craft_Side_Unknown"].Value;
+
+        var needed = need.NeedsTierNumber is { } neededNumber
+                         ? string.Format(CultureInfo.CurrentCulture, Resources["Craft_Tier_Format"].Value, neededNumber)
+                         : Resources["Craft_Replace_Higher_Tier"].Value;
+
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Craft_Replace_Detail"].Value,
+            NameWithSide(need),
+            FormatValue(need.CurrentValue),
+            tier,
+            FormatValue(need.TierMin ?? 0),
+            FormatValue(need.TierMax ?? 0),
+            FormatValue(need.TargetValue),
+            needed);
+    }
+
+    /// <summary>名称 + 前/后缀；查不到类型就写「（类型未知）」，不猜。</summary>
+    private string NameWithSide(Need need)
+    {
+        var side = need.Side switch
+        {
+            AffixSide.Prefix => string.Format(
+                CultureInfo.CurrentCulture,
+                Resources["Craft_Type_Format"].Value,
+                Resources["Craft_Side_Prefix"].Value),
+            AffixSide.Suffix => string.Format(
+                CultureInfo.CurrentCulture,
+                Resources["Craft_Type_Format"].Value,
+                Resources["Craft_Side_Suffix"].Value),
+            _ => Resources["Craft_Side_Unknown"].Value,
+        };
+
+        return need.Label + side;
+    }
+
+    /// <summary>「通货：崇高石 ×1 ≈ 0.0022 神聖石 ≈ 0.019 混沌石」。</summary>
+    private string CurrencyText(CurrencyPriceLine? line, string label)
+    {
+        if (line is null)
+        {
+            return string.Format(CultureInfo.CurrentCulture, Resources["Craft_Missing_Price"].Value, label);
+        }
+
+        var divine = DivineOf(line);
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Craft_Line_Currency"].Value,
+            line.Name,
+            FormatPrice(divine),
+            DivineName,
+            FormatPrice(ToChaos(divine)),
+            ChaosName);
+    }
+
+    /// <summary>「可选预兆：右旋提升之兆 ≈ 0.0183 神聖石 ≈ 0.159 混沌石」。</summary>
+    private string OmenText(CurrencyPriceLine line)
+    {
+        var divine = DivineOf(line);
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Craft_Line_Omen"].Value,
+            line.Name,
+            FormatPrice(divine),
+            DivineName,
+            FormatPrice(ToChaos(divine)),
+            ChaosName);
+    }
+
+    private sealed record CostLine(string Text, string Class);
+
+    /// <summary>
+    /// 一组需求的小计：通货与预兆分开列，再给合计——预兆的价格量级差得远，得让人看清钱花在哪。
+    /// </summary>
+    private List<CostLine> CostLines(List<Need> needs)
+    {
+        var currency = needs.Sum(x => DivineOf(x.Primary));
+        var omens = ShowOmens ? needs.Sum(x => DivineOf(x.Omen)) : 0;
+
+        var lines = new List<CostLine>
+        {
+            new(SumText("Craft_Sum_Currency", currency), "text-stone-300"),
+        };
+
+        if (omens > 0)
+        {
+            lines.Add(new CostLine(SumText("Craft_Sum_Omen", omens), "text-stone-400"));
+        }
+
+        lines.Add(new CostLine(SumText("Craft_Sum_Total", currency + omens), "font-medium"));
+
+        return lines;
+    }
+
+    /// <summary>
+    /// 只有「需要新增」才有「该侧已满 → 改走替换（混沌石 + 削切之兆）」这条参考：
+    /// 并进「必须花」等于把两个场景相加，反而更误导。
+    ///「需要换掉词缀」本身就是混沌石，已经算在必须花里，不再重复。
+    /// </summary>
+    private double AltTotal(List<Need> needs)
+    {
+        var total = 0d;
+
+        foreach (var need in needs)
+        {
+            if (need.Kind != NeedKind.Add)
+            {
+                total += DivineOf(need.Primary);
+                continue;
+            }
+
+            total += DivineOf(need.AltCurrency);
+            total += ShowOmens ? DivineOf(need.AltOmen) : 0;
+        }
+
+        return total;
+    }
+
+    private string SumText(string key, double divine) => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources[key].Value,
+        FormatPrice(divine),
+        DivineName,
+        FormatPrice(ToChaos(divine)),
+        ChaosName);
+
+    /// <summary>
+    /// 单价一律以神聖石为单位（price data 的 primary）。
+    /// 注意：数据里 1 混沌 ≈ 0.1154 神聖石、1 崇高 ≈ 0.0022 神聖石，量级差 50 倍，
+    /// 所以绝不能用「新增 = 混沌石」这种近似。
+    /// </summary>
+    private double DivineOf(CurrencyPriceLine? line)
+    {
+        if (line is null)
+        {
+            return 0;
+        }
+
+        if (line.Primary > 0)
+        {
+            return line.Primary;
+        }
+
+        var rate = Prices.DivineInChaos;
+        return rate > 0 ? line.Secondary / rate : 0;
+    }
+
+    private double ToChaos(double divine) => divine * (Prices.DivineInChaos > 0 ? Prices.DivineInChaos : 0);
+
+    private void OnSearchInput(ChangeEventArgs args)
+    {
+        search = args.Value?.ToString() ?? "";
+        RefreshRows();
+    }
+
+    private void RefreshRows()
+    {
+        if (string.IsNullOrWhiteSpace(search))
+        {
+            TotalMatches = 0;
+            Rows = [.. Prices.TopCurrencyByVolume(TopVolumeRows)];
+            return;
+        }
+
+        TotalMatches = Prices.CountMatches(search);
+        Rows = [.. Prices.Search(search, MaxSearchRows)];
+    }
+
+    private static string FormatPrice(double value)
+    {
+        var abs = Math.Abs(value);
+        var format = abs >= 1000 ? "#,##0.#"
+                     : abs >= 1 ? "0.##"
+                     : abs >= 0.01 ? "0.###"
+                     : "0.#####";
+
+        return value.ToString(format, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>词缀数值的显示（整数不带小数点）。</summary>
+    private static string FormatValue(double value) =>
+        value.ToString(value == Math.Floor(value) ? "0.#" : "0.##", CultureInfo.InvariantCulture);
+
+    private static string FormatChange(double value)
+    {
+        var text = value.ToString("0.##", CultureInfo.InvariantCulture);
+        return value > 0 ? "+" + text + "%" : text + "%";
+    }
+
+    /// <summary>涨跌配色与结果面板里的增减保持一致：正绿负红。</summary>
+    private static string ChangeClass(double value) =>
+        value > 0 ? "text-green-400" : value < 0 ? "text-red-400" : "text-stone-400";
+
+    /// <summary>一条需求的走法。</summary>
+    private enum NeedKind
+    {
+        /// <summary>该词条还没有：新增（该侧有空位用崇高石，满了用混沌石）。</summary>
+        Add = 0,
+
+        /// <summary>词条在、数值不够，但目标在当前 tier 的数值区间内：用神圣石重掷数值。</summary>
+        Reroll = 1,
+
+        /// <summary>词条在、数值不够，且目标高过当前 tier 的上限：重掷永远到不了，只能换掉这条词缀。</summary>
+        Replace = 2,
+    }
+
+    /// <summary>一条改造需求：新增某条词缀、重掷某条词缀的数值，或换掉某条词缀。</summary>
+    private sealed class Need
+    {
+        /// <summary>词缀显示名（来自 BuildTargetResult 的检查项）。</summary>
+        public string Label { get; init; } = "";
+
+        /// <summary>走法：新增 / 重掷数值 / 换掉词缀。</summary>
+        public NeedKind Kind { get; init; }
+
+        /// <summary>前缀 / 后缀 / 未知。</summary>
+        public AffixSide Side { get; init; }
+
+        /// <summary>新增用崇高石，重掷用神聖石，换掉词缀用混沌石。</summary>
+        public CurrencyPriceLine? Primary { get; init; }
+
+        /// <summary>
+        /// 新增时的方向预兆（左旋 / 右旋提升之兆）；
+        /// 换掉词缀时的削切之兆（不看侧别，必定移除等阶最低的一条）。
+        /// </summary>
+        public CurrencyPriceLine? Omen { get; init; }
+
+        /// <summary>新增时，该侧已满改用的混沌石。</summary>
+        public CurrencyPriceLine? AltCurrency { get; init; }
+
+        /// <summary>新增时，该侧已满改用的削切之兆。</summary>
+        public CurrencyPriceLine? AltOmen { get; init; }
+
+        /// <summary>当前装备上这条词缀的取值。</summary>
+        public double CurrentValue { get; init; }
+
+        /// <summary>目标下限。</summary>
+        public double TargetValue { get; init; }
+
+        /// <summary>当前值所属 tier 的等阶号（T1 起）；判不出来为 null。</summary>
+        public int? TierNumber { get; init; }
+
+        /// <summary>当前值所属 tier 的区间下限。</summary>
+        public double? TierMin { get; init; }
+
+        /// <summary>当前值所属 tier 的区间上限 = 重掷能到的上限。</summary>
+        public double? TierMax { get; init; }
+
+        /// <summary>够到目标所需的最低等阶号；这条梯子里没有能达到目标的等阶时为 null。</summary>
+        public int? NeedsTierNumber { get; init; }
+
+        /// <summary>true = 数据缺失 / 数值区间解析不出来，重掷建议上要标注「无法判定等阶上限」。</summary>
+        public bool CapUnknown { get; init; }
+    }
+
+    public void Dispose()
+    {
+        Store.OnChanged -= OnStoreChanged;
+    }
+
+}

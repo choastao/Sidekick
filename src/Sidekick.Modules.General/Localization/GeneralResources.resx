@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -157,7 +157,7 @@
     <value>Prevent your character from moving when using screenshot shortcuts</value>
   </data>
     <data name="DisableMovementWhenScreenshotting_Tooltip" xml:space="preserve">
-    <value>Prevent your character from moving when using screenshot shortcuts like Win+Shift+S. Useful when hovering items in your stash: Sidekick briefly moves focus away from the game, refreshes the item tooltip, then opens the screenshot tool.</value>
+    <value>Prevent your character from moving when using screenshot shortcuts like Win+Shift+S. Useful when hovering items in your stash: TAO briefly moves focus away from the game, refreshes the item tooltip, then opens the screenshot tool.</value>
   </data>
   <data name="Key_FindItems" xml:space="preserve">
     <value>Find Items</value>

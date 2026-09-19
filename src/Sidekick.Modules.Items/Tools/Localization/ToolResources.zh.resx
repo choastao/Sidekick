@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="ChromaticCalculator" xml:space="preserve">
+    <value>幻色石计算器</value>
+  </data>
+  <data name="Chromatic_Credits" xml:space="preserve">
+    <value>此功能改编自 https://github.com/Siveran/siveran.github.io 的原始实现&lt;br&gt;感谢原作者提供的思路与基础逻辑。</value>
+  </data>
+  <data name="Chromatic_Sockets" xml:space="preserve">
+    <value>插槽数量</value>
+  </data>
+  <data name="Chromatic_Red" xml:space="preserve">
+    <value>红色插槽数</value>
+  </data>
+  <data name="Chromatic_Blue" xml:space="preserve">
+    <value>蓝色插槽数</value>
+  </data>
+  <data name="Chromatic_Green" xml:space="preserve">
+    <value>绿色插槽数</value>
+  </data>
+  <data name="Chromatic_Calculate" xml:space="preserve">
+    <value>计算</value>
+  </data>
+  <data name="Chromatic_Error" xml:space="preserve">
+    <value>错误！输入数值无效。</value>
+  </data>
+  <data name="Chromatic_Cost" xml:space="preserve">
+    <value>成本</value>
+  </data>
+  <data name="Chromatic_Chance" xml:space="preserve">
+    <value>概率</value>
+  </data>
+  <data name="Chromatic_AverageTries" xml:space="preserve">
+    <value>平均尝试次数</value>
+  </data>
+  <data name="Chromatic_Deviation" xml:space="preserve">
+    <value>标准差</value>
+  </data>
+  <data name="Chromatic_CalculatingBasedOn" xml:space="preserve">
+    <value>基于 {0} 力量、{1} 敏捷、{2} 智慧需求计算</value>
+  </data>
+</root>

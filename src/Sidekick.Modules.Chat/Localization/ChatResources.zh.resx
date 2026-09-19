@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Chat_Command" xml:space="preserve">
+    <value>指令</value>
+  </data>
+  <data name="Chat_Submit_The_Command" xml:space="preserve">
+    <value>发送该指令</value>
+  </data>
+  <data name="Chat_Commands_Remove" xml:space="preserve">
+    <value>删除此指令</value>
+  </data>
+  <data name="Chat_Add_New_Command" xml:space="preserve">
+    <value>新增指令</value>
+  </data>
+  <data name="Chat_Commands_Hideout" xml:space="preserve">
+    <value>前往你的藏身处</value>
+  </data>
+  <data name="Chat_Commands_Leave" xml:space="preserve">
+    <value>离开当前队伍</value>
+  </data>
+  <data name="Chat_Commands_Exit" xml:space="preserve">
+    <value>返回角色选择界面</value>
+  </data>
+  <data name="Chat_Commands_Invite" xml:space="preserve">
+    <value>邀请玩家</value>
+  </data>
+  <data name="Chat_Commands_Kick" xml:space="preserve">
+    <value>踢出玩家</value>
+  </data>
+  <data name="Chat_Wildcard_LastWhisper_CharacterName" xml:space="preserve">
+    <value>最近一条密语的角色名</value>
+  </data>
+  <data name="Chat_Common_Commands" xml:space="preserve">
+    <value>常用指令</value>
+  </data>
+</root>

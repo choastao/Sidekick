@@ -20,6 +20,7 @@ using Sidekick.Common.Ui;
 using Sidekick.Game.Parser;
 using Sidekick.Game.Providers;
 using Sidekick.Modules.About;
+using Sidekick.Modules.BuildTarget;
 using Sidekick.Modules.Chat;
 using Sidekick.Modules.Development;
 using Sidekick.Modules.General;
@@ -105,7 +106,7 @@ public class ServerAppHost(SidekickApplicationType applicationType) : IDisposabl
             .AddSidekickPoeWikiApi()
 
             // Modules
-            .AddSidekickAbout()
+            .AddSidekickBuildTarget()
             .AddSidekickDevelopment()
             .AddSidekickGeneral()
             .AddSidekickInitialization()
@@ -114,7 +115,6 @@ public class ServerAppHost(SidekickApplicationType applicationType) : IDisposabl
             .AddSidekickChat()
             .AddSidekickRegexHotkeys()
             .AddSidekickUpdater()
-            .AddSidekickWealth()
 
             // Platform needs to be at the end
             .AddSidekickCommonPlatform();

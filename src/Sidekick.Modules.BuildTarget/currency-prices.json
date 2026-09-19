@@ -1,0 +1,2865 @@
+{
+ "league": "Forbidden Rites",
+ "fetchedAt": "2026-09-19T13:21:50+08:00",
+ "source": "poe.ninja (poe2 economy exchange API)",
+ "categories": {
+  "Currency": {
+   "count": 52,
+   "lines": [
+    {
+     "id": "chaos",
+     "name": "混沌石",
+     "nameEn": "Chaos Orb",
+     "primary": 0.1154,
+     "secondary": 0.999999,
+     "volume": 149906,
+     "change7d": 12.96
+    },
+    {
+     "id": "divine",
+     "name": "神聖石",
+     "nameEn": "Divine Orb",
+     "primary": 1,
+     "secondary": 8.6655,
+     "volume": 149906,
+     "change7d": -11.62
+    },
+    {
+     "id": "mirror",
+     "name": "卡蘭德的魔鏡",
+     "nameEn": "Mirror of Kalandra",
+     "primary": 3960,
+     "secondary": 34315.38,
+     "volume": 89092,
+     "change7d": 101.8
+    },
+    {
+     "id": "hinekoras-lock",
+     "name": "悉妮蔻拉的髮絲",
+     "nameEn": "Hinekora's Lock",
+     "primary": 778.9,
+     "secondary": 6749.55795,
+     "volume": 33881,
+     "change7d": 76.85
+    },
+    {
+     "id": "annul",
+     "name": "無效石",
+     "nameEn": "Orb of Annulment",
+     "primary": 0.733,
+     "secondary": 6.351811,
+     "volume": 14853,
+     "change7d": 28.68
+    },
+    {
+     "id": "fracturing-orb",
+     "name": "破裂石",
+     "nameEn": "Fracturing Orb",
+     "primary": 9.22,
+     "secondary": 79.89591,
+     "volume": 12173,
+     "change7d": 20.75
+    },
+    {
+     "id": "perfect-chaos-orb",
+     "name": "完美混沌石",
+     "nameEn": "Perfect Chaos Orb",
+     "primary": 5.39,
+     "secondary": 46.707045,
+     "volume": 11391,
+     "change7d": 106.3
+    },
+    {
+     "id": "perfect-exalted-orb",
+     "name": "完美崇高石",
+     "nameEn": "Perfect Exalted Orb",
+     "primary": 2.67,
+     "secondary": 23.136885,
+     "volume": 8592,
+     "change7d": 43.79
+    },
+    {
+     "id": "exalted",
+     "name": "崇高石",
+     "nameEn": "Exalted Orb",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 6006,
+     "change7d": -40.96
+    },
+    {
+     "id": "greater-chaos-orb",
+     "name": "高階混沌石",
+     "nameEn": "Greater Chaos Orb",
+     "primary": 0.3434,
+     "secondary": 2.975733,
+     "volume": 3428,
+     "change7d": 13.13
+    },
+    {
+     "id": "perfect-orb-of-augmentation",
+     "name": "完美增幅石",
+     "nameEn": "Perfect Orb of Augmentation",
+     "primary": 0.2447,
+     "secondary": 2.120448,
+     "volume": 2409,
+     "change7d": 55.18
+    },
+    {
+     "id": "vaal-armourers-infuser",
+     "name": "瓦爾護甲鍛造師的灌注器",
+     "nameEn": "Vaal Armourer's Infuser",
+     "primary": 1.1,
+     "secondary": 9.53205,
+     "volume": 2161,
+     "change7d": 135.8
+    },
+    {
+     "id": "crystallised-corruption",
+     "name": "結晶腐化",
+     "nameEn": "Crystallised Corruption",
+     "primary": 3.95,
+     "secondary": 34.228725,
+     "volume": 1744,
+     "change7d": 110.9
+    },
+    {
+     "id": "architects-orb",
+     "name": "策匠石",
+     "nameEn": "Architect's Orb",
+     "primary": 2.86,
+     "secondary": 24.78333,
+     "volume": 1366,
+     "change7d": 115.5
+    },
+    {
+     "id": "perfect-jewellers-orb",
+     "name": "完美工匠石",
+     "nameEn": "Perfect Jeweller's Orb",
+     "primary": 0.4587,
+     "secondary": 3.974865,
+     "volume": 1215,
+     "change7d": -32.55
+    },
+    {
+     "id": "vaal-cultivation-orb",
+     "name": "瓦爾栽培寶珠",
+     "nameEn": "Vaal Cultivation Orb",
+     "primary": 2.21,
+     "secondary": 19.150755,
+     "volume": 1132,
+     "change7d": 22.14
+    },
+    {
+     "id": "vaal",
+     "name": "瓦爾寶珠",
+     "nameEn": "Vaal Orb",
+     "primary": 0.01135,
+     "secondary": 0.098353,
+     "volume": 592.3,
+     "change7d": 32.15
+    },
+    {
+     "id": "vaal-catalysing-infuser",
+     "name": "瓦爾催化灌注器",
+     "nameEn": "Vaal Catalysing Infuser",
+     "primary": 2.18,
+     "secondary": 18.89079,
+     "volume": 589.5,
+     "change7d": 53.89
+    },
+    {
+     "id": "cryptic-key",
+     "name": "晦澀之鑰",
+     "nameEn": "Cryptic Key",
+     "primary": 0.2352,
+     "secondary": 2.038126,
+     "volume": 583.1,
+     "change7d": -47.81
+    },
+    {
+     "id": "scrap",
+     "name": "護甲片",
+     "nameEn": "Armourer's Scrap",
+     "primary": 0.01306,
+     "secondary": 0.113171,
+     "volume": 279.3,
+     "change7d": -3.05
+    },
+    {
+     "id": "gcp",
+     "name": "寶石匠的稜鏡",
+     "nameEn": "Gemcutter's Prism",
+     "primary": 0.02344,
+     "secondary": 0.203119,
+     "volume": 204.8,
+     "change7d": 4.35
+    },
+    {
+     "id": "vaal-blacksmiths-infuser",
+     "name": "瓦爾鐵匠的灌注器",
+     "nameEn": "Vaal Blacksmith's Infuser",
+     "primary": 0.3118,
+     "secondary": 2.701903,
+     "volume": 182.3,
+     "change7d": 15.09
+    },
+    {
+     "id": "alch",
+     "name": "點金石",
+     "nameEn": "Orb of Alchemy",
+     "primary": 0.0056,
+     "secondary": 0.048527,
+     "volume": 159.7,
+     "change7d": -18.07
+    },
+    {
+     "id": "core-destabiliser",
+     "name": "核心擾亂器",
+     "nameEn": "Core Destabiliser",
+     "primary": 0.487,
+     "secondary": 4.220098,
+     "volume": 117.3,
+     "change7d": -7.83
+    },
+    {
+     "id": "chance",
+     "name": "機會石",
+     "nameEn": "Orb of Chance",
+     "primary": 0.02285,
+     "secondary": 0.198007,
+     "volume": 103.0,
+     "change7d": -64.8
+    },
+    {
+     "id": "perfect-orb-of-transmutation",
+     "name": "完美蛻變石",
+     "nameEn": "Perfect Orb of Transmutation",
+     "primary": 0.03564,
+     "secondary": 0.308838,
+     "volume": 86.33,
+     "change7d": -31.05
+    },
+    {
+     "id": "greater-exalted-orb",
+     "name": "高階崇高石",
+     "nameEn": "Greater Exalted Orb",
+     "primary": 0.009085,
+     "secondary": 0.078726,
+     "volume": 80.83,
+     "change7d": -35.7
+    },
+    {
+     "id": "orb-of-extraction",
+     "name": "萃取石",
+     "nameEn": "Orb of Extraction",
+     "primary": 0.4796,
+     "secondary": 4.155974,
+     "volume": 62.67,
+     "change7d": 21.33
+    },
+    {
+     "id": "perfect-regal-orb",
+     "name": "完美富豪石",
+     "nameEn": "Perfect Regal Orb",
+     "primary": 0.04766,
+     "secondary": 0.412998,
+     "volume": 60.5,
+     "change7d": -16.8
+    },
+    {
+     "id": "etcher",
+     "name": "奧術蝕刻師",
+     "nameEn": "Arcanist's Etcher",
+     "primary": 0.0179,
+     "secondary": 0.155112,
+     "volume": 58.57,
+     "change7d": 3.92
+    },
+    {
+     "id": "aug",
+     "name": "增幅石",
+     "nameEn": "Orb of Augmentation",
+     "primary": 0.006984,
+     "secondary": 0.06052,
+     "volume": 51.17,
+     "change7d": 32.91
+    },
+    {
+     "id": "greater-orb-of-augmentation",
+     "name": "高階增幅石",
+     "nameEn": "Greater Orb of Augmentation",
+     "primary": 0.008273,
+     "secondary": 0.07169,
+     "volume": 49.4,
+     "change7d": 33.74
+    },
+    {
+     "id": "ancient-infuser",
+     "name": "遠古灌注器",
+     "nameEn": "Ancient Infuser",
+     "primary": 0.1441,
+     "secondary": 1.248699,
+     "volume": 31.37,
+     "change7d": 30.66
+    },
+    {
+     "id": "regal",
+     "name": "富豪石",
+     "nameEn": "Regal Orb",
+     "primary": 0.004589,
+     "secondary": 0.039766,
+     "volume": 29.5,
+     "change7d": -31.94
+    },
+    {
+     "id": "whetstone",
+     "name": "磨刀石",
+     "nameEn": "Blacksmith's Whetstone",
+     "primary": 0.003907,
+     "secondary": 0.033856,
+     "volume": 23.99,
+     "change7d": 11.82
+    },
+    {
+     "id": "bauble",
+     "name": "玻璃彈珠",
+     "nameEn": "Glassblower's Bauble",
+     "primary": 0.01021,
+     "secondary": 0.088475,
+     "volume": 20.42,
+     "change7d": 34.87
+    },
+    {
+     "id": "greater-regal-orb",
+     "name": "高階富豪石",
+     "nameEn": "Greater Regal Orb",
+     "primary": 0.01057,
+     "secondary": 0.091594,
+     "volume": 19.17,
+     "change7d": -30.02
+    },
+    {
+     "id": "transmute",
+     "name": "蛻變石",
+     "nameEn": "Orb of Transmutation",
+     "primary": 0.002861,
+     "secondary": 0.024792,
+     "volume": 14.67,
+     "change7d": -34.86
+    },
+    {
+     "id": "greater-orb-of-transmutation",
+     "name": "高階蛻變石",
+     "nameEn": "Greater Orb of Transmutation",
+     "primary": 0.002743,
+     "secondary": 0.023769,
+     "volume": 8.08,
+     "change7d": 19.41
+    },
+    {
+     "id": "greater-jewellers-orb",
+     "name": "高階工匠石",
+     "nameEn": "Greater Jeweller's Orb",
+     "primary": 0.00573,
+     "secondary": 0.049653,
+     "volume": 7.73,
+     "change7d": -7.37
+    },
+    {
+     "id": "kamasas-orb-of-sacrifice",
+     "name": "卡瑪薩奉獻寶珠",
+     "nameEn": "Kamasa's Orb of Sacrifice",
+     "primary": 0.2656,
+     "secondary": 2.301557,
+     "volume": 6.46,
+     "change7d": -44.15
+    },
+    {
+     "id": "artificers",
+     "name": "巧匠石",
+     "nameEn": "Artificer's Orb",
+     "primary": 0.003724,
+     "secondary": 0.03227,
+     "volume": 6.45,
+     "change7d": 19.32
+    },
+    {
+     "id": "vaal-arcanists-infuser",
+     "name": "瓦爾奧術師的灌注器",
+     "nameEn": "Vaal Arcanist's Infuser",
+     "primary": 0.02498,
+     "secondary": 0.216464,
+     "volume": 5.0,
+     "change7d": -13.13
+    },
+    {
+     "id": "kopecs-orb-of-sacrifice",
+     "name": "科佩克奉獻寶珠",
+     "nameEn": "Kopec's Orb of Sacrifice",
+     "primary": 0.1716,
+     "secondary": 1.487,
+     "volume": 3.29,
+     "change7d": -39.02
+    },
+    {
+     "id": "wisdom",
+     "name": "知識卷軸",
+     "nameEn": "Scroll of Wisdom",
+     "primary": 9.65e-05,
+     "secondary": 0.000836,
+     "volume": 1.82,
+     "change7d": 19.48
+    },
+    {
+     "id": "yaomacs-orb-of-sacrifice",
+     "name": "堯馬克奉獻寶珠",
+     "nameEn": "Yaomac's Orb of Sacrifice",
+     "primary": 0.03611,
+     "secondary": 0.312911,
+     "volume": 0.34,
+     "change7d": -5.0
+    },
+    {
+     "id": "lesser-jewellers-orb",
+     "name": "低階工匠石",
+     "nameEn": "Lesser Jeweller's Orb",
+     "primary": 0.0003332,
+     "secondary": 0.002887,
+     "volume": 0.15,
+     "change7d": -41.49
+    },
+    {
+     "id": "yuguls-orb-of-sacrifice",
+     "name": "伊果奉獻寶珠",
+     "nameEn": "Yugul's Orb of Sacrifice",
+     "primary": 0.01012,
+     "secondary": 0.087695,
+     "volume": 0.09,
+     "change7d": -12.75
+    },
+    {
+     "id": "chance-shard",
+     "name": "機率碎片",
+     "nameEn": "Chance Shard",
+     "primary": 0.002701,
+     "secondary": 0.023406,
+     "volume": 0.09,
+     "change7d": 12.42
+    },
+    {
+     "id": "artificers-shard",
+     "name": "工匠碎片",
+     "nameEn": "Artificer's Shard",
+     "primary": 0.001051,
+     "secondary": 0.009107,
+     "volume": 0.02,
+     "change7d": -32.39
+    },
+    {
+     "id": "vaal-siphoner",
+     "name": "瓦爾虹吸器",
+     "nameEn": "Vaal Siphoner",
+     "primary": 0.0003776,
+     "secondary": 0.003272,
+     "volume": 0.0,
+     "change7d": -14.76
+    },
+    {
+     "id": "regal-shard",
+     "name": "富豪石碎片",
+     "nameEn": "Regal Shard",
+     "primary": 0.0007237,
+     "secondary": 0.006271,
+     "volume": 0.0,
+     "change7d": 166.7
+    }
+   ]
+  },
+  "Essences": {
+   "count": 80,
+   "lines": [
+    {
+     "id": "essence-of-the-breach",
+     "name": "裂痕精髓",
+     "nameEn": "Essence of the Breach",
+     "primary": 0.6798,
+     "secondary": 5.890807,
+     "volume": 251.8,
+     "change7d": -34.49
+    },
+    {
+     "id": "essence-of-the-abyss",
+     "name": "深淵精髓",
+     "nameEn": "Essence of the Abyss",
+     "primary": 0.2784,
+     "secondary": 2.412475,
+     "volume": 218.2,
+     "change7d": 23.77
+    },
+    {
+     "id": "essence-of-hysteria",
+     "name": "浮誇精髓",
+     "nameEn": "Essence of Hysteria",
+     "primary": 1.58,
+     "secondary": 13.69149,
+     "volume": 216.4,
+     "change7d": -2.08
+    },
+    {
+     "id": "essence-of-horror",
+     "name": "極恐精髓",
+     "nameEn": "Essence of Horror",
+     "primary": 1.26,
+     "secondary": 10.91853,
+     "volume": 137.6,
+     "change7d": 68.17
+    },
+    {
+     "id": "essence-of-delirium",
+     "name": "譫妄精髓",
+     "nameEn": "Essence of Delirium",
+     "primary": 0.7122,
+     "secondary": 6.171569,
+     "volume": 68.96,
+     "change7d": 292.1
+    },
+    {
+     "id": "greater-essence-of-opulence",
+     "name": "高階豐裕精髓",
+     "nameEn": "Greater Essence of Opulence",
+     "primary": 0.1703,
+     "secondary": 1.475735,
+     "volume": 49.38,
+     "change7d": -51.09
+    },
+    {
+     "id": "perfect-essence-of-the-infinite",
+     "name": "完美無限精髓",
+     "nameEn": "Perfect Essence of the Infinite",
+     "primary": 0.05513,
+     "secondary": 0.477729,
+     "volume": 18.14,
+     "change7d": 566.3
+    },
+    {
+     "id": "perfect-essence-of-battle",
+     "name": "完美戰鬥精髓",
+     "nameEn": "Perfect Essence of Battle",
+     "primary": 0.05791,
+     "secondary": 0.501819,
+     "volume": 12.14,
+     "change7d": 56.95
+    },
+    {
+     "id": "perfect-essence-of-enhancement",
+     "name": "完美強化精髓",
+     "nameEn": "Perfect Essence of Enhancement",
+     "primary": 0.03701,
+     "secondary": 0.32071,
+     "volume": 9.68,
+     "change7d": 153.1
+    },
+    {
+     "id": "perfect-essence-of-opulence",
+     "name": "完美豐裕精髓",
+     "nameEn": "Perfect Essence of Opulence",
+     "primary": 0.0808,
+     "secondary": 0.700172,
+     "volume": 7.2,
+     "change7d": 203.6
+    },
+    {
+     "id": "perfect-essence-of-grounding",
+     "name": "完美接地精髓",
+     "nameEn": "Perfect Essence of Grounding",
+     "primary": 0.03165,
+     "secondary": 0.274263,
+     "volume": 6.03,
+     "change7d": 70.2
+    },
+    {
+     "id": "perfect-essence-of-flames",
+     "name": "完美烈焰精髓",
+     "nameEn": "Perfect Essence of Flames",
+     "primary": 0.1489,
+     "secondary": 1.290293,
+     "volume": 3.08,
+     "change7d": 148.1
+    },
+    {
+     "id": "perfect-essence-of-haste",
+     "name": "完美迅捷精髓",
+     "nameEn": "Perfect Essence of Haste",
+     "primary": 0.02756,
+     "secondary": 0.238821,
+     "volume": 2.91,
+     "change7d": 76.81
+    },
+    {
+     "id": "greater-essence-of-haste",
+     "name": "高階迅捷精髓",
+     "nameEn": "Greater Essence of Haste",
+     "primary": 0.01586,
+     "secondary": 0.137435,
+     "volume": 2.22,
+     "change7d": 17.7
+    },
+    {
+     "id": "perfect-essence-of-the-mind",
+     "name": "完美心智精髓",
+     "nameEn": "Perfect Essence of the Mind",
+     "primary": 0.0193,
+     "secondary": 0.167244,
+     "volume": 2.18,
+     "change7d": 12.2
+    },
+    {
+     "id": "greater-essence-of-seeking",
+     "name": "高階探尋精髓",
+     "nameEn": "Greater Essence of Seeking",
+     "primary": 0.007216,
+     "secondary": 0.06253,
+     "volume": 1.07,
+     "change7d": -23.98
+    },
+    {
+     "id": "essence-of-insanity",
+     "name": "錯亂精髓",
+     "nameEn": "Essence of Insanity",
+     "primary": 0.03888,
+     "secondary": 0.336915,
+     "volume": 1.06,
+     "change7d": -47.9
+    },
+    {
+     "id": "perfect-essence-of-sorcery",
+     "name": "完美巫術精髓",
+     "nameEn": "Perfect Essence of Sorcery",
+     "primary": 0.01222,
+     "secondary": 0.105892,
+     "volume": 1.0,
+     "change7d": -32.09
+    },
+    {
+     "id": "greater-essence-of-command",
+     "name": "高階命令精髓",
+     "nameEn": "Greater Essence of Command",
+     "primary": 0.02105,
+     "secondary": 0.182409,
+     "volume": 0.89,
+     "change7d": 133.6
+    },
+    {
+     "id": "perfect-essence-of-command",
+     "name": "完美命令精髓",
+     "nameEn": "Perfect Essence of Command",
+     "primary": 0.02057,
+     "secondary": 0.178249,
+     "volume": 0.79,
+     "change7d": 283.4
+    },
+    {
+     "id": "perfect-essence-of-seeking",
+     "name": "完美探尋精髓",
+     "nameEn": "Perfect Essence of Seeking",
+     "primary": 0.01416,
+     "secondary": 0.122703,
+     "volume": 0.76,
+     "change7d": -2.7
+    },
+    {
+     "id": "essence-of-abrasion",
+     "name": "磨礪精髓",
+     "nameEn": "Essence of Abrasion",
+     "primary": 0.1068,
+     "secondary": 0.925475,
+     "volume": 0.73,
+     "change7d": 193.1
+    },
+    {
+     "id": "greater-essence-of-insulation",
+     "name": "高階隔絕精髓",
+     "nameEn": "Greater Essence of Insulation",
+     "primary": 0.007139,
+     "secondary": 0.061863,
+     "volume": 0.7,
+     "change7d": -25.04
+    },
+    {
+     "id": "perfect-essence-of-abrasion",
+     "name": "完美磨礪精髓",
+     "nameEn": "Perfect Essence of Abrasion",
+     "primary": 0.02897,
+     "secondary": 0.25104,
+     "volume": 0.69,
+     "change7d": 263.3
+    },
+    {
+     "id": "greater-essence-of-ruin",
+     "name": "高階毀滅精髓",
+     "nameEn": "Greater Essence of Ruin",
+     "primary": 0.008722,
+     "secondary": 0.07558,
+     "volume": 0.67,
+     "change7d": -31.27
+    },
+    {
+     "id": "greater-essence-of-enhancement",
+     "name": "高階強化精髓",
+     "nameEn": "Greater Essence of Enhancement",
+     "primary": 0.004284,
+     "secondary": 0.037123,
+     "volume": 0.54,
+     "change7d": -7.21
+    },
+    {
+     "id": "perfect-essence-of-alacrity",
+     "name": "完美輕快精髓",
+     "nameEn": "Perfect Essence of Alacrity",
+     "primary": 0.006303,
+     "secondary": 0.054619,
+     "volume": 0.51,
+     "change7d": -26.0
+    },
+    {
+     "id": "greater-essence-of-grounding",
+     "name": "高階接地精髓",
+     "nameEn": "Greater Essence of Grounding",
+     "primary": 0.004997,
+     "secondary": 0.043302,
+     "volume": 0.51,
+     "change7d": -30.25
+    },
+    {
+     "id": "greater-essence-of-thawing",
+     "name": "高階解凍精髓",
+     "nameEn": "Greater Essence of Thawing",
+     "primary": 0.004983,
+     "secondary": 0.04318,
+     "volume": 0.49,
+     "change7d": -46.7
+    },
+    {
+     "id": "greater-essence-of-abrasion",
+     "name": "高階磨礪精髓",
+     "nameEn": "Greater Essence of Abrasion",
+     "primary": 0.005079,
+     "secondary": 0.044012,
+     "volume": 0.45,
+     "change7d": 67.28
+    },
+    {
+     "id": "lesser-essence-of-abrasion",
+     "name": "低階磨礪精髓",
+     "nameEn": "Lesser Essence of Abrasion",
+     "primary": 0.09703,
+     "secondary": 0.840813,
+     "volume": 0.42,
+     "change7d": 245.6
+    },
+    {
+     "id": "essence-of-opulence",
+     "name": "豐裕精髓",
+     "nameEn": "Essence of Opulence",
+     "primary": 0.1495,
+     "secondary": 1.295492,
+     "volume": 0.4,
+     "change7d": 76.53
+    },
+    {
+     "id": "lesser-essence-of-thawing",
+     "name": "低階解凍精髓",
+     "nameEn": "Lesser Essence of Thawing",
+     "primary": 1,
+     "secondary": 8.6655,
+     "volume": 0.33,
+     "change7d": 0
+    },
+    {
+     "id": "essence-of-the-body",
+     "name": "肉體精髓",
+     "nameEn": "Essence of the Body",
+     "primary": 0.08901,
+     "secondary": 0.771316,
+     "volume": 0.27,
+     "change7d": 439.8
+    },
+    {
+     "id": "perfect-essence-of-thawing",
+     "name": "完美解凍精髓",
+     "nameEn": "Perfect Essence of Thawing",
+     "primary": 0.005621,
+     "secondary": 0.048709,
+     "volume": 0.17,
+     "change7d": 46.55
+    },
+    {
+     "id": "essence-of-enhancement",
+     "name": "強化精髓",
+     "nameEn": "Essence of Enhancement",
+     "primary": 0.08141,
+     "secondary": 0.705458,
+     "volume": 0.16,
+     "change7d": 2616
+    },
+    {
+     "id": "perfect-essence-of-ice",
+     "name": "完美寒冰精髓",
+     "nameEn": "Perfect Essence of Ice",
+     "primary": 0.006227,
+     "secondary": 0.05396,
+     "volume": 0.13,
+     "change7d": 140.4
+    },
+    {
+     "id": "greater-essence-of-sorcery",
+     "name": "高階巫術精髓",
+     "nameEn": "Greater Essence of Sorcery",
+     "primary": 0.002845,
+     "secondary": 0.024653,
+     "volume": 0.12,
+     "change7d": -34.49
+    },
+    {
+     "id": "essence-of-thawing",
+     "name": "解凍精髓",
+     "nameEn": "Essence of Thawing",
+     "primary": 0.1623,
+     "secondary": 1.406411,
+     "volume": 0.11,
+     "change7d": 3104
+    },
+    {
+     "id": "essence-of-alacrity",
+     "name": "輕快精髓",
+     "nameEn": "Essence of Alacrity",
+     "primary": 0.04226,
+     "secondary": 0.366204,
+     "volume": 0.11,
+     "change7d": 127.8
+    },
+    {
+     "id": "essence-of-seeking",
+     "name": "探尋精髓",
+     "nameEn": "Essence of Seeking",
+     "primary": 0.09509,
+     "secondary": 0.824002,
+     "volume": 0.08,
+     "change7d": 2376
+    },
+    {
+     "id": "lesser-essence-of-opulence",
+     "name": "低階豐裕精髓",
+     "nameEn": "Lesser Essence of Opulence",
+     "primary": 0.04145,
+     "secondary": 0.359185,
+     "volume": 0.08,
+     "change7d": 301.9
+    },
+    {
+     "id": "essence-of-haste",
+     "name": "迅捷精髓",
+     "nameEn": "Essence of Haste",
+     "primary": 0.02274,
+     "secondary": 0.197053,
+     "volume": 0.07,
+     "change7d": -5.84
+    },
+    {
+     "id": "perfect-essence-of-the-body",
+     "name": "完美肉體精髓",
+     "nameEn": "Perfect Essence of the Body",
+     "primary": 0.001978,
+     "secondary": 0.01714,
+     "volume": 0.07,
+     "change7d": -6.29
+    },
+    {
+     "id": "essence-of-grounding",
+     "name": "接地精髓",
+     "nameEn": "Essence of Grounding",
+     "primary": 0.09498,
+     "secondary": 0.823049,
+     "volume": 0.06,
+     "change7d": 1650
+    },
+    {
+     "id": "perfect-essence-of-electricity",
+     "name": "完美電能精髓",
+     "nameEn": "Perfect Essence of Electricity",
+     "primary": 0.007895,
+     "secondary": 0.068414,
+     "volume": 0.06,
+     "change7d": 39.14
+    },
+    {
+     "id": "essence-of-command",
+     "name": "命令精髓",
+     "nameEn": "Essence of Command",
+     "primary": 0.1154,
+     "secondary": 0.999999,
+     "volume": 0.06,
+     "change7d": -80
+    },
+    {
+     "id": "perfect-essence-of-ruin",
+     "name": "完美毀滅精髓",
+     "nameEn": "Perfect Essence of Ruin",
+     "primary": 0.01558,
+     "secondary": 0.135008,
+     "volume": 0.04,
+     "change7d": 153.7
+    },
+    {
+     "id": "lesser-essence-of-flames",
+     "name": "低階烈焰精髓",
+     "nameEn": "Lesser Essence of Flames",
+     "primary": 0.07743,
+     "secondary": 0.67097,
+     "volume": 0.04,
+     "change7d": 3976
+    },
+    {
+     "id": "essence-of-the-infinite",
+     "name": "無限精髓",
+     "nameEn": "Essence of the Infinite",
+     "primary": 0.2308,
+     "secondary": 1.999997,
+     "volume": 0.04,
+     "change7d": 100
+    },
+    {
+     "id": "greater-essence-of-the-infinite",
+     "name": "高階無限精髓",
+     "nameEn": "Greater Essence of the Infinite",
+     "primary": 0.0013,
+     "secondary": 0.011265,
+     "volume": 0.04,
+     "change7d": -59.32
+    },
+    {
+     "id": "lesser-essence-of-seeking",
+     "name": "低階探尋精髓",
+     "nameEn": "Lesser Essence of Seeking",
+     "primary": 0.06658,
+     "secondary": 0.576949,
+     "volume": 0.03,
+     "change7d": 2967
+    },
+    {
+     "id": "greater-essence-of-the-body",
+     "name": "高階肉體精髓",
+     "nameEn": "Greater Essence of the Body",
+     "primary": 0.001372,
+     "secondary": 0.011889,
+     "volume": 0.03,
+     "change7d": -17.74
+    },
+    {
+     "id": "greater-essence-of-alacrity",
+     "name": "高階輕快精髓",
+     "nameEn": "Greater Essence of Alacrity",
+     "primary": 0.002088,
+     "secondary": 0.018094,
+     "volume": 0.03,
+     "change7d": -36.91
+    },
+    {
+     "id": "lesser-essence-of-sorcery",
+     "name": "低階巫術精髓",
+     "nameEn": "Lesser Essence of Sorcery",
+     "primary": 0.03419,
+     "secondary": 0.296273,
+     "volume": 0.02,
+     "change7d": 1223
+    },
+    {
+     "id": "essence-of-electricity",
+     "name": "電能精髓",
+     "nameEn": "Essence of Electricity",
+     "primary": 0.02026,
+     "secondary": 0.175563,
+     "volume": 0.02,
+     "change7d": 976.9
+    },
+    {
+     "id": "lesser-essence-of-ruin",
+     "name": "低階毀滅精髓",
+     "nameEn": "Lesser Essence of Ruin",
+     "primary": 0.1194,
+     "secondary": 1.034661,
+     "volume": 0.02,
+     "change7d": 5400
+    },
+    {
+     "id": "lesser-essence-of-haste",
+     "name": "低階迅捷精髓",
+     "nameEn": "Lesser Essence of Haste",
+     "primary": 0.02605,
+     "secondary": 0.225736,
+     "volume": 0.02,
+     "change7d": 130.8
+    },
+    {
+     "id": "lesser-essence-of-command",
+     "name": "低階命令精髓",
+     "nameEn": "Lesser Essence of Command",
+     "primary": 0.08684,
+     "secondary": 0.752512,
+     "volume": 0.01,
+     "change7d": 515.4
+    },
+    {
+     "id": "lesser-essence-of-ice",
+     "name": "低階寒冰精髓",
+     "nameEn": "Lesser Essence of Ice",
+     "primary": 0.01737,
+     "secondary": 0.15052,
+     "volume": 0.01,
+     "change7d": 110.5
+    },
+    {
+     "id": "lesser-essence-of-enhancement",
+     "name": "低階強化精髓",
+     "nameEn": "Lesser Essence of Enhancement",
+     "primary": 0.02388,
+     "secondary": 0.206932,
+     "volume": 0.01,
+     "change7d": 887.8
+    },
+    {
+     "id": "essence-of-ice",
+     "name": "寒冰精髓",
+     "nameEn": "Essence of Ice",
+     "primary": 0.02316,
+     "secondary": 0.200693,
+     "volume": 0.01,
+     "change7d": 515.4
+    },
+    {
+     "id": "lesser-essence-of-insulation",
+     "name": "低階隔絕精髓",
+     "nameEn": "Lesser Essence of Insulation",
+     "primary": 0.03474,
+     "secondary": 0.301039,
+     "volume": 0.01,
+     "change7d": 784.6
+    },
+    {
+     "id": "lesser-essence-of-alacrity",
+     "name": "低階輕快精髓",
+     "nameEn": "Lesser Essence of Alacrity",
+     "primary": 0.009305,
+     "secondary": 0.080632,
+     "volume": 0.01,
+     "change7d": -64.77
+    },
+    {
+     "id": "perfect-essence-of-insulation",
+     "name": "完美隔絕精髓",
+     "nameEn": "Perfect Essence of Insulation",
+     "primary": 0.002338,
+     "secondary": 0.02026,
+     "volume": 0.01,
+     "change7d": -9.28
+    },
+    {
+     "id": "lesser-essence-of-electricity",
+     "name": "低階電能精髓",
+     "nameEn": "Lesser Essence of Electricity",
+     "primary": 0.01664,
+     "secondary": 0.144194,
+     "volume": 0.01,
+     "change7d": 84
+    },
+    {
+     "id": "lesser-essence-of-grounding",
+     "name": "低階接地精髓",
+     "nameEn": "Lesser Essence of Grounding",
+     "primary": 0.02171,
+     "secondary": 0.188128,
+     "volume": 0.01,
+     "change7d": 471.4
+    },
+    {
+     "id": "greater-essence-of-ice",
+     "name": "高階寒冰精髓",
+     "nameEn": "Greater Essence of Ice",
+     "primary": 0.001086,
+     "secondary": 0.009411,
+     "volume": 0.01,
+     "change7d": 3.75
+    },
+    {
+     "id": "greater-essence-of-electricity",
+     "name": "高階電能精髓",
+     "nameEn": "Greater Essence of Electricity",
+     "primary": 0.001213,
+     "secondary": 0.010511,
+     "volume": 0.01,
+     "change7d": -62.58
+    },
+    {
+     "id": "greater-essence-of-flames",
+     "name": "高階烈焰精髓",
+     "nameEn": "Greater Essence of Flames",
+     "primary": 0.0009868,
+     "secondary": 0.008551,
+     "volume": 0.0,
+     "change7d": 25.54
+    },
+    {
+     "id": "essence-of-the-mind",
+     "name": "心智精髓",
+     "nameEn": "Essence of the Mind",
+     "primary": 0.003908,
+     "secondary": 0.033865,
+     "volume": 0.0,
+     "change7d": 125
+    },
+    {
+     "id": "greater-essence-of-the-mind",
+     "name": "高階心智精髓",
+     "nameEn": "Greater Essence of the Mind",
+     "primary": 0.0003553,
+     "secondary": 0.003079,
+     "volume": 0.0,
+     "change7d": -49.14
+    },
+    {
+     "id": "lesser-essence-of-the-mind",
+     "name": "低階心智精髓",
+     "nameEn": "Lesser Essence of the Mind",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 100
+    },
+    {
+     "id": "essence-of-sorcery",
+     "name": "巫術精髓",
+     "nameEn": "Essence of Sorcery",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": -63.72
+    },
+    {
+     "id": "greater-essence-of-battle",
+     "name": "高階戰鬥精髓",
+     "nameEn": "Greater Essence of Battle",
+     "primary": 0.001086,
+     "secondary": 0.009411,
+     "volume": 0.0,
+     "change7d": 131.4
+    },
+    {
+     "id": "lesser-essence-of-the-body",
+     "name": "低階肉體精髓",
+     "nameEn": "Lesser Essence of the Body",
+     "primary": 0.01086,
+     "secondary": 0.094107,
+     "volume": 0.0,
+     "change7d": 566.7
+    },
+    {
+     "id": "essence-of-flames",
+     "name": "烈焰精髓",
+     "nameEn": "Essence of Flames",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 0
+    },
+    {
+     "id": "essence-of-insulation",
+     "name": "隔絕精髓",
+     "nameEn": "Essence of Insulation",
+     "primary": 0.001447,
+     "secondary": 0.012539,
+     "volume": 0.0,
+     "change7d": -36.84
+    },
+    {
+     "id": "essence-of-ruin",
+     "name": "毀滅精髓",
+     "nameEn": "Essence of Ruin",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 50.0
+    },
+    {
+     "id": "lesser-essence-of-the-infinite",
+     "name": "低階無限精髓",
+     "nameEn": "Lesser Essence of the Infinite",
+     "primary": 0.001086,
+     "secondary": 0.009411,
+     "volume": 0.0,
+     "change7d": -50.0
+    }
+   ]
+  },
+  "Runes": {
+   "count": 144,
+   "lines": [
+    {
+     "id": "aldurs-legacy",
+     "name": "阿德爾的傳承",
+     "nameEn": "Aldur's Legacy",
+     "primary": 266.6,
+     "secondary": 2310.2223,
+     "volume": 13330,
+     "change7d": 179.4
+    },
+    {
+     "id": "astrids-creativity",
+     "name": "阿斯垂德的創造",
+     "nameEn": "Astrid's Creativity",
+     "primary": 4.69,
+     "secondary": 40.641195,
+     "volume": 988.7,
+     "change7d": 61.2
+    },
+    {
+     "id": "masterwork-rune",
+     "name": "匠鍛符文",
+     "nameEn": "Masterwork Rune",
+     "primary": 0.8464,
+     "secondary": 7.334479,
+     "volume": 696.3,
+     "change7d": 9.69
+    },
+    {
+     "id": "emergent-vigour",
+     "name": "活力湧現",
+     "nameEn": "Emergent Vigour",
+     "primary": 30.36,
+     "secondary": 263.08458,
+     "volume": 308.7,
+     "change7d": 77.79
+    },
+    {
+     "id": "perfect-iron-rune",
+     "name": "完美鍛鐵符文",
+     "nameEn": "Perfect Iron Rune",
+     "primary": 1.75,
+     "secondary": 15.164625,
+     "volume": 287.7,
+     "change7d": 62.39
+    },
+    {
+     "id": "kolrs-hunt",
+     "name": "克洛爾的狩獵",
+     "nameEn": "Kolr's Hunt",
+     "primary": 1.22,
+     "secondary": 10.57191,
+     "volume": 190.0,
+     "change7d": 18.4
+    },
+    {
+     "id": "uhtreds-sidereus",
+     "name": "烏特雷的星空",
+     "nameEn": "Uhtred's Sidereus",
+     "primary": 1.02,
+     "secondary": 8.83881,
+     "volume": 126.0,
+     "change7d": 35.2
+    },
+    {
+     "id": "serles-triumph",
+     "name": "瑟雷的凱旋",
+     "nameEn": "Serle's Triumph",
+     "primary": 1.95,
+     "secondary": 16.897725,
+     "volume": 83.37,
+     "change7d": 163.2
+    },
+    {
+     "id": "cadigans-epiphany",
+     "name": "卡迪根的頓悟",
+     "nameEn": "Cadigan's Epiphany",
+     "primary": 0.7533,
+     "secondary": 6.527721,
+     "volume": 81.73,
+     "change7d": 14.97
+    },
+    {
+     "id": "emergent-possibility",
+     "name": "潛能湧現",
+     "nameEn": "Emergent Possibility",
+     "primary": 10.78,
+     "secondary": 93.41409,
+     "volume": 80.83,
+     "change7d": 107.7
+    },
+    {
+     "id": "greater-rune-of-leadership",
+     "name": "高階領導符文",
+     "nameEn": "Greater Rune of Leadership",
+     "primary": 2.58,
+     "secondary": 22.35699,
+     "volume": 60.23,
+     "change7d": -30.91
+    },
+    {
+     "id": "perfect-mind-rune",
+     "name": "Perfect Mind Rune",
+     "nameEn": "Perfect Mind Rune",
+     "primary": 1.81,
+     "secondary": 15.684555,
+     "volume": 53.67,
+     "change7d": 22.4
+    },
+    {
+     "id": "perfect-storm-rune",
+     "name": "Perfect Storm Rune",
+     "nameEn": "Perfect Storm Rune",
+     "primary": 1.69,
+     "secondary": 14.644695,
+     "volume": 36.67,
+     "change7d": 9.3
+    },
+    {
+     "id": "perfect-body-rune",
+     "name": "Perfect Body Rune",
+     "nameEn": "Perfect Body Rune",
+     "primary": 1.96,
+     "secondary": 16.98438,
+     "volume": 32.67,
+     "change7d": 35.9
+    },
+    {
+     "id": "hedgewitch-assandras-rune-of-wisdom",
+     "name": "流浪女巫艾珊德菈的智慧符文",
+     "nameEn": "Hedgewitch Assandra's Rune of Wisdom",
+     "primary": 0.2004,
+     "secondary": 1.736566,
+     "volume": 29.53,
+     "change7d": -56.67
+    },
+    {
+     "id": "perfect-vision-rune",
+     "name": "Perfect Vision Rune",
+     "nameEn": "Perfect Vision Rune",
+     "primary": 1.77,
+     "secondary": 15.337935,
+     "volume": 26.26,
+     "change7d": 12.09
+    },
+    {
+     "id": "perfect-desert-rune",
+     "name": "Perfect Desert Rune",
+     "nameEn": "Perfect Desert Rune",
+     "primary": 1.57,
+     "secondary": 13.604835,
+     "volume": 24.28,
+     "change7d": 10.33
+    },
+    {
+     "id": "perfect-glacial-rune",
+     "name": "完美冰川符文",
+     "nameEn": "Perfect Glacial Rune",
+     "primary": 1.59,
+     "secondary": 13.778145,
+     "volume": 22.79,
+     "change7d": 0.36
+    },
+    {
+     "id": "greater-iron-rune",
+     "name": "高階鍛鐵符文",
+     "nameEn": "Greater Iron Rune",
+     "primary": 0.01673,
+     "secondary": 0.144974,
+     "volume": 20.61,
+     "change7d": 58.2
+    },
+    {
+     "id": "perfect-resolve-rune",
+     "name": "Perfect Resolve Rune",
+     "nameEn": "Perfect Resolve Rune",
+     "primary": 1.96,
+     "secondary": 16.98438,
+     "volume": 15.67,
+     "change7d": 5.04
+    },
+    {
+     "id": "perfect-rebirth-rune",
+     "name": "Perfect Rebirth Rune",
+     "nameEn": "Perfect Rebirth Rune",
+     "primary": 1.9,
+     "secondary": 16.46445,
+     "volume": 12.06,
+     "change7d": -8.84
+    },
+    {
+     "id": "farruls-rune-of-the-chase",
+     "name": "費爾羅的追擊符文",
+     "nameEn": "Farrul's Rune of the Chase",
+     "primary": 0.07115,
+     "secondary": 0.61655,
+     "volume": 10.7,
+     "change7d": -26.06
+    },
+    {
+     "id": "greater-rune-of-alacrity",
+     "name": "高階迅捷符文",
+     "nameEn": "Greater Rune of Alacrity",
+     "primary": 0.7502,
+     "secondary": 6.500858,
+     "volume": 10.5,
+     "change7d": 6.87
+    },
+    {
+     "id": "perfect-robust-rune",
+     "name": "Perfect Robust Rune",
+     "nameEn": "Perfect Robust Rune",
+     "primary": 1.97,
+     "secondary": 17.071035,
+     "volume": 10.5,
+     "change7d": 9.38
+    },
+    {
+     "id": "katlas-gloom",
+     "name": "卡特拉的愁悵",
+     "nameEn": "Katla's Gloom",
+     "primary": 0.2959,
+     "secondary": 2.564121,
+     "volume": 10.41,
+     "change7d": -27.65
+    },
+    {
+     "id": "perfect-ward-rune",
+     "name": "Perfect Ward Rune",
+     "nameEn": "Perfect Ward Rune",
+     "primary": 2.04,
+     "secondary": 17.67762,
+     "volume": 9.5,
+     "change7d": 1.79
+    },
+    {
+     "id": "saqawals-rune-of-the-sky",
+     "name": "斯卡沃的天空符文",
+     "nameEn": "Saqawal's Rune of the Sky",
+     "primary": 0.07173,
+     "secondary": 0.621576,
+     "volume": 8.88,
+     "change7d": 4.74
+    },
+    {
+     "id": "thruds-might",
+     "name": "索魯德的強權",
+     "nameEn": "Thrud's Might",
+     "primary": 0.2562,
+     "secondary": 2.220101,
+     "volume": 8.75,
+     "change7d": -37.36
+    },
+    {
+     "id": "perfect-adept-rune",
+     "name": "Perfect Adept Rune",
+     "nameEn": "Perfect Adept Rune",
+     "primary": 1.96,
+     "secondary": 16.98438,
+     "volume": 8.5,
+     "change7d": 34.06
+    },
+    {
+     "id": "warding-rune-of-reinforcement",
+     "name": "增援保護符文",
+     "nameEn": "Warding Rune of Reinforcement",
+     "primary": 0.1477,
+     "secondary": 1.279894,
+     "volume": 8.49,
+     "change7d": 261.9
+    },
+    {
+     "id": "rune-of-foundations",
+     "name": "崇敬基準符文",
+     "nameEn": "Rune of Foundations",
+     "primary": 0.181,
+     "secondary": 1.568456,
+     "volume": 7.91,
+     "change7d": 96.29
+    },
+    {
+     "id": "medveds-tending",
+     "name": "梅德偉的照料",
+     "nameEn": "Medved's Tending",
+     "primary": 0.2018,
+     "secondary": 1.748698,
+     "volume": 5.89,
+     "change7d": -33.49
+    },
+    {
+     "id": "perfect-charging-rune",
+     "name": "Perfect Charging Rune",
+     "nameEn": "Perfect Charging Rune",
+     "primary": 1.96,
+     "secondary": 16.98438,
+     "volume": 5.56,
+     "change7d": 34.65
+    },
+    {
+     "id": "craiceanns-rune-of-warding",
+     "name": "奎爾珊的守護符文",
+     "nameEn": "Craiceann's Rune of Warding",
+     "primary": 0.06859,
+     "secondary": 0.594367,
+     "volume": 5.3,
+     "change7d": 56.43
+    },
+    {
+     "id": "greater-rune-of-tithing",
+     "name": "高階奉獻符文",
+     "nameEn": "Greater Rune of Tithing",
+     "primary": 0.5101,
+     "secondary": 4.420272,
+     "volume": 5.27,
+     "change7d": 42.47
+    },
+    {
+     "id": "perfect-inspiration-rune",
+     "name": "Perfect Inspiration Rune",
+     "nameEn": "Perfect Inspiration Rune",
+     "primary": 1.8,
+     "secondary": 15.5979,
+     "volume": 5.1,
+     "change7d": 4.87
+    },
+    {
+     "id": "warding-rune-of-heart",
+     "name": "心源保護符文",
+     "nameEn": "Warding Rune of Heart",
+     "primary": 0.1814,
+     "secondary": 1.571922,
+     "volume": 3.78,
+     "change7d": 178.0
+    },
+    {
+     "id": "rune-of-the-blossom",
+     "name": "崇敬精通符文",
+     "nameEn": "Rune of the Blossom",
+     "primary": 0.09525,
+     "secondary": 0.825389,
+     "volume": 3.57,
+     "change7d": 123.8
+    },
+    {
+     "id": "rune-of-acrobatics",
+     "name": "崇敬巧技符文",
+     "nameEn": "Rune of Acrobatics",
+     "primary": 0.09435,
+     "secondary": 0.81759,
+     "volume": 3.11,
+     "change7d": 120.6
+    },
+    {
+     "id": "thane-grannells-rune-of-mastery",
+     "name": "爵士格蘭內爾的專精符文",
+     "nameEn": "Thane Grannell's Rune of Mastery",
+     "primary": 0.05529,
+     "secondary": 0.479115,
+     "volume": 2.24,
+     "change7d": 24.74
+    },
+    {
+     "id": "courtesan-mannans-rune-of-cruelty",
+     "name": "花魁蔓南的殘酷符文",
+     "nameEn": "Courtesan Mannan's Rune of Cruelty",
+     "primary": 0.04719,
+     "secondary": 0.408925,
+     "volume": 1.95,
+     "change7d": 41.63
+    },
+    {
+     "id": "iron-rune",
+     "name": "鍛鐵符文",
+     "nameEn": "Iron Rune",
+     "primary": 0.07479,
+     "secondary": 0.648093,
+     "volume": 1.92,
+     "change7d": 240.8
+    },
+    {
+     "id": "fenumus-rune-of-spinning",
+     "name": "菲恩絲的轉動符文",
+     "nameEn": "Fenumus' Rune of Spinning",
+     "primary": 0.02184,
+     "secondary": 0.189255,
+     "volume": 1.91,
+     "change7d": -17.11
+    },
+    {
+     "id": "fenumus-rune-of-agony",
+     "name": "菲恩絲的苦痛符文",
+     "nameEn": "Fenumus' Rune of Agony",
+     "primary": 0.05771,
+     "secondary": 0.500086,
+     "volume": 1.84,
+     "change7d": 228.8
+    },
+    {
+     "id": "greater-mind-rune",
+     "name": "高階心靈符文",
+     "nameEn": "Greater Mind Rune",
+     "primary": 0.01353,
+     "secondary": 0.117244,
+     "volume": 1.73,
+     "change7d": 109.9
+    },
+    {
+     "id": "countess-seskes-rune-of-archery",
+     "name": "伯爵夫人瑟絲可的箭術符文",
+     "nameEn": "Countess Seske's Rune of Archery",
+     "primary": 0.03017,
+     "secondary": 0.261438,
+     "volume": 1.52,
+     "change7d": 1.78
+    },
+    {
+     "id": "lesser-iron-rune",
+     "name": "低階鍛鐵符文",
+     "nameEn": "Lesser Iron Rune",
+     "primary": 0.04274,
+     "secondary": 0.370363,
+     "volume": 1.31,
+     "change7d": 279.2
+    },
+    {
+     "id": "greater-ward-rune",
+     "name": "高階保護符文",
+     "nameEn": "Greater Ward Rune",
+     "primary": 0.06065,
+     "secondary": 0.525563,
+     "volume": 1.27,
+     "change7d": 15.11
+    },
+    {
+     "id": "passion-of-aldur",
+     "name": "阿德爾的熱情",
+     "nameEn": "Passion of Aldur",
+     "primary": 0.0224,
+     "secondary": 0.194107,
+     "volume": 1.27,
+     "change7d": -18.23
+    },
+    {
+     "id": "greater-resolve-rune",
+     "name": "高階決心符文",
+     "nameEn": "Greater Resolve Rune",
+     "primary": 0.02884,
+     "secondary": 0.249913,
+     "volume": 1.23,
+     "change7d": 99.59
+    },
+    {
+     "id": "the-greatwolfs-rune-of-willpower",
+     "name": "巨狼意志符文",
+     "nameEn": "The Greatwolf's Rune of Willpower",
+     "primary": 0.03479,
+     "secondary": 0.301473,
+     "volume": 1.17,
+     "change7d": 73.92
+    },
+    {
+     "id": "greater-body-rune",
+     "name": "高階肉體符文",
+     "nameEn": "Greater Body Rune",
+     "primary": 0.01116,
+     "secondary": 0.096707,
+     "volume": 1.11,
+     "change7d": 84.95
+    },
+    {
+     "id": "perfect-stone-rune",
+     "name": "Perfect Stone Rune",
+     "nameEn": "Perfect Stone Rune",
+     "primary": 2,
+     "secondary": 17.331,
+     "volume": 1.0,
+     "change7d": 20
+    },
+    {
+     "id": "the-greatwolfs-rune-of-claws",
+     "name": "巨狼之爪符文",
+     "nameEn": "The Greatwolf's Rune of Claws",
+     "primary": 0.02145,
+     "secondary": 0.185875,
+     "volume": 1.0,
+     "change7d": 30.63
+    },
+    {
+     "id": "rune-of-renown",
+     "name": "崇敬聲望符文",
+     "nameEn": "Rune of Renown",
+     "primary": 0.06004,
+     "secondary": 0.520277,
+     "volume": 0.98,
+     "change7d": 72.08
+    },
+    {
+     "id": "farruls-rune-of-the-hunt",
+     "name": "費爾羅的狩獵符文",
+     "nameEn": "Farrul's Rune of the Hunt",
+     "primary": 0.0134,
+     "secondary": 0.116118,
+     "volume": 0.92,
+     "change7d": -10.78
+    },
+    {
+     "id": "craiceanns-rune-of-recovery",
+     "name": "奎爾珊的恢復符文",
+     "nameEn": "Craiceann's Rune of Recovery",
+     "primary": 0.02515,
+     "secondary": 0.217937,
+     "volume": 0.8,
+     "change7d": 68.15
+    },
+    {
+     "id": "greater-storm-rune",
+     "name": "高階暴風符文",
+     "nameEn": "Greater Storm Rune",
+     "primary": 0.002626,
+     "secondary": 0.022756,
+     "volume": 0.77,
+     "change7d": -40.69
+    },
+    {
+     "id": "emergent-instinct",
+     "name": "直覺湧現",
+     "nameEn": "Emergent Instinct",
+     "primary": 0.1912,
+     "secondary": 1.656844,
+     "volume": 0.76,
+     "change7d": 227.9
+    },
+    {
+     "id": "saqawals-rune-of-memory",
+     "name": "斯卡沃的記憶符文",
+     "nameEn": "Saqawal's Rune of Memory",
+     "primary": 0.03173,
+     "secondary": 0.274956,
+     "volume": 0.69,
+     "change7d": 33.52
+    },
+    {
+     "id": "rune-of-the-prism",
+     "name": "崇敬稜鏡符文",
+     "nameEn": "Rune of the Prism",
+     "primary": 0.03609,
+     "secondary": 0.312738,
+     "volume": 0.67,
+     "change7d": 160.9
+    },
+    {
+     "id": "lesser-storm-rune",
+     "name": "低階暴風符文",
+     "nameEn": "Lesser Storm Rune",
+     "primary": 0.02371,
+     "secondary": 0.205459,
+     "volume": 0.65,
+     "change7d": 101.1
+    },
+    {
+     "id": "rune-of-the-hunt",
+     "name": "崇敬狩獵符文",
+     "nameEn": "Rune of the Hunt",
+     "primary": 0.04247,
+     "secondary": 0.368024,
+     "volume": 0.64,
+     "change7d": 101.0
+    },
+    {
+     "id": "rune-of-reach",
+     "name": "崇敬觸及符文",
+     "nameEn": "Rune of Reach",
+     "primary": 0.05927,
+     "secondary": 0.513604,
+     "volume": 0.62,
+     "change7d": 164.2
+    },
+    {
+     "id": "storm-rune",
+     "name": "暴風符文",
+     "nameEn": "Storm Rune",
+     "primary": 0.04744,
+     "secondary": 0.411091,
+     "volume": 0.59,
+     "change7d": 391.9
+    },
+    {
+     "id": "greater-rebirth-rune",
+     "name": "高階重生符文",
+     "nameEn": "Greater Rebirth Rune",
+     "primary": 0.01159,
+     "secondary": 0.100433,
+     "volume": 0.54,
+     "change7d": 159.5
+    },
+    {
+     "id": "greater-desert-rune",
+     "name": "高階沙漠符文",
+     "nameEn": "Greater Desert Rune",
+     "primary": 0.001845,
+     "secondary": 0.015988,
+     "volume": 0.48,
+     "change7d": -45.21
+    },
+    {
+     "id": "rune-of-accumulation",
+     "name": "崇敬積累符文",
+     "nameEn": "Rune of Accumulation",
+     "primary": 0.05393,
+     "secondary": 0.46733,
+     "volume": 0.45,
+     "change7d": 101.8
+    },
+    {
+     "id": "warding-rune-of-equinox",
+     "name": "均衡保護符文",
+     "nameEn": "Warding Rune of Equinox",
+     "primary": 0.04321,
+     "secondary": 0.374436,
+     "volume": 0.45,
+     "change7d": 106.8
+    },
+    {
+     "id": "greater-robust-rune",
+     "name": "高階堅實符文",
+     "nameEn": "Greater Robust Rune",
+     "primary": 0.009426,
+     "secondary": 0.081681,
+     "volume": 0.44,
+     "change7d": 37.34
+    },
+    {
+     "id": "emergent-protection",
+     "name": "護佑湧現",
+     "nameEn": "Emergent Protection",
+     "primary": 0.1305,
+     "secondary": 1.130848,
+     "volume": 0.41,
+     "change7d": 1095
+    },
+    {
+     "id": "glacial-rune",
+     "name": "冰川符文",
+     "nameEn": "Glacial Rune",
+     "primary": 0.05771,
+     "secondary": 0.500086,
+     "volume": 0.4,
+     "change7d": -60
+    },
+    {
+     "id": "greater-glacial-rune",
+     "name": "高階冰川符文",
+     "nameEn": "Greater Glacial Rune",
+     "primary": 0.001957,
+     "secondary": 0.016958,
+     "volume": 0.4,
+     "change7d": -48.41
+    },
+    {
+     "id": "lesser-resolve-rune",
+     "name": "低階決心符文",
+     "nameEn": "Lesser Resolve Rune",
+     "primary": 0.1212,
+     "secondary": 1.050259,
+     "volume": 0.36,
+     "change7d": 181.8
+    },
+    {
+     "id": "robust-rune",
+     "name": "堅實符文",
+     "nameEn": "Robust Rune",
+     "primary": 0.05309,
+     "secondary": 0.460051,
+     "volume": 0.29,
+     "change7d": 185.0
+    },
+    {
+     "id": "lesser-robust-rune",
+     "name": "低階堅實符文",
+     "nameEn": "Lesser Robust Rune",
+     "primary": 0.08717,
+     "secondary": 0.755372,
+     "volume": 0.29,
+     "change7d": 112.4
+    },
+    {
+     "id": "thane-girts-rune-of-wildness",
+     "name": "爵士格特的野性符文",
+     "nameEn": "Thane Girt's Rune of Wildness",
+     "primary": 0.0354,
+     "secondary": 0.306759,
+     "volume": 0.29,
+     "change7d": 237.0
+    },
+    {
+     "id": "rune-of-vitality",
+     "name": "崇敬活力符文",
+     "nameEn": "Rune of Vitality",
+     "primary": 0.0295,
+     "secondary": 0.255632,
+     "volume": 0.28,
+     "change7d": 30.33
+    },
+    {
+     "id": "greater-charging-rune",
+     "name": "高階充能符文",
+     "nameEn": "Greater Charging Rune",
+     "primary": 0.03919,
+     "secondary": 0.339601,
+     "volume": 0.25,
+     "change7d": -12.27
+    },
+    {
+     "id": "warding-rune-of-hollowing",
+     "name": "空蝕保護符文",
+     "nameEn": "Warding Rune of Hollowing",
+     "primary": 0.01901,
+     "secondary": 0.164731,
+     "volume": 0.25,
+     "change7d": 158.6
+    },
+    {
+     "id": "greater-vision-rune",
+     "name": "高階遠見符文",
+     "nameEn": "Greater Vision Rune",
+     "primary": 0.002682,
+     "secondary": 0.023241,
+     "volume": 0.23,
+     "change7d": -60.67
+    },
+    {
+     "id": "warding-rune-of-disintegration",
+     "name": "崩解保護符文",
+     "nameEn": "Warding Rune of Disintegration",
+     "primary": 0.0513,
+     "secondary": 0.44454,
+     "volume": 0.23,
+     "change7d": -19.17
+    },
+    {
+     "id": "warding-rune-of-protection",
+     "name": "護佑保護符文",
+     "nameEn": "Warding Rune of Protection",
+     "primary": 0.02317,
+     "secondary": 0.20078,
+     "volume": 0.22,
+     "change7d": 47.14
+    },
+    {
+     "id": "desert-rune",
+     "name": "沙漠符文",
+     "nameEn": "Desert Rune",
+     "primary": 0.01464,
+     "secondary": 0.126863,
+     "volume": 0.22,
+     "change7d": -62.27
+    },
+    {
+     "id": "greater-adept-rune",
+     "name": "高階嫻熟符文",
+     "nameEn": "Greater Adept Rune",
+     "primary": 0.008668,
+     "secondary": 0.075113,
+     "volume": 0.2,
+     "change7d": -23.01
+    },
+    {
+     "id": "ancient-rune-of-detonation",
+     "name": "遠古引爆符文",
+     "nameEn": "Ancient Rune of Detonation",
+     "primary": 0.04055,
+     "secondary": 0.351386,
+     "volume": 0.19,
+     "change7d": 121.2
+    },
+    {
+     "id": "ward-rune",
+     "name": "保護符文",
+     "nameEn": "Ward Rune",
+     "primary": 0.2023,
+     "secondary": 1.753031,
+     "volume": 0.17,
+     "change7d": 884.1
+    },
+    {
+     "id": "ancient-rune-of-control",
+     "name": "遠古控制符文",
+     "nameEn": "Ancient Rune of Control",
+     "primary": 0.2,
+     "secondary": 1.7331,
+     "volume": 0.17,
+     "change7d": -80.0
+    },
+    {
+     "id": "lesser-desert-rune",
+     "name": "低階沙漠符文",
+     "nameEn": "Lesser Desert Rune",
+     "primary": 0.01718,
+     "secondary": 0.148873,
+     "volume": 0.16,
+     "change7d": 256.9
+    },
+    {
+     "id": "lesser-glacial-rune",
+     "name": "低階冰川符文",
+     "nameEn": "Lesser Glacial Rune",
+     "primary": 0.00948,
+     "secondary": 0.082149,
+     "volume": 0.16,
+     "change7d": 23.87
+    },
+    {
+     "id": "warding-rune-of-nourishment",
+     "name": "滋養保護符文",
+     "nameEn": "Warding Rune of Nourishment",
+     "primary": 0.03795,
+     "secondary": 0.328856,
+     "volume": 0.16,
+     "change7d": 450.2
+    },
+    {
+     "id": "voranas-carnage",
+     "name": "沃拉娜的殘殺",
+     "nameEn": "Vorana's Carnage",
+     "primary": 0.02298,
+     "secondary": 0.199133,
+     "volume": 0.16,
+     "change7d": -43.72
+    },
+    {
+     "id": "breath-of-aldur",
+     "name": "阿德爾的吐息",
+     "nameEn": "Breath of Aldur",
+     "primary": 0.008485,
+     "secondary": 0.073527,
+     "volume": 0.15,
+     "change7d": -48.32
+    },
+    {
+     "id": "rune-of-consistency",
+     "name": "崇敬連貫符文",
+     "nameEn": "Rune of Consistency",
+     "primary": 0.02689,
+     "secondary": 0.233015,
+     "volume": 0.14,
+     "change7d": 349.7
+    },
+    {
+     "id": "adept-rune",
+     "name": "嫻熟符文",
+     "nameEn": "Adept Rune",
+     "primary": 0.04993,
+     "secondary": 0.432668,
+     "volume": 0.13,
+     "change7d": 221.8
+    },
+    {
+     "id": "ancient-rune-of-splinters",
+     "name": "遠古分裂符文",
+     "nameEn": "Ancient Rune of Splinters",
+     "primary": 0.01688,
+     "secondary": 0.146274,
+     "volume": 0.12,
+     "change7d": 116.3
+    },
+    {
+     "id": "betrayal-of-aldur",
+     "name": "阿德爾的背叛",
+     "nameEn": "Betrayal of Aldur",
+     "primary": 0.01726,
+     "secondary": 0.149567,
+     "volume": 0.12,
+     "change7d": -28.32
+    },
+    {
+     "id": "greater-inspiration-rune",
+     "name": "高階啟發符文",
+     "nameEn": "Greater Inspiration Rune",
+     "primary": 0.008344,
+     "secondary": 0.072305,
+     "volume": 0.12,
+     "change7d": 276.8
+    },
+    {
+     "id": "rune-of-culmination",
+     "name": "崇敬終點符文",
+     "nameEn": "Rune of Culmination",
+     "primary": 0.01492,
+     "secondary": 0.129289,
+     "volume": 0.1,
+     "change7d": -77.91
+    },
+    {
+     "id": "thane-lelds-rune-of-spring",
+     "name": "爵士勒爾德的暖春符文",
+     "nameEn": "Thane Leld's Rune of Spring",
+     "primary": 0.01045,
+     "secondary": 0.090554,
+     "volume": 0.09,
+     "change7d": 16.28
+    },
+    {
+     "id": "fenumus-rune-of-draining",
+     "name": "菲恩絲的流失符文",
+     "nameEn": "Fenumus' Rune of Draining",
+     "primary": 0.01242,
+     "secondary": 0.107626,
+     "volume": 0.09,
+     "change7d": -9.91
+    },
+    {
+     "id": "ancient-rune-of-witchcraft",
+     "name": "遠古巫術符文",
+     "nameEn": "Ancient Rune of Witchcraft",
+     "primary": 0.01367,
+     "secondary": 0.118457,
+     "volume": 0.08,
+     "change7d": 31.12
+    },
+    {
+     "id": "ancient-rune-of-shattering",
+     "name": "遠古粉碎符文",
+     "nameEn": "Ancient Rune of Shattering",
+     "primary": 0.03944,
+     "secondary": 0.341767,
+     "volume": 0.08,
+     "change7d": 39.85
+    },
+    {
+     "id": "saqawals-rune-of-erosion",
+     "name": "斯卡沃的侵蝕符文",
+     "nameEn": "Saqawal's Rune of Erosion",
+     "primary": 0.006758,
+     "secondary": 0.058561,
+     "volume": 0.07,
+     "change7d": -59.65
+    },
+    {
+     "id": "resolve-rune",
+     "name": "決心符文",
+     "nameEn": "Resolve Rune",
+     "primary": 0.06332,
+     "secondary": 0.548699,
+     "volume": 0.06,
+     "change7d": 162.4
+    },
+    {
+     "id": "lesser-body-rune",
+     "name": "低階肉體符文",
+     "nameEn": "Lesser Body Rune",
+     "primary": 0.01727,
+     "secondary": 0.149653,
+     "volume": 0.06,
+     "change7d": 248.8
+    },
+    {
+     "id": "warding-rune-of-stability",
+     "name": "穩定保護符文",
+     "nameEn": "Warding Rune of Stability",
+     "primary": 0.04869,
+     "secondary": 0.421923,
+     "volume": 0.06,
+     "change7d": 93.63
+    },
+    {
+     "id": "lesser-ward-rune",
+     "name": "低階保護符文",
+     "nameEn": "Lesser Ward Rune",
+     "primary": 0.07002,
+     "secondary": 0.606758,
+     "volume": 0.05,
+     "change7d": 177.4
+    },
+    {
+     "id": "lesser-adept-rune",
+     "name": "低階嫻熟符文",
+     "nameEn": "Lesser Adept Rune",
+     "primary": 0.01558,
+     "secondary": 0.135008,
+     "volume": 0.04,
+     "change7d": -84.85
+    },
+    {
+     "id": "warding-rune-of-salvaging",
+     "name": "救援保護符文",
+     "nameEn": "Warding Rune of Salvaging",
+     "primary": 0.01545,
+     "secondary": 0.133882,
+     "volume": 0.04,
+     "change7d": 137.2
+    },
+    {
+     "id": "warding-rune-of-desperation",
+     "name": "絕望保護符文",
+     "nameEn": "Warding Rune of Desperation",
+     "primary": 0.07694,
+     "secondary": 0.666724,
+     "volume": 0.04,
+     "change7d": -33.33
+    },
+    {
+     "id": "ire-of-aldur",
+     "name": "阿德爾的聖怒",
+     "nameEn": "Ire of Aldur",
+     "primary": 0.006588,
+     "secondary": 0.057088,
+     "volume": 0.03,
+     "change7d": 50.93
+    },
+    {
+     "id": "warding-rune-of-armature",
+     "name": "鎧甲保護符文",
+     "nameEn": "Warding Rune of Armature",
+     "primary": 0.01375,
+     "secondary": 0.119151,
+     "volume": 0.03,
+     "change7d": 60.48
+    },
+    {
+     "id": "farruls-rune-of-grace",
+     "name": "費爾羅的優雅符文",
+     "nameEn": "Farrul's Rune of Grace",
+     "primary": 0.002964,
+     "secondary": 0.025685,
+     "volume": 0.03,
+     "change7d": -50.93
+    },
+    {
+     "id": "lady-hestras-rune-of-winter",
+     "name": "赫絲緹菈女士的寒冬符文",
+     "nameEn": "Lady Hestra's Rune of Winter",
+     "primary": 0.005307,
+     "secondary": 0.045988,
+     "volume": 0.02,
+     "change7d": 2.88
+    },
+    {
+     "id": "ancient-rune-of-the-horde",
+     "name": "遠古部族符文",
+     "nameEn": "Ancient Rune of the Horde",
+     "primary": 0.007599,
+     "secondary": 0.065849,
+     "volume": 0.02,
+     "change7d": -5.94
+    },
+    {
+     "id": "warding-rune-of-annihilation",
+     "name": "殲滅保護符文",
+     "nameEn": "Warding Rune of Annihilation",
+     "primary": 0.01911,
+     "secondary": 0.165598,
+     "volume": 0.02,
+     "change7d": 34.44
+    },
+    {
+     "id": "ancient-rune-of-the-titan",
+     "name": "遠古泰坦符文",
+     "nameEn": "Ancient Rune of the Titan",
+     "primary": 0.01334,
+     "secondary": 0.115598,
+     "volume": 0.02,
+     "change7d": 514.3
+    },
+    {
+     "id": "thane-myrks-rune-of-summer",
+     "name": "爵士邁爾克的盛夏符文",
+     "nameEn": "Thane Myrk's Rune of Summer",
+     "primary": 0.004214,
+     "secondary": 0.036516,
+     "volume": 0.01,
+     "change7d": 13.35
+    },
+    {
+     "id": "ancient-rune-of-retaliation",
+     "name": "遠古復仇符文",
+     "nameEn": "Ancient Rune of Retaliation",
+     "primary": 0.009118,
+     "secondary": 0.079012,
+     "volume": 0.01,
+     "change7d": 44
+    },
+    {
+     "id": "ancient-rune-of-prowess",
+     "name": "遠古卓越符文",
+     "nameEn": "Ancient Rune of Prowess",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.01,
+     "change7d": -52.76
+    },
+    {
+     "id": "lesser-inspiration-rune",
+     "name": "低階啟發符文",
+     "nameEn": "Lesser Inspiration Rune",
+     "primary": 0.01737,
+     "secondary": 0.15052,
+     "volume": 0.01,
+     "change7d": 600.0
+    },
+    {
+     "id": "ancient-rune-of-dueling",
+     "name": "遠古決鬥符文",
+     "nameEn": "Ancient Rune of Dueling",
+     "primary": 0.005645,
+     "secondary": 0.048917,
+     "volume": 0.0,
+     "change7d": 148.7
+    },
+    {
+     "id": "ancient-rune-of-discovery",
+     "name": "遠古探索符文",
+     "nameEn": "Ancient Rune of Discovery",
+     "primary": 0.008684,
+     "secondary": 0.075251,
+     "volume": 0.0,
+     "change7d": 166.7
+    },
+    {
+     "id": "warding-rune-of-bodyguards",
+     "name": "護衛保護符文",
+     "nameEn": "Warding Rune of Bodyguards",
+     "primary": 0.004776,
+     "secondary": 0.041386,
+     "volume": 0.0,
+     "change7d": -53.58
+    },
+    {
+     "id": "stone-rune",
+     "name": "岩石符文",
+     "nameEn": "Stone Rune",
+     "primary": 0.00199,
+     "secondary": 0.017244,
+     "volume": 0.0,
+     "change7d": 83.33
+    },
+    {
+     "id": "warding-rune-of-glancing",
+     "name": "斜擦保護符文",
+     "nameEn": "Warding Rune of Glancing",
+     "primary": 0.01086,
+     "secondary": 0.094107,
+     "volume": 0.0,
+     "change7d": -30.23
+    },
+    {
+     "id": "lesser-rebirth-rune",
+     "name": "低階重生符文",
+     "nameEn": "Lesser Rebirth Rune",
+     "primary": 0.01954,
+     "secondary": 0.169324,
+     "volume": 0.0,
+     "change7d": 800
+    },
+    {
+     "id": "mind-rune",
+     "name": "心靈符文",
+     "nameEn": "Mind Rune",
+     "primary": 0.003257,
+     "secondary": 0.028224,
+     "volume": 0.0,
+     "change7d": 92.15
+    },
+    {
+     "id": "ancient-rune-of-decay",
+     "name": "遠古腐朽符文",
+     "nameEn": "Ancient Rune of Decay",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": -82.86
+    },
+    {
+     "id": "greater-rune-of-nobility",
+     "name": "高階崇高符文",
+     "nameEn": "Greater Rune of Nobility",
+     "primary": 0.008684,
+     "secondary": 0.075251,
+     "volume": 0.0,
+     "change7d": 43.59
+    },
+    {
+     "id": "greater-stone-rune",
+     "name": "高階岩石符文",
+     "nameEn": "Greater Stone Rune",
+     "primary": 0.0002338,
+     "secondary": 0.002026,
+     "volume": 0.0,
+     "change7d": -60.14
+    },
+    {
+     "id": "rebirth-rune",
+     "name": "重生符文",
+     "nameEn": "Rebirth Rune",
+     "primary": 0.004342,
+     "secondary": 0.037626,
+     "volume": 0.0,
+     "change7d": -68.06
+    },
+    {
+     "id": "rune-of-vital-flame",
+     "name": "崇敬生命火焰符文",
+     "nameEn": "Rune of Vital Flame",
+     "primary": 0.001861,
+     "secondary": 0.016126,
+     "volume": 0.0,
+     "change7d": 2.86
+    },
+    {
+     "id": "warding-rune-of-courage",
+     "name": "勇氣保護符文",
+     "nameEn": "Warding Rune of Courage",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 0
+    },
+    {
+     "id": "warding-rune-of-symbiosis",
+     "name": "共生保護符文",
+     "nameEn": "Warding Rune of Symbiosis",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 25
+    },
+    {
+     "id": "warding-rune-of-obsession",
+     "name": "執念保護符文",
+     "nameEn": "Warding Rune of Obsession",
+     "primary": 0.003257,
+     "secondary": 0.028224,
+     "volume": 0.0,
+     "change7d": -14.29
+    },
+    {
+     "id": "rune-of-confrontation",
+     "name": "崇敬對峙符文",
+     "nameEn": "Rune of Confrontation",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 0
+    },
+    {
+     "id": "vision-rune",
+     "name": "遠見符文",
+     "nameEn": "Vision Rune",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": 11.11
+    },
+    {
+     "id": "lesser-vision-rune",
+     "name": "低階遠見符文",
+     "nameEn": "Lesser Vision Rune",
+     "primary": 0.001447,
+     "secondary": 0.012539,
+     "volume": 0.0,
+     "change7d": 0
+    },
+    {
+     "id": "ancient-rune-of-animosity",
+     "name": "遠古敵意符文",
+     "nameEn": "Ancient Rune of Animosity",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": -10.71
+    },
+    {
+     "id": "body-rune",
+     "name": "肉體符文",
+     "nameEn": "Body Rune",
+     "primary": 0.0005428,
+     "secondary": 0.004704,
+     "volume": 0.0,
+     "change7d": -85.58
+    },
+    {
+     "id": "inspiration-rune",
+     "name": "啟發符文",
+     "nameEn": "Inspiration Rune",
+     "primary": 0.002171,
+     "secondary": 0.018813,
+     "volume": 0.0,
+     "change7d": -6.67
+    },
+    {
+     "id": "lesser-mind-rune",
+     "name": "低階心靈符文",
+     "nameEn": "Lesser Mind Rune",
+     "primary": 0.0004342,
+     "secondary": 0.003763,
+     "volume": 0.0,
+     "change7d": -60
+    }
+   ]
+  },
+  "Ritual": {
+   "count": 39,
+   "lines": [
+    {
+     "id": "omen-of-whittling",
+     "name": "削切之兆",
+     "nameEn": "Omen of Whittling",
+     "primary": 9.41,
+     "secondary": 81.542355,
+     "volume": 34072,
+     "change7d": 78.83
+    },
+    {
+     "id": "omen-of-light",
+     "name": "光明之兆",
+     "nameEn": "Omen of Light",
+     "primary": 5.75,
+     "secondary": 49.826625,
+     "volume": 30068,
+     "change7d": 27.16
+    },
+    {
+     "id": "omen-of-sinistral-erasure",
+     "name": "左旋抺除之兆",
+     "nameEn": "Omen of Sinistral Erasure",
+     "primary": 14.07,
+     "secondary": 121.923585,
+     "volume": 11057,
+     "change7d": 56.6
+    },
+    {
+     "id": "omen-of-sinistral-annulment",
+     "name": "左旋廢止之兆",
+     "nameEn": "Omen of Sinistral Annulment",
+     "primary": 14.95,
+     "secondary": 129.549225,
+     "volume": 8798,
+     "change7d": 38.95
+    },
+    {
+     "id": "omen-of-dextral-erasure",
+     "name": "右旋抺除之兆",
+     "nameEn": "Omen of Dextral Erasure",
+     "primary": 8.49,
+     "secondary": 73.570095,
+     "volume": 6747,
+     "change7d": 45.83
+    },
+    {
+     "id": "omen-of-dextral-annulment",
+     "name": "右旋廢止之兆",
+     "nameEn": "Omen of Dextral Annulment",
+     "primary": 8.56,
+     "secondary": 74.17668,
+     "volume": 5829,
+     "change7d": 68.13
+    },
+    {
+     "id": "omen-of-chaotic-quantity",
+     "name": "混沌數量之兆",
+     "nameEn": "Omen of Chaotic Quantity",
+     "primary": 0.5828,
+     "secondary": 5.050253,
+     "volume": 3269,
+     "change7d": -11.57
+    },
+    {
+     "id": "omen-of-chaotic-rarity",
+     "name": "混沌稀有度之兆",
+     "nameEn": "Omen of Chaotic Rarity",
+     "primary": 0.4667,
+     "secondary": 4.044189,
+     "volume": 2351,
+     "change7d": 73.51
+    },
+    {
+     "id": "omen-of-abyssal-echoes",
+     "name": "深淵迴響之兆",
+     "nameEn": "Omen of Abyssal Echoes",
+     "primary": 0.2526,
+     "secondary": 2.188905,
+     "volume": 1952,
+     "change7d": -31.58
+    },
+    {
+     "id": "head-of-the-king",
+     "name": "國王首級",
+     "nameEn": "Head of the King",
+     "primary": 1.91,
+     "secondary": 16.551105,
+     "volume": 1344,
+     "change7d": -4.63
+    },
+    {
+     "id": "omen-of-chance",
+     "name": "機會之兆",
+     "nameEn": "Omen of Chance",
+     "primary": 10.43,
+     "secondary": 90.381165,
+     "volume": 1255,
+     "change7d": 54.2
+    },
+    {
+     "id": "omen-of-the-hunt",
+     "name": "狩獵之兆",
+     "nameEn": "Omen of the Hunt",
+     "primary": 3.21,
+     "secondary": 27.816255,
+     "volume": 750.9,
+     "change7d": 286.9
+    },
+    {
+     "id": "omen-of-dextral-crystallisation",
+     "name": "右旋結晶之兆",
+     "nameEn": "Omen of Dextral Crystallisation",
+     "primary": 0.4716,
+     "secondary": 4.08665,
+     "volume": 416.2,
+     "change7d": 16.04
+    },
+    {
+     "id": "omen-of-chaotic-effectiveness",
+     "name": "混沌效用之兆",
+     "nameEn": "Omen of Chaotic Effectiveness",
+     "primary": 0.1639,
+     "secondary": 1.420275,
+     "volume": 403.4,
+     "change7d": 308.5
+    },
+    {
+     "id": "omen-of-sinistral-crystallisation",
+     "name": "左旋結晶之兆",
+     "nameEn": "Omen of Sinistral Crystallisation",
+     "primary": 0.299,
+     "secondary": 2.590984,
+     "volume": 290.0,
+     "change7d": -35.14
+    },
+    {
+     "id": "omen-of-bartering",
+     "name": "還價之兆",
+     "nameEn": "Omen of Bartering",
+     "primary": 0.04461,
+     "secondary": 0.386568,
+     "volume": 187.8,
+     "change7d": 40.26
+    },
+    {
+     "id": "omen-of-chaotic-monsters",
+     "name": "混沌怪物之兆",
+     "nameEn": "Omen of Chaotic Monsters",
+     "primary": 0.0738,
+     "secondary": 0.639514,
+     "volume": 183.2,
+     "change7d": -36.32
+    },
+    {
+     "id": "omen-of-secret-compartments",
+     "name": "密室之兆",
+     "nameEn": "Omen of Secret Compartments",
+     "primary": 0.7721,
+     "secondary": 6.690633,
+     "volume": 154.5,
+     "change7d": -57.22
+    },
+    {
+     "id": "omen-of-the-blessed",
+     "name": "祝福之兆",
+     "nameEn": "Omen of the Blessed",
+     "primary": 0.2963,
+     "secondary": 2.567588,
+     "volume": 150.7,
+     "change7d": 10.4
+    },
+    {
+     "id": "omen-of-sanctification",
+     "name": "聖化之兆",
+     "nameEn": "Omen of Sanctification",
+     "primary": 0.9205,
+     "secondary": 7.976593,
+     "volume": 120.4,
+     "change7d": 4.09
+    },
+    {
+     "id": "sacred-bloom",
+     "name": "sacred-bloom",
+     "nameEn": "sacred-bloom",
+     "primary": 0.09335,
+     "secondary": 0.808924,
+     "volume": 104.4,
+     "change7d": 90.6
+    },
+    {
+     "id": "omen-of-amelioration",
+     "name": "改善之兆",
+     "nameEn": "Omen of Amelioration",
+     "primary": 0.06476,
+     "secondary": 0.561178,
+     "volume": 71.58,
+     "change7d": -38.04
+    },
+    {
+     "id": "an-audience-with-the-king",
+     "name": "覲見國王",
+     "nameEn": "An Audience with the King",
+     "primary": 0.09175,
+     "secondary": 0.79506,
+     "volume": 63.63,
+     "change7d": -62.98
+    },
+    {
+     "id": "omen-of-sinistral-exaltation",
+     "name": "左旋提升之兆",
+     "nameEn": "Omen of Sinistral Exaltation",
+     "primary": 0.0608,
+     "secondary": 0.526862,
+     "volume": 57.67,
+     "change7d": 7.54
+    },
+    {
+     "id": "omen-of-greater-exaltation",
+     "name": "大幅提升之兆",
+     "nameEn": "Omen of Greater Exaltation",
+     "primary": 0.01104,
+     "secondary": 0.095667,
+     "volume": 16.76,
+     "change7d": 36.46
+    },
+    {
+     "id": "omen-of-dextral-exaltation",
+     "name": "右旋提升之兆",
+     "nameEn": "Omen of Dextral Exaltation",
+     "primary": 0.01827,
+     "secondary": 0.158319,
+     "volume": 13.48,
+     "change7d": 98.21
+    },
+    {
+     "id": "omen-of-catalysing-exaltation",
+     "name": "催化喜悅之兆",
+     "nameEn": "Omen of Catalysing Exaltation",
+     "primary": 0.03732,
+     "secondary": 0.323396,
+     "volume": 13.17,
+     "change7d": 22.29
+    },
+    {
+     "id": "omen-of-answered-prayers",
+     "name": "回應祈禱之兆",
+     "nameEn": "Omen of Answered Prayers",
+     "primary": 0.1837,
+     "secondary": 1.591852,
+     "volume": 12.21,
+     "change7d": -54.5
+    },
+    {
+     "id": "omen-of-resurgence",
+     "name": "復興之兆",
+     "nameEn": "Omen of Resurgence",
+     "primary": 0.01046,
+     "secondary": 0.090641,
+     "volume": 12.13,
+     "change7d": 33.09
+    },
+    {
+     "id": "omen-of-the-ancients",
+     "name": "遠古之兆",
+     "nameEn": "Omen of the Ancients",
+     "primary": 0.01533,
+     "secondary": 0.132842,
+     "volume": 10.62,
+     "change7d": -7.05
+    },
+    {
+     "id": "omen-of-putrefaction",
+     "name": "腐敗之兆",
+     "nameEn": "Omen of Putrefaction",
+     "primary": 0.009175,
+     "secondary": 0.079506,
+     "volume": 5.58,
+     "change7d": 189.6
+    },
+    {
+     "id": "omen-of-sinistral-necromancy",
+     "name": "左旋死靈術之兆",
+     "nameEn": "Omen of Sinistral Necromancy",
+     "primary": 0.002607,
+     "secondary": 0.022591,
+     "volume": 5.42,
+     "change7d": -7.69
+    },
+    {
+     "id": "omen-of-dextral-necromancy",
+     "name": "右旋死靈術之兆",
+     "nameEn": "Omen of Dextral Necromancy",
+     "primary": 0.00255,
+     "secondary": 0.022097,
+     "volume": 5.04,
+     "change7d": -23.35
+    },
+    {
+     "id": "omen-of-reinforcements",
+     "name": "增援之兆",
+     "nameEn": "Omen of Reinforcements",
+     "primary": 0.07593,
+     "secondary": 0.657971,
+     "volume": 4.69,
+     "change7d": 11.59
+    },
+    {
+     "id": "omen-of-the-blackblooded",
+     "name": "黑血者之兆",
+     "nameEn": "Omen of the Blackblooded",
+     "primary": 0.003915,
+     "secondary": 0.033925,
+     "volume": 1.42,
+     "change7d": 104.8
+    },
+    {
+     "id": "omen-of-gambling",
+     "name": "博弈之兆",
+     "nameEn": "Omen of Gambling",
+     "primary": 0.0007728,
+     "secondary": 0.006697,
+     "volume": 0.29,
+     "change7d": -59.78
+    },
+    {
+     "id": "omen-of-refreshment",
+     "name": "刷新之兆",
+     "nameEn": "Omen of Refreshment",
+     "primary": 0.001315,
+     "secondary": 0.011395,
+     "volume": 0.17,
+     "change7d": -40.49
+    },
+    {
+     "id": "omen-of-the-liege",
+     "name": "諸侯之兆",
+     "nameEn": "Omen of the Liege",
+     "primary": 0.0002916,
+     "secondary": 0.002527,
+     "volume": 0.04,
+     "change7d": -30.62
+    },
+    {
+     "id": "omen-of-the-sovereign",
+     "name": "領主之兆",
+     "nameEn": "Omen of the Sovereign",
+     "primary": 0.0001696,
+     "secondary": 0.00147,
+     "volume": 0.02,
+     "change7d": -50.35
+    }
+   ]
+  }
+ },
+ "primary": "divine",
+ "secondary": "chaos",
+ "rate": 8.6655
+}

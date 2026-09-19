@@ -6,6 +6,7 @@
 @using Sidekick.Common.Ui.Tabs
 @using Sidekick.Game.Parser
 @using Sidekick.Game.Parser.Items
+@using Sidekick.Modules.BuildTarget.Components
 @using Sidekick.Modules.Items.AreaInformation
 @using Sidekick.Modules.Items.Components
 @using Sidekick.Modules.Items.Exchange
@@ -41,6 +42,7 @@
                         <TabList @ref="TabList"
                                  OnChange="StateHasChanged">
                             <ChildContent>
+                                <BuildTargetTab/>
                                 <AreaTab/>
                                 <ExchangeTab/>
                                 <ValuationTab/>
@@ -64,6 +66,9 @@
 
                     @switch (TabList?.SelectedTab)
                     {
+                        case "buildtarget":
+                            <TargetResultPanel/>
+                            <CraftCostPanel/> break;
                         case "area":
                             <AreaResult/> break;
                         case "trade":

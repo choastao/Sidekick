@@ -1,0 +1,128 @@
+@using Sidekick.Game.Parser
+@using Sidekick.Game.TradeStats
+
+@* 全量词缀搜索选择器：直接复用解析器启动时已加载的交易席词缀表，不额外读盘 *@
+<div>
+    @if (!string.IsNullOrEmpty(Label))
+    {
+        <label class="flex gap-1 mb-1 text-base font-medium dark:text-zinc-300">@Label</label>
+    }
+
+    @* 用原生 input 绑 oninput：FormInput 只绑 onchange，要失焦才触发，不适合边打边搜 *@
+    <input type="text"
+           value="@query"
+           @oninput="OnInput"
+           class="@UiClasses.FormInputClasses p-2 text-base w-full" />
+
+    <TextBase Class="text-stone-500 text-xs mt-1">
+        @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Search_Library"].Value, TotalInLibrary)
+    </TextBase>
+
+    @if (!string.IsNullOrWhiteSpace(query))
+    {
+        <div class="mt-2 max-h-64 overflow-y-auto rounded border border-stone-700 bg-stone-900/60">
+            @if (Results.Count == 0)
+            {
+                <div class="px-3 py-2 text-stone-500 text-sm">@Resources["Search_No_Match"]</div>
+            }
+            else
+            {
+                @foreach (var stat in Results)
+                {
+                    <button type="button"
+                            class="block w-full text-left px-3 py-1 text-sm hover:bg-stone-700"
+                            @onclick="() => Pick(stat)">
+                        @stat.Text
+                    </button>
+                }
+
+                @if (TotalMatches > Results.Count)
+                {
+                    <div class="px-3 py-1 text-stone-500 text-xs">
+                        @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Search_More"].Value, TotalMatches, Results.Count)
+                    </div>
+                }
+            }
+        </div>
+    }
+</div>
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject StatParser StatParser
+
+@code {
+
+    private const int MaxResults = 40;
+
+    [Parameter]
+    public string? Label { get; set; }
+
+    [Parameter]
+    public EventCallback<TradeStatDefinition> OnPick { get; set; }
+
+    private string? query;
+    private List<TradeStatDefinition> Results { get; set; } = [];
+    private int TotalMatches { get; set; }
+
+    /// <summary>页面级缓存：词缀表在启动时已加载好，这里只做一次去重排序。</summary>
+    private List<TradeStatDefinition> all = [];
+
+    public int TotalInLibrary => all.Count;
+
+    protected override void OnInitialized()
+    {
+        all = BuildList();
+        base.OnInitialized();
+    }
+
+    private void OnInput(ChangeEventArgs e)
+    {
+        query = e.Value?.ToString();
+        Refresh();
+    }
+
+    private void Refresh()
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            Results = [];
+            TotalMatches = 0;
+            return;
+        }
+
+        var keyword = query.Trim();
+
+        var matched = all.Where(x => x.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
+        TotalMatches = matched.Count;
+        Results = [.. matched.Take(MaxResults)];
+    }
+
+    private List<TradeStatDefinition> BuildList()
+    {
+        try
+        {
+            return
+            [
+                .. StatParser.TradeDefinitions.Values
+                    .SelectMany(x => x)
+                    .GroupBy(x => x.Text)
+                    .Select(x => x.First())
+                    .OrderBy(x => x.Text),
+            ];
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private async Task Pick(TradeStatDefinition stat)
+    {
+        await OnPick.InvokeAsync(stat);
+
+        query = null;
+        Results = [];
+        TotalMatches = 0;
+    }
+
+}

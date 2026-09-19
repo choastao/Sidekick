@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
@@ -13,7 +13,7 @@ public partial class TransparentWindow : Window
 
     public TransparentWindow()
     {
-        Title = "Sidekick";
+        Title = "TAO";
         Width = 1;
         Height = 1;
         MinWidth = 1;

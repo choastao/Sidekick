@@ -41,6 +41,9 @@ public partial class Initialization
     [Inject]
     private IOptions<SidekickConfiguration> Configuration { get; set; } = null!;
 
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = null!;
+
     private int Count { get; set; }
 
     private string? Step { get; set; }
@@ -63,6 +66,18 @@ public partial class Initialization
         {
             Completed = 0;
             Count = Configuration.Value.InitializableServices.Count;
+
+            // 兜底：没有选择赛季时（首次运行、或保存的赛季已失效），不要进入初始化流程——
+            // LeagueProvider 会因为找不到联赛而抛异常，导致启动画面永久卡住。
+            // 直接引导到 Setup 页让用户选择语言和赛季。
+            var leagueId = await SettingsService.GetString(SettingKeys.LeagueId);
+            if (string.IsNullOrEmpty(leagueId))
+            {
+                Logger.LogWarning("[Initialization] No league selected, redirecting to setup.");
+                NavigationManager.NavigateTo("/setup");
+                return;
+            }
+
             var version = ApplicationService.GetVersion();
             var previousVersion = await SettingsService.GetString(SettingKeys.Version);
             if (version != previousVersion)
@@ -98,6 +113,18 @@ public partial class Initialization
             await SettingsService.Set(SettingKeys.LanguageParser, null);
             e.Actions = ExceptionActions.ExitApplication;
             throw;
+        }
+        catch (Exception e)
+        {
+            // 兜底：任何未预期的异常都不能再被这个未 await 的 Task 静默吞掉，
+            // 否则启动画面会永远停在某一进度上，界面上没有任何提示。
+            Logger.LogError(e, "[Initialization] Unexpected error while initializing.");
+            await InvokeAsync(
+                () =>
+                {
+                    Step = $"{Resources["Failed"]}: {e.Message}";
+                    StateHasChanged();
+                });
         }
     }
 

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Good" xml:space="preserve">
+    <value>好图</value>
+  </data>
+  <data name="Bad" xml:space="preserve">
+    <value>坏图</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>地图信息</value>
+  </data>
+  <data name="Provided_By" xml:space="preserve">
+    <value>信息由 poewiki.net 提供</value>
+  </data>
+  <data name="No_Drops" xml:space="preserve">
+    <value>这张地图没有掉落。</value>
+  </data>
+  <data name="Could_Not_Fetch" xml:space="preserve">
+    <value>无法从 Wiki 获取信息。</value>
+  </data>
+  <data name="Regex" xml:space="preserve">
+    <value>正则</value>
+  </data>
+  <data name="Tab" xml:space="preserve">
+    <value>地图信息</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="Area_Settings" xml:space="preserve">
+    <value>地图设置</value>
+  </data>
+  <data name="NoRegex" xml:space="preserve">
+    <value>未设置正则</value>
+  </data>
+  <data name="Settings_Description" xml:space="preserve">
+    <value>正则匹配通过时，地图会被标记为“好图”。建议使用下面的网站生成地图正则。</value>
+  </data>
+  <data name="Regex_Token_Invalid" xml:space="preserve">
+    <value>正则片段无效</value>
+  </data>
+  <data name="Regex_Token_Missing" xml:space="preserve">
+    <value>缺少正则：</value>
+  </data>
+  <data name="Use_Regex_Hotkeys" xml:space="preserve">
+    <value>你也可以在下面选择一个已配置的正则快捷键。</value>
+  </data>
+</root>

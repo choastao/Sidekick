@@ -1,0 +1,6279 @@
+{
+ "source": "PathOfBuilding-PoE2 src/Data/ModItem.lua",
+ "note": "type=Prefix/Suffix 决定预兆方向；level 是 tier 门槛；weight 用于命中率",
+ "modCount": 2220,
+ "presets": {
+  "Life": {
+   "label": "最大生命",
+   "type": "Prefix",
+   "tierCount": 13,
+   "minLevel": 1,
+   "maxLevel": 80,
+   "englishKeyword": "to maximum Life",
+   "normPattern": "to maximum life",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(10-19) to maximum Life",
+     "affix": "Hale",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 6,
+     "weight": {},
+     "text": "+(20-29) to maximum Life",
+     "affix": "Healthy",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(30-39) to maximum Life",
+     "affix": "Sanguine",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 24,
+     "weight": {},
+     "text": "+(40-59) to maximum Life",
+     "affix": "Stalwart",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(60-69) to maximum Life",
+     "affix": "Stout",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "+(70-84) to maximum Life",
+     "affix": "Robust",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(85-99) to maximum Life",
+     "affix": "Rotund",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(100-119) to maximum Life",
+     "affix": "Virile",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(120-149) to maximum Life",
+     "affix": "Athlete's",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(150-174) to maximum Life",
+     "affix": "Fecund",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(175-189) to maximum Life",
+     "affix": "Vigorous",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(190-199) to maximum Life",
+     "affix": "Rapturous",
+     "group": "IncreasedLife"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(200-214) to maximum Life",
+     "affix": "Prime",
+     "group": "IncreasedLife"
+    }
+   ]
+  },
+  "EnergyShield": {
+   "label": "最大能量护盾",
+   "type": "Prefix",
+   "tierCount": 21,
+   "minLevel": 1,
+   "maxLevel": 80,
+   "englishKeyword": "to maximum Energy Shield",
+   "normPattern": "to maximum energy shield",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(8-14) to maximum Energy Shield",
+     "affix": "Shining",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(10-17) to maximum Energy Shield",
+     "affix": "Shining",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(18-24) to maximum Energy Shield",
+     "affix": "Glimmering",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(15-20) to maximum Energy Shield",
+     "affix": "Glimmering",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(21-24) to maximum Energy Shield",
+     "affix": "Glittering",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(25-30) to maximum Energy Shield",
+     "affix": "Glittering",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(25-33) to maximum Energy Shield",
+     "affix": "Glowing",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(31-35) to maximum Energy Shield",
+     "affix": "Glowing",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(34-41) to maximum Energy Shield",
+     "affix": "Radiating",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(36-41) to maximum Energy Shield",
+     "affix": "Radiating",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(42-51) to maximum Energy Shield",
+     "affix": "Pulsing",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(42-47) to maximum Energy Shield",
+     "affix": "Pulsing",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(52-61) to maximum Energy Shield",
+     "affix": "Blazing",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(48-60) to maximum Energy Shield",
+     "affix": "Blazing",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(61-73) to maximum Energy Shield",
+     "affix": "Dazzling",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(62-70) to maximum Energy Shield",
+     "affix": "Dazzling",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(74-80) to maximum Energy Shield",
+     "affix": "Scintillating",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(71-79) to maximum Energy Shield",
+     "affix": "Scintillating",
+     "group": "EnergyShield"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(81-90) to maximum Energy Shield",
+     "affix": "Incandescent",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 79,
+     "weight": {},
+     "text": "+(91-96) to maximum Energy Shield",
+     "affix": "Resplendent",
+     "group": "LocalEnergyShield"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(80-89) to maximum Energy Shield",
+     "affix": "Incandescent",
+     "group": "EnergyShield"
+    }
+   ]
+  },
+  "Mana": {
+   "label": "最大魔力",
+   "type": "Prefix",
+   "tierCount": 25,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to maximum Mana",
+   "normPattern": "to maximum mana",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(10-14) to maximum Mana",
+     "affix": "Beryl",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(20-28) to maximum Mana",
+     "affix": "Beryl",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 6,
+     "weight": {},
+     "text": "+(15-24) to maximum Mana",
+     "affix": "Cobalt",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 6,
+     "weight": {},
+     "text": "+(29-48) to maximum Mana",
+     "affix": "Cobalt",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(25-34) to maximum Mana",
+     "affix": "Azure",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(49-68) to maximum Mana",
+     "affix": "Azure",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(35-54) to maximum Mana",
+     "affix": "Teal",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(69-108) to maximum Mana",
+     "affix": "Sapphire",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(55-64) to maximum Mana",
+     "affix": "Cerulean",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(109-128) to maximum Mana",
+     "affix": "Cerulean",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "+(65-79) to maximum Mana",
+     "affix": "Aqua",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "+(129-158) to maximum Mana",
+     "affix": "Aqua",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(80-89) to maximum Mana",
+     "affix": "Opalescent",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(159-178) to maximum Mana",
+     "affix": "Opalescent",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(90-104) to maximum Mana",
+     "affix": "Gentian",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(179-208) to maximum Mana",
+     "affix": "Gentian",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(105-124) to maximum Mana",
+     "affix": "Chalybeous",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(209-248) to maximum Mana",
+     "affix": "Chalybeous",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(125-149) to maximum Mana",
+     "affix": "Mazarine",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(249-298) to maximum Mana",
+     "affix": "Mazarine",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(150-164) to maximum Mana",
+     "affix": "Blue",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(299-328) to maximum Mana",
+     "affix": "Blue",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(165-179) to maximum Mana",
+     "affix": "Zaffre",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(231-251) to maximum Mana",
+     "affix": "Zaffre",
+     "group": "IncreasedMana"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(180-189) to maximum Mana",
+     "affix": "Ultramarine",
+     "group": "IncreasedMana"
+    }
+   ]
+  },
+  "IncreasedEnergyShield": {
+   "label": "增加能量护盾",
+   "type": "Prefix",
+   "tierCount": 8,
+   "minLevel": 2,
+   "maxLevel": 75,
+   "englishKeyword": "increased Energy Shield",
+   "normPattern": "increased energy shield",
+   "tiers": [
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Energy Shield",
+     "affix": "Protective",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Energy Shield",
+     "affix": "Strong-Willed",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(43-55)% increased Energy Shield",
+     "affix": "Resolute",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Energy Shield",
+     "affix": "Fearless",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Energy Shield",
+     "affix": "Dauntless",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Energy Shield",
+     "affix": "Indomitable",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Energy Shield",
+     "affix": "Unassailable",
+     "group": "LocalEnergyShieldPercent"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Energy Shield",
+     "affix": "Unfaltering",
+     "group": "LocalEnergyShieldPercent"
+    }
+   ]
+  },
+  "IncreasedArmour": {
+   "label": "增加护甲",
+   "type": "Prefix",
+   "tierCount": 39,
+   "minLevel": 2,
+   "maxLevel": 75,
+   "englishKeyword": "increased Armour",
+   "normPattern": "increased armour",
+   "tiers": [
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(10-14)% increased Armour",
+     "affix": "Reinforced",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Armour",
+     "affix": "Reinforced",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Armour and Evasion",
+     "affix": "Scrapper's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Armour and Energy Shield",
+     "affix": "Infixed",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Armour, Evasion and Energy Shield",
+     "affix": "Shadowy",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(15-20)% increased Armour",
+     "affix": "Layered",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Armour",
+     "affix": "Layered",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Armour and Evasion",
+     "affix": "Brawler's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Armour and Energy Shield",
+     "affix": "Ingrained",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Armour, Evasion and Energy Shield",
+     "affix": "Ethereal",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(21-26)% increased Armour",
+     "affix": "Lobstered",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(43-55)% increased Armour and Evasion",
+     "affix": "Fencer's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(43-55)% increased Armour and Energy Shield",
+     "affix": "Instilled",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(43-55)% increased Armour, Evasion and Energy Shield",
+     "affix": "Unworldly",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 35,
+     "weight": {},
+     "text": "(43-55)% increased Armour",
+     "affix": "Lobstered",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(27-32)% increased Armour",
+     "affix": "Buttressed",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Armour",
+     "affix": "Buttressed",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Armour and Evasion",
+     "affix": "Gladiator's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Armour and Energy Shield",
+     "affix": "Infused",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Armour, Evasion and Energy Shield",
+     "affix": "Ephemeral",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(33-38)% increased Armour",
+     "affix": "Thickened",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Armour",
+     "affix": "Thickened",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Armour and Evasion",
+     "affix": "Duelist's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Armour and Energy Shield",
+     "affix": "Inculcated",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Armour, Evasion and Energy Shield",
+     "affix": "Evanescent",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Armour",
+     "affix": "Girded",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Armour and Evasion",
+     "affix": "Hero's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Armour and Energy Shield",
+     "affix": "Interpolated",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Armour, Evasion and Energy Shield",
+     "affix": "Unreal",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(39-44)% increased Armour",
+     "affix": "Girded",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Armour",
+     "affix": "Impregnable",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Armour and Evasion",
+     "affix": "Legend's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Armour and Energy Shield",
+     "affix": "Inspired",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Armour, Evasion and Energy Shield",
+     "affix": "Incorporeal",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(45-50)% increased Armour",
+     "affix": "Impregnable",
+     "group": "GlobalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Armour",
+     "affix": "Impenetrable",
+     "group": "LocalPhysicalDamageReductionRatingPercent"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Armour and Evasion",
+     "affix": "Victor's",
+     "group": "LocalArmourAndEvasion"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Armour and Energy Shield",
+     "affix": "Interpermeated",
+     "group": "LocalArmourAndEnergyShield"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Armour, Evasion and Energy Shield",
+     "affix": "Ascendant",
+     "group": "LocalArmourAndEvasionAndEnergyShield"
+    }
+   ]
+  },
+  "Armour": {
+   "label": "护甲值",
+   "type": "Prefix",
+   "tierCount": 21,
+   "minLevel": 1,
+   "maxLevel": 80,
+   "englishKeyword": "to Armour",
+   "normPattern": "to armour",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(12-22) to Armour",
+     "affix": "Lacquered",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(16-27) to Armour",
+     "affix": "Lacquered",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(28-56) to Armour",
+     "affix": "Studded",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(23-51) to Armour",
+     "affix": "Studded",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(52-68) to Armour",
+     "affix": "Ribbed",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(57-77) to Armour",
+     "affix": "Ribbed",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(69-107) to Armour",
+     "affix": "Fortified",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(78-98) to Armour",
+     "affix": "Fortified",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(108-140) to Armour",
+     "affix": "Plated",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(99-127) to Armour",
+     "affix": "Plated",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(141-186) to Armour",
+     "affix": "Carapaced",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(128-159) to Armour",
+     "affix": "Carapaced",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(187-225) to Armour",
+     "affix": "Encased",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(160-190) to Armour",
+     "affix": "Encased",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(191-221) to Armour",
+     "affix": "Enveloped",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(226-267) to Armour",
+     "affix": "Enveloped",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(222-248) to Armour",
+     "affix": "Abating",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(268-311) to Armour",
+     "affix": "Abating",
+     "group": "PhysicalDamageReductionRating"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(249-277) to Armour",
+     "affix": "Unmoving",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 79,
+     "weight": {},
+     "text": "+(278-310) to Armour",
+     "affix": "Impervious",
+     "group": "LocalPhysicalDamageReductionRating"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(312-351) to Armour",
+     "affix": "Unmoving",
+     "group": "PhysicalDamageReductionRating"
+    }
+   ]
+  },
+  "Evasion": {
+   "label": "闪避值",
+   "type": "Prefix",
+   "tierCount": 85,
+   "minLevel": 1,
+   "maxLevel": 79,
+   "englishKeyword": "Evasion Rating",
+   "normPattern": "evasion rating",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(8-17) to Evasion Rating",
+     "affix": "Agile",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(11-18) to Evasion Rating",
+     "affix": "Agile",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Reinforced",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Layered",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Lobstered",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Buttressed",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Thickened",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Girded",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Impregnable",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Shade's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ghost's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Spectre's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Wraith's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Phantasm's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Nightmare's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Mirage's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Protective",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Strong-Willed",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Resolute",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Fearless",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Dauntless",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Indomitable",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Unassailable",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Scrapper's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Brawler's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Fencer's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Gladiator's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Duelist's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Hero's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Legend's",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Infixed",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ingrained",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Instilled",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Infused",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Inculcated",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Interpolated",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Inspired",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Shadowy",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ethereal",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Unworldly",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ephemeral",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Evanescent",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Unreal",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Illusory",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(7-8)% more Global Evasion Rating and Energy Shield",
+     "affix": "Shadowy",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-10)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ethereal",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(11-12)% more Global Evasion Rating and Energy Shield",
+     "affix": "Unworldly",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-14)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ephemeral",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-16)% more Global Evasion Rating and Energy Shield",
+     "affix": "Evanescent",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-18)% more Global Evasion Rating and Energy Shield",
+     "affix": "Unreal",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(19-20)% more Global Evasion Rating and Energy Shield",
+     "affix": "Incorporeal",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(21-22)% more Global Evasion Rating and Energy Shield",
+     "affix": "Ascendant",
+     "group": "HandWrapsMoreGlobalEvasionEnergyShield"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(10-14)% increased Evasion Rating",
+     "affix": "Shade's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(15-26)% increased Evasion Rating",
+     "affix": "Shade's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(19-46) to Evasion Rating",
+     "affix": "Dancer's",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(18-38) to Evasion Rating",
+     "affix": "Dancer's",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(39-51) to Evasion Rating",
+     "affix": "Acrobat's",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(15-20)% increased Evasion Rating",
+     "affix": "Ghost's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(47-66) to Evasion Rating",
+     "affix": "Acrobat's",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(27-42)% increased Evasion Rating",
+     "affix": "Ghost's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(52-79) to Evasion Rating",
+     "affix": "Fleet",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(67-87) to Evasion Rating",
+     "affix": "Fleet",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(80-107) to Evasion Rating",
+     "affix": "Blurred",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(21-26)% increased Evasion Rating",
+     "affix": "Spectre's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(88-116) to Evasion Rating",
+     "affix": "Blurred",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(43-55)% increased Evasion Rating",
+     "affix": "Spectre's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(108-141) to Evasion Rating",
+     "affix": "Phased",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(27-32)% increased Evasion Rating",
+     "affix": "Wraith's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(117-146) to Evasion Rating",
+     "affix": "Phased",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(56-67)% increased Evasion Rating",
+     "affix": "Wraith's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(142-174) to Evasion Rating",
+     "affix": "Vaporous",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(33-38)% increased Evasion Rating",
+     "affix": "Phantasm's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(147-176) to Evasion Rating",
+     "affix": "Vaporous",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "(68-79)% increased Evasion Rating",
+     "affix": "Phantasm's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(177-207) to Evasion Rating",
+     "affix": "Elusory",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(80-91)% increased Evasion Rating",
+     "affix": "Nightmare's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(175-202) to Evasion Rating",
+     "affix": "Elusory",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(208-234) to Evasion Rating",
+     "affix": "Adroit",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(92-100)% increased Evasion Rating",
+     "affix": "Mirage's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(203-233) to Evasion Rating",
+     "affix": "Adroit",
+     "group": "EvasionRating"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(39-44)% increased Evasion Rating",
+     "affix": "Nightmare's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(235-261) to Evasion Rating",
+     "affix": "Lissome",
+     "group": "LocalEvasionRating"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(101-110)% increased Evasion Rating",
+     "affix": "Illusion's",
+     "group": "LocalEvasionRatingIncreasePercent"
+    },
+    {
+     "level": 77,
+     "weight": {},
+     "text": "(45-50)% increased Evasion Rating",
+     "affix": "Mirage's",
+     "group": "GlobalEvasionRatingPercent"
+    },
+    {
+     "level": 79,
+     "weight": {},
+     "text": "+(262-300) to Evasion Rating",
+     "affix": "Fugitive",
+     "group": "LocalEvasionRating"
+    }
+   ]
+  },
+  "BlockChance": {
+   "label": "格挡率",
+   "type": "Suffix",
+   "tierCount": 10,
+   "minLevel": 8,
+   "maxLevel": 82,
+   "englishKeyword": "Chance to Block",
+   "normPattern": "chance to block",
+   "tiers": [
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(1-2)% chance to Block Projectile Attack Damage",
+     "affix": "of Deflection",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 19,
+     "weight": {},
+     "text": "+(3-4)% chance to Block Projectile Attack Damage",
+     "affix": "of Protection",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "+(5-6)% chance to Block Projectile Attack Damage",
+     "affix": "of Cover",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 42,
+     "weight": {},
+     "text": "+(1-2)% Chance to Block",
+     "affix": "of the Essence",
+     "group": "IncreasedShieldBlockPercentage"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "+(7-8)% chance to Block Projectile Attack Damage",
+     "affix": "of Asylum",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "+(3-4)% Chance to Block",
+     "affix": "of the Essence",
+     "group": "IncreasedShieldBlockPercentage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "+(9-10)% chance to Block Projectile Attack Damage",
+     "affix": "of Refuge",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "+(5-6)% Chance to Block",
+     "affix": "of the Essence",
+     "group": "IncreasedShieldBlockPercentage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "+(11-12)% chance to Block Projectile Attack Damage",
+     "affix": "of Sanctuary",
+     "group": "BlockVsProjectiles"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(7-8)% Chance to Block",
+     "affix": "of the Essence",
+     "group": "IncreasedShieldBlockPercentage"
+    }
+   ]
+  },
+  "LifeRegen": {
+   "label": "生命回复",
+   "type": "Suffix",
+   "tierCount": 11,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Life Regeneration",
+   "normPattern": "life regeneration",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(1-2) Life Regeneration per second",
+     "affix": "of the Newt",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 5,
+     "weight": {},
+     "text": "(2.1-3) Life Regeneration per second",
+     "affix": "of the Lizard",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "(3.1-4) Life Regeneration per second",
+     "affix": "of the Flatworm",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 17,
+     "weight": {},
+     "text": "(4.1-6) Life Regeneration per second",
+     "affix": "of the Starfish",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "(6.1-9) Life Regeneration per second",
+     "affix": "of the Hydra",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 35,
+     "weight": {},
+     "text": "(9.1-13) Life Regeneration per second",
+     "affix": "of the Troll",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 47,
+     "weight": {},
+     "text": "(13.1-18) Life Regeneration per second",
+     "affix": "of Convalescence",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "(18.1-23) Life Regeneration per second",
+     "affix": "of Recuperation",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "(23.1-29) Life Regeneration per second",
+     "affix": "of Resurgence",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(29.1-33) Life Regeneration per second",
+     "affix": "of Immortality",
+     "group": "LifeRegeneration"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(33.1-36) Life Regeneration per second",
+     "affix": "of the Phoenix",
+     "group": "LifeRegeneration"
+    }
+   ]
+  },
+  "ManaRegen": {
+   "label": "魔力回复率",
+   "type": "Suffix",
+   "tierCount": 13,
+   "minLevel": 1,
+   "maxLevel": 79,
+   "englishKeyword": "Mana Regeneration",
+   "normPattern": "mana regeneration",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(10-19)% increased Mana Regeneration Rate",
+     "affix": "of Excitement",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(15-29)% increased Mana Regeneration Rate",
+     "affix": "of Excitement",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "(20-29)% increased Mana Regeneration Rate",
+     "affix": "of Joy",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "(30-44)% increased Mana Regeneration Rate",
+     "affix": "of Joy",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 29,
+     "weight": {},
+     "text": "(30-39)% increased Mana Regeneration Rate",
+     "affix": "of Elation",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 29,
+     "weight": {},
+     "text": "(45-59)% increased Mana Regeneration Rate",
+     "affix": "of Elation",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 42,
+     "weight": {},
+     "text": "(40-49)% increased Mana Regeneration Rate",
+     "affix": "of Bliss",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 42,
+     "weight": {},
+     "text": "(60-74)% increased Mana Regeneration Rate",
+     "affix": "of Bliss",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "(50-59)% increased Mana Regeneration Rate",
+     "affix": "of Euphoria",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "(75-89)% increased Mana Regeneration Rate",
+     "affix": "of Euphoria",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "70% increased Mana Regeneration Rate while Shocked",
+     "affix": "of the Essence",
+     "group": "ManaRegenerationWhileShocked"
+    },
+    {
+     "level": 79,
+     "weight": {},
+     "text": "(60-69)% increased Mana Regeneration Rate",
+     "affix": "of Nirvana",
+     "group": "ManaRegeneration"
+    },
+    {
+     "level": 79,
+     "weight": {},
+     "text": "(90-104)% increased Mana Regeneration Rate",
+     "affix": "of Nirvana",
+     "group": "ManaRegeneration"
+    }
+   ]
+  },
+  "StunThreshold": {
+   "label": "眩晕门槛",
+   "type": "Suffix",
+   "tierCount": 14,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "Stun Threshold",
+   "normPattern": "stun threshold",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(6-11) to Stun Threshold",
+     "affix": "of Thick Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(12-29) to Stun Threshold",
+     "affix": "of Reinforced Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 15,
+     "weight": {},
+     "text": "+(30-49) to Stun Threshold",
+     "affix": "of Stone Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "+(50-72) to Stun Threshold",
+     "affix": "of Iron Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 29,
+     "weight": {},
+     "text": "+(73-97) to Stun Threshold",
+     "affix": "of Steel Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "+(98-124) to Stun Threshold",
+     "affix": "of Granite Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "+(125-163) to Stun Threshold",
+     "affix": "of Platinum Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(164-206) to Stun Threshold",
+     "affix": "of Adamantite Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "(31-39)% increased Stun Threshold",
+     "affix": "of the Essence",
+     "group": "IncreasedStunThreshold"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "+(207-253) to Stun Threshold",
+     "affix": "of Corundum Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 72,
+     "weight": {},
+     "text": "+(254-304) to Stun Threshold",
+     "affix": "of Obsidian Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "(40-45)% increased Stun Threshold",
+     "affix": "of the Essence",
+     "group": "IncreasedStunThreshold"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(305-352) to Stun Threshold",
+     "affix": "of Titanium Skin",
+     "group": "StunThreshold"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "(46-60)% increased Stun Threshold",
+     "affix": "of the Essence",
+     "group": "IncreasedStunThreshold"
+    }
+   ]
+  },
+  "Thorns": {
+   "label": "荆棘",
+   "type": "Prefix",
+   "tierCount": 7,
+   "minLevel": 1,
+   "maxLevel": 74,
+   "englishKeyword": "Thorns",
+   "normPattern": "thorns",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(1-2) to (3-4) Physical Thorns damage",
+     "affix": "Thorny",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 10,
+     "weight": {},
+     "text": "(5-7) to (7-10) Physical Thorns damage",
+     "affix": "Spiny",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 19,
+     "weight": {},
+     "text": "(11-16) to (17-23) Physical Thorns damage",
+     "affix": "Barbed",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "(24-35) to (36-53) Physical Thorns damage",
+     "affix": "Pointed",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 48,
+     "weight": {},
+     "text": "(40-60) to (61-92) Physical Thorns damage",
+     "affix": "Spiked",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "(64-97) to (98-145) Physical Thorns damage",
+     "affix": "Edged",
+     "group": "ThornsPhysicalDamage"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "(101-151) to (152-220) Physical Thorns damage",
+     "affix": "Jagged",
+     "group": "ThornsPhysicalDamage"
+    }
+   ]
+  },
+  "FireRes": {
+   "label": "火焰抗性",
+   "type": "Suffix",
+   "tierCount": 8,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to Fire Resistance",
+   "normPattern": "to fire resistance",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(6-10)% to Fire Resistance",
+     "affix": "of the Whelpling",
+     "group": "FireResistance"
+    },
+    {
+     "level": 12,
+     "weight": {},
+     "text": "+(11-15)% to Fire Resistance",
+     "affix": "of the Salamander",
+     "group": "FireResistance"
+    },
+    {
+     "level": 24,
+     "weight": {},
+     "text": "+(16-20)% to Fire Resistance",
+     "affix": "of the Drake",
+     "group": "FireResistance"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "+(21-25)% to Fire Resistance",
+     "affix": "of the Kiln",
+     "group": "FireResistance"
+    },
+    {
+     "level": 48,
+     "weight": {},
+     "text": "+(26-30)% to Fire Resistance",
+     "affix": "of the Furnace",
+     "group": "FireResistance"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(31-35)% to Fire Resistance",
+     "affix": "of the Volcano",
+     "group": "FireResistance"
+    },
+    {
+     "level": 71,
+     "weight": {},
+     "text": "+(36-40)% to Fire Resistance",
+     "affix": "of Magma",
+     "group": "FireResistance"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(41-45)% to Fire Resistance",
+     "affix": "of Tzteosh",
+     "group": "FireResistance"
+    }
+   ]
+  },
+  "ColdRes": {
+   "label": "冰冷抗性",
+   "type": "Suffix",
+   "tierCount": 8,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to Cold Resistance",
+   "normPattern": "to cold resistance",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(6-10)% to Cold Resistance",
+     "affix": "of the Seal",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 14,
+     "weight": {},
+     "text": "+(11-15)% to Cold Resistance",
+     "affix": "of the Penguin",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "+(16-20)% to Cold Resistance",
+     "affix": "of the Narwhal",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "+(21-25)% to Cold Resistance",
+     "affix": "of the Yeti",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 50,
+     "weight": {},
+     "text": "+(26-30)% to Cold Resistance",
+     "affix": "of the Walrus",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(31-35)% to Cold Resistance",
+     "affix": "of the Polar Bear",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 71,
+     "weight": {},
+     "text": "+(36-40)% to Cold Resistance",
+     "affix": "of the Ice",
+     "group": "ColdResistance"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(41-45)% to Cold Resistance",
+     "affix": "of Haast",
+     "group": "ColdResistance"
+    }
+   ]
+  },
+  "LightningRes": {
+   "label": "闪电抗性",
+   "type": "Suffix",
+   "tierCount": 8,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to Lightning Resistance",
+   "normPattern": "to lightning resistance",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(6-10)% to Lightning Resistance",
+     "affix": "of the Cloud",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 13,
+     "weight": {},
+     "text": "+(11-15)% to Lightning Resistance",
+     "affix": "of the Squall",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(16-20)% to Lightning Resistance",
+     "affix": "of the Storm",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 37,
+     "weight": {},
+     "text": "+(21-25)% to Lightning Resistance",
+     "affix": "of the Thunderhead",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 49,
+     "weight": {},
+     "text": "+(26-30)% to Lightning Resistance",
+     "affix": "of the Tempest",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(31-35)% to Lightning Resistance",
+     "affix": "of the Maelstrom",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 71,
+     "weight": {},
+     "text": "+(36-40)% to Lightning Resistance",
+     "affix": "of the Lightning",
+     "group": "LightningResistance"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(41-45)% to Lightning Resistance",
+     "affix": "of Ephij",
+     "group": "LightningResistance"
+    }
+   ]
+  },
+  "ChaosRes": {
+   "label": "混沌抗性",
+   "type": "Suffix",
+   "tierCount": 9,
+   "minLevel": 16,
+   "maxLevel": 81,
+   "englishKeyword": "to Chaos Resistance",
+   "normPattern": "to chaos resistance",
+   "tiers": [
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(4-7)% to Chaos Resistance",
+     "affix": "of the Lost",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "+(8-11)% to Chaos Resistance",
+     "affix": "of Banishment",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(12-15)% to Chaos Resistance",
+     "affix": "of Eviction",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 56,
+     "weight": {},
+     "text": "+(16-19)% to Chaos Resistance",
+     "affix": "of Expulsion",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "+50% to Chaos Resistance during any Flask Effect",
+     "affix": "of the Essence",
+     "group": "ChaosResistanceWhileUsingFlask"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(3-41)% to Chaos Resistance",
+     "affix": "of the Soul",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(5-47)% to Chaos Resistance",
+     "affix": "of the Soul",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(20-23)% to Chaos Resistance",
+     "affix": "of Exile",
+     "group": "ChaosResistance"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "+(24-27)% to Chaos Resistance",
+     "affix": "of Bameth",
+     "group": "ChaosResistance"
+    }
+   ]
+  },
+  "AllEleRes": {
+   "label": "全部元素抗性",
+   "type": "Suffix",
+   "tierCount": 24,
+   "minLevel": 1,
+   "maxLevel": 80,
+   "englishKeyword": "to all Elemental Resistances",
+   "normPattern": "to all elemental resistances",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(10-12)% to all Elemental Resistances",
+     "affix": "of Covering",
+     "group": "AllResistances"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(13-15)% to all Elemental Resistances",
+     "affix": "of Sheathing",
+     "group": "AllResistances"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(16-18)% to all Elemental Resistances",
+     "affix": "of Lining",
+     "group": "AllResistances"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(19-21)% to all Elemental Resistances",
+     "affix": "of Padding",
+     "group": "AllResistances"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(22-24)% to all Elemental Resistances",
+     "affix": "of Furring",
+     "group": "AllResistances"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(20-30)% to all Elemental Resistances",
+     "affix": "of the Stars",
+     "group": "AllResistances"
+    },
+    {
+     "level": 12,
+     "weight": {},
+     "text": "+(3-5)% to all Elemental Resistances",
+     "affix": "of the Crystal",
+     "group": "AllResistances"
+    },
+    {
+     "level": 12,
+     "weight": {},
+     "text": "Allies in your Presence have +(3-5)% to all Elemental Resistances",
+     "affix": "of Adjustment",
+     "group": "AlliesInPresenceAllResistances"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "Minions have +(7-9)% to all Elemental Resistances",
+     "affix": "of Numbness",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "+(6-8)% to all Elemental Resistances",
+     "affix": "of the Prism",
+     "group": "AllResistances"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "Allies in your Presence have +(6-8)% to all Elemental Resistances",
+     "affix": "of Acclimatisation",
+     "group": "AlliesInPresenceAllResistances"
+    },
+    {
+     "level": 38,
+     "weight": {},
+     "text": "Minions have +(10-12)% to all Elemental Resistances",
+     "affix": "of Dullness",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 40,
+     "weight": {},
+     "text": "+(9-11)% to all Elemental Resistances",
+     "affix": "of the Kaleidoscope",
+     "group": "AllResistances"
+    },
+    {
+     "level": 40,
+     "weight": {},
+     "text": "Allies in your Presence have +(9-11)% to all Elemental Resistances",
+     "affix": "of Adaptation",
+     "group": "AlliesInPresenceAllResistances"
+    },
+    {
+     "level": 49,
+     "weight": {},
+     "text": "Minions have +(14-16)% to all Elemental Resistances",
+     "affix": "of Desensitisation",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(12-14)% to all Elemental Resistances",
+     "affix": "of Variegation",
+     "group": "AllResistances"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Allies in your Presence have +(12-14)% to all Elemental Resistances",
+     "affix": "of Evolution",
+     "group": "AlliesInPresenceAllResistances"
+    },
+    {
+     "level": 57,
+     "weight": {},
+     "text": "Minions have +(17-19)% to all Elemental Resistances",
+     "affix": "of Conditioning",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "Minions have +(20-22)% to all Elemental Resistances",
+     "affix": "of Acclimatisation",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(15-16)% to all Elemental Resistances",
+     "affix": "of the Rainbow",
+     "group": "AllResistances"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "Allies in your Presence have +(15-16)% to all Elemental Resistances",
+     "affix": "of Progression",
+     "group": "AlliesInPresenceAllResistances"
+    },
+    {
+     "level": 73,
+     "weight": {},
+     "text": "Minions have +(23-25)% to all Elemental Resistances",
+     "affix": "of Adaptation",
+     "group": "MinionElementalResistance"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(17-18)% to all Elemental Resistances",
+     "affix": "of the Span",
+     "group": "AllResistances"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "Allies in your Presence have +(17-18)% to all Elemental Resistances",
+     "affix": "of Metamorphosis",
+     "group": "AlliesInPresenceAllResistances"
+    }
+   ]
+  },
+  "Strength": {
+   "label": "力量",
+   "type": "Suffix",
+   "tierCount": 9,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "to Strength",
+   "normPattern": "to strength",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(5-8) to Strength",
+     "affix": "of the Brute",
+     "group": "Strength"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(9-12) to Strength",
+     "affix": "of the Wrestler",
+     "group": "Strength"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "+(13-16) to Strength",
+     "affix": "of the Bear",
+     "group": "Strength"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(17-20) to Strength",
+     "affix": "of the Lion",
+     "group": "Strength"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(21-24) to Strength",
+     "affix": "of the Gorilla",
+     "group": "Strength"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "+(25-27) to Strength",
+     "affix": "of the Goliath",
+     "group": "Strength"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "+(28-30) to Strength",
+     "affix": "of the Leviathan",
+     "group": "Strength"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "+(31-33) to Strength",
+     "affix": "of the Titan",
+     "group": "Strength"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "+(34-36) to Strength",
+     "affix": "of the Gods",
+     "group": "Strength"
+    }
+   ]
+  },
+  "Dexterity": {
+   "label": "敏捷",
+   "type": "Suffix",
+   "tierCount": 9,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "to Dexterity",
+   "normPattern": "to dexterity",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(5-8) to Dexterity",
+     "affix": "of the Mongoose",
+     "group": "Dexterity"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(9-12) to Dexterity",
+     "affix": "of the Lynx",
+     "group": "Dexterity"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "+(13-16) to Dexterity",
+     "affix": "of the Fox",
+     "group": "Dexterity"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(17-20) to Dexterity",
+     "affix": "of the Falcon",
+     "group": "Dexterity"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(21-24) to Dexterity",
+     "affix": "of the Panther",
+     "group": "Dexterity"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "+(25-27) to Dexterity",
+     "affix": "of the Leopard",
+     "group": "Dexterity"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "+(28-30) to Dexterity",
+     "affix": "of the Jaguar",
+     "group": "Dexterity"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "+(31-33) to Dexterity",
+     "affix": "of the Phantom",
+     "group": "Dexterity"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "+(34-36) to Dexterity",
+     "affix": "of the Wind",
+     "group": "Dexterity"
+    }
+   ]
+  },
+  "Intelligence": {
+   "label": "智慧",
+   "type": "Suffix",
+   "tierCount": 9,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "to Intelligence",
+   "normPattern": "to intelligence",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(5-8) to Intelligence",
+     "affix": "of the Pupil",
+     "group": "Intelligence"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(9-12) to Intelligence",
+     "affix": "of the Student",
+     "group": "Intelligence"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "+(13-16) to Intelligence",
+     "affix": "of the Prodigy",
+     "group": "Intelligence"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(17-20) to Intelligence",
+     "affix": "of the Augur",
+     "group": "Intelligence"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(21-24) to Intelligence",
+     "affix": "of the Philosopher",
+     "group": "Intelligence"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "+(25-27) to Intelligence",
+     "affix": "of the Sage",
+     "group": "Intelligence"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "+(28-30) to Intelligence",
+     "affix": "of the Savant",
+     "group": "Intelligence"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "+(31-33) to Intelligence",
+     "affix": "of the Virtuoso",
+     "group": "Intelligence"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "+(34-36) to Intelligence",
+     "affix": "of the Genius",
+     "group": "Intelligence"
+    }
+   ]
+  },
+  "AllAttributes": {
+   "label": "全部属性",
+   "type": "Suffix",
+   "tierCount": 14,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to all Attributes",
+   "normPattern": "to all attributes",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(2-4) to all Attributes",
+     "affix": "of the Clouds",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(5-10) to all Attributes",
+     "affix": "of the Worthy",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(11-15) to all Attributes",
+     "affix": "of the Apt",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(16-20) to all Attributes",
+     "affix": "of the Talented",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(21-25) to all Attributes",
+     "affix": "of the Skilled",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(26-30) to all Attributes",
+     "affix": "of the Proficient",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(5-7) to all Attributes",
+     "affix": "of the Sky",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "+(8-10) to all Attributes",
+     "affix": "of the Meteor",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(11-13) to all Attributes",
+     "affix": "of the Comet",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(14-16) to all Attributes",
+     "affix": "of the Heavens",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "+(17-18) to all Attributes",
+     "affix": "of the Galaxy",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "+(19-20) to all Attributes",
+     "affix": "of the Universe",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "+(21-22) to all Attributes",
+     "affix": "of the Multiverse",
+     "group": "AllAttributes"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(23-24) to all Attributes",
+     "affix": "of the Infinite",
+     "group": "AllAttributes"
+    }
+   ]
+  },
+  "Spirit": {
+   "label": "精神",
+   "type": "Prefix",
+   "tierCount": 17,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "Spirit",
+   "normPattern": "spirit",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(20-26)% increased Spirit",
+     "affix": "Lord's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(27-32)% increased Spirit",
+     "affix": "Baron's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "+(30-33) to Spirit",
+     "affix": "Lady's",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(33-38)% increased Spirit",
+     "affix": "Viscount's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "+(34-37) to Spirit",
+     "affix": "Baronness'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "+(38-42) to Spirit",
+     "affix": "Viscountess'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(39-44)% increased Spirit",
+     "affix": "Marquess'",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "+(43-46) to Spirit",
+     "affix": "Marchioness'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(45-50)% increased Spirit",
+     "affix": "Count's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "+(47-50) to Spirit",
+     "affix": "Countess'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "+(51-53) to Spirit",
+     "affix": "Duchess'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(51-55)% increased Spirit",
+     "affix": "Duke's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "+(54-56) to Spirit",
+     "affix": "Princess'",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(1-20)% increased Spirit",
+     "affix": "Medved's",
+     "group": "MaximumSpiritPercentageAllowBaseSpirit"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(56-60)% increased Spirit",
+     "affix": "Prince's",
+     "group": "LocalIncreasedSpiritPercent"
+    },
+    {
+     "level": 78,
+     "weight": {},
+     "text": "+(57-61) to Spirit",
+     "affix": "Queen's",
+     "group": "BaseSpirit"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "(61-65)% increased Spirit",
+     "affix": "King's",
+     "group": "LocalIncreasedSpiritPercent"
+    }
+   ]
+  },
+  "IncreasedPhysicalDamage": {
+   "label": "增加物理伤害",
+   "type": "Prefix",
+   "tierCount": 8,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "increased Physical Damage",
+   "normPattern": "increased physical damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(40-49)% increased Physical Damage",
+     "affix": "Heavy",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(50-64)% increased Physical Damage",
+     "affix": "Serrated",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(65-84)% increased Physical Damage",
+     "affix": "Wicked",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(85-109)% increased Physical Damage",
+     "affix": "Vicious",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(110-134)% increased Physical Damage",
+     "affix": "Bloodthirsty",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(135-154)% increased Physical Damage",
+     "affix": "Cruel",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(155-169)% increased Physical Damage",
+     "affix": "Tyrannical",
+     "group": "LocalPhysicalDamagePercent"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "(170-179)% increased Physical Damage",
+     "affix": "Merciless",
+     "group": "LocalPhysicalDamagePercent"
+    }
+   ]
+  },
+  "AddedPhysicalDamage": {
+   "label": "附加物理伤害",
+   "type": "Prefix",
+   "tierCount": 18,
+   "minLevel": 1,
+   "maxLevel": 75,
+   "englishKeyword": "Adds # to # Physical Damage",
+   "normPattern": "adds # to # physical damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (1-2) to (4-5) Physical Damage",
+     "affix": "Glinting",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (2-3) to (5-7) Physical Damage",
+     "affix": "Glinting",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (4-6) to (7-11) Physical Damage",
+     "affix": "Burnished",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (5-8) to (10-15) Physical Damage",
+     "affix": "Burnished",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (6-9) to (11-16) Physical Damage",
+     "affix": "Polished",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (8-12) to (15-22) Physical Damage",
+     "affix": "Polished",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (8-12) to (14-21) Physical Damage",
+     "affix": "Honed",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (11-17) to (20-30) Physical Damage",
+     "affix": "Honed",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (10-15) to (18-26) Physical Damage",
+     "affix": "Gleaming",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (14-21) to (25-37) Physical Damage",
+     "affix": "Gleaming",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (13-20) to (23-35) Physical Damage",
+     "affix": "Annealed",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (19-29) to (33-49) Physical Damage",
+     "affix": "Annealed",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (16-24) to (28-42) Physical Damage",
+     "affix": "Razor-sharp",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (23-35) to (39-59) Physical Damage",
+     "affix": "Razor-sharp",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (21-31) to (36-53) Physical Damage",
+     "affix": "Tempered",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (29-44) to (50-75) Physical Damage",
+     "affix": "Tempered",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (26-39) to (44-66) Physical Damage",
+     "affix": "Flaring",
+     "group": "LocalPhysicalDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (37-55) to (63-94) Physical Damage",
+     "affix": "Flaring",
+     "group": "LocalPhysicalDamage"
+    }
+   ]
+  },
+  "AddedFireDamage": {
+   "label": "附加火焰伤害",
+   "type": "Prefix",
+   "tierCount": 20,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Adds # to # Fire Damage",
+   "normPattern": "adds # to # fire damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (1-2) to (3-5) Fire Damage",
+     "affix": "Heated",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (2-4) to (5-7) Fire Damage",
+     "affix": "Heated",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (4-6) to (7-10) Fire Damage",
+     "affix": "Smouldering",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (6-9) to (10-16) Fire Damage",
+     "affix": "Smouldering",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (7-11) to (13-19) Fire Damage",
+     "affix": "Smoking",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (11-17) to (19-28) Fire Damage",
+     "affix": "Smoking",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (13-19) to (21-29) Fire Damage",
+     "affix": "Burning",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (19-27) to (30-42) Fire Damage",
+     "affix": "Burning",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (20-24) to (32-37) Fire Damage",
+     "affix": "Flaming",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (30-37) to (45-56) Fire Damage",
+     "affix": "Flaming",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (25-33) to (38-54) Fire Damage",
+     "affix": "Scorching",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (39-53) to (59-80) Fire Damage",
+     "affix": "Scorching",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (35-44) to (56-71) Fire Damage",
+     "affix": "Incinerating",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (56-70) to (84-107) Fire Damage",
+     "affix": "Incinerating",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (47-59) to (74-97) Fire Damage",
+     "affix": "Blasting",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (73-97) to (112-149) Fire Damage",
+     "affix": "Blasting",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (62-85) to (101-129) Fire Damage",
+     "affix": "Cremating",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (102-130) to (155-198) Fire Damage",
+     "affix": "Cremating",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (88-101) to (133-154) Fire Damage",
+     "affix": "Carbonising",
+     "group": "LocalFireDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (135-156) to (205-236) Fire Damage",
+     "affix": "Carbonising",
+     "group": "LocalFireDamage"
+    }
+   ]
+  },
+  "AddedColdDamage": {
+   "label": "附加冰冷伤害",
+   "type": "Prefix",
+   "tierCount": 20,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Adds # to # Cold Damage",
+   "normPattern": "adds # to # cold damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (1-2) to (3-4) Cold Damage",
+     "affix": "Frosted",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds (2-3) to (4-6) Cold Damage",
+     "affix": "Frosted",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (3-5) to (6-9) Cold Damage",
+     "affix": "Chilled",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (5-8) to (9-14) Cold Damage",
+     "affix": "Chilled",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (6-9) to (10-16) Cold Damage",
+     "affix": "Icy",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (10-14) to (15-23) Cold Damage",
+     "affix": "Icy",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (11-15) to (17-24) Cold Damage",
+     "affix": "Frigid",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (16-23) to (25-35) Cold Damage",
+     "affix": "Frigid",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (17-20) to (26-32) Cold Damage",
+     "affix": "Freezing",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (25-30) to (38-46) Cold Damage",
+     "affix": "Freezing",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (22-29) to (34-44) Cold Damage",
+     "affix": "Frozen",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (32-43) to (49-66) Cold Damage",
+     "affix": "Frozen",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (31-38) to (47-59) Cold Damage",
+     "affix": "Glaciated",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (46-57) to (70-88) Cold Damage",
+     "affix": "Glaciated",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (40-53) to (62-80) Cold Damage",
+     "affix": "Polar",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (60-80) to (92-121) Cold Damage",
+     "affix": "Polar",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (55-69) to (83-106) Cold Damage",
+     "affix": "Entombing",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (84-107) to (126-161) Cold Damage",
+     "affix": "Entombing",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (72-81) to (110-123) Cold Damage",
+     "affix": "Crystalising",
+     "group": "LocalColdDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (112-124) to (168-189) Cold Damage",
+     "affix": "Crystalising",
+     "group": "LocalColdDamage"
+    }
+   ]
+  },
+  "AddedLightningDamage": {
+   "label": "附加闪电伤害",
+   "type": "Prefix",
+   "tierCount": 20,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Adds # to # Lightning Damage",
+   "normPattern": "adds # to # lightning damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds 1 to (4-6) Lightning Damage",
+     "affix": "Humming",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Adds 1 to (7-10) Lightning Damage",
+     "affix": "Humming",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds 1 to (13-19) Lightning Damage",
+     "affix": "Buzzing",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Adds (1-2) to (19-27) Lightning Damage",
+     "affix": "Buzzing",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (1-2) to (20-30) Lightning Damage",
+     "affix": "Snapping",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "Adds (1-3) to (31-43) Lightning Damage",
+     "affix": "Snapping",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (1-2) to (36-52) Lightning Damage",
+     "affix": "Crackling",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Adds (1-4) to (53-76) Lightning Damage",
+     "affix": "Crackling",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (1-3) to (55-60) Lightning Damage",
+     "affix": "Sparking",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "Adds (1-4) to (80-88) Lightning Damage",
+     "affix": "Sparking",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (1-4) to (63-82) Lightning Damage",
+     "affix": "Arcing",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 54,
+     "weight": {},
+     "text": "Adds (1-6) to (93-122) Lightning Damage",
+     "affix": "Arcing",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (1-6) to (85-107) Lightning Damage",
+     "affix": "Shocking",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "Adds (1-8) to (128-162) Lightning Damage",
+     "affix": "Shocking",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (1-8) to (111-152) Lightning Damage",
+     "affix": "Discharging",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Adds (1-13) to (168-231) Lightning Damage",
+     "affix": "Discharging",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (1-10) to (157-196) Lightning Damage",
+     "affix": "Electrocuting",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "Adds (1-16) to (239-300) Lightning Damage",
+     "affix": "Electrocuting",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (1-12) to (202-234) Lightning Damage",
+     "affix": "Vapourising",
+     "group": "LocalLightningDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Adds (1-19) to (310-358) Lightning Damage",
+     "affix": "Vapourising",
+     "group": "LocalLightningDamage"
+    }
+   ]
+  },
+  "IncreasedElementalDamage": {
+   "label": "增加元素伤害",
+   "type": "Prefix",
+   "tierCount": 12,
+   "minLevel": 4,
+   "maxLevel": 81,
+   "englishKeyword": "increased Elemental Damage",
+   "normPattern": "increased elemental damage",
+   "tiers": [
+    {
+     "level": 4,
+     "weight": {},
+     "text": "(19-35)% increased Elemental Damage with Attacks",
+     "affix": "Catalysing",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 4,
+     "weight": {},
+     "text": "(34-47)% increased Elemental Damage with Attacks",
+     "affix": "Catalysing",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(36-52)% increased Elemental Damage with Attacks",
+     "affix": "Infusing",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(48-71)% increased Elemental Damage with Attacks",
+     "affix": "Infusing",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(53-62)% increased Elemental Damage with Attacks",
+     "affix": "Empowering",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(72-85)% increased Elemental Damage with Attacks",
+     "affix": "Empowering",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(63-72)% increased Elemental Damage with Attacks",
+     "affix": "Unleashed",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(86-99)% increased Elemental Damage with Attacks",
+     "affix": "Unleashed",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(73-86)% increased Elemental Damage with Attacks",
+     "affix": "Overpowering",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(100-119)% increased Elemental Damage with Attacks",
+     "affix": "Overpowering",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(87-100)% increased Elemental Damage with Attacks",
+     "affix": "Devastating",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(120-139)% increased Elemental Damage with Attacks",
+     "affix": "Devastating",
+     "group": "IncreasedWeaponElementalDamagePercent"
+    }
+   ]
+  },
+  "IncreasedFireDamage": {
+   "label": "增加火焰伤害",
+   "type": "Prefix",
+   "tierCount": 23,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "increased Fire Damage",
+   "normPattern": "increased fire damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(41-59)% increased Fire Damage if you've collected a Fire Infusion in the last 8 seconds",
+     "affix": "Erupting",
+     "group": "FireDamageIfFireInfusionCollectedLast8Seconds"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(25-34)% increased Fire Damage",
+     "affix": "Searing",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(50-68)% increased Fire Damage",
+     "affix": "Searing",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(35-44)% increased Fire Damage",
+     "affix": "Sizzling",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(69-88)% increased Fire Damage",
+     "affix": "Sizzling",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(3-7)% increased Fire Damage",
+     "affix": "Searing",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(45-54)% increased Fire Damage",
+     "affix": "Blistering",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(89-108)% increased Fire Damage",
+     "affix": "Blistering",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(8-12)% increased Fire Damage",
+     "affix": "Sizzling",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(55-64)% increased Fire Damage",
+     "affix": "Cauterising",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(109-128)% increased Fire Damage",
+     "affix": "Cauterising",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(13-17)% increased Fire Damage",
+     "affix": "Blistering",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(65-74)% increased Fire Damage",
+     "affix": "Smoldering",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(129-148)% increased Fire Damage",
+     "affix": "Smoldering",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-22)% increased Fire Damage",
+     "affix": "Cauterising",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(75-89)% increased Fire Damage",
+     "affix": "Magmatic",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(149-188)% increased Fire Damage",
+     "affix": "Magmatic",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(23-26)% increased Fire Damage",
+     "affix": "Volcanic",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(90-104)% increased Fire Damage",
+     "affix": "Volcanic",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(189-208)% increased Fire Damage",
+     "affix": "Volcanic",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(27-30)% increased Fire Damage",
+     "affix": "Magmatic",
+     "group": "FireDamagePercentage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(105-119)% increased Fire Damage",
+     "affix": "Pyromancer's",
+     "group": "FireDamageWeaponPrefix"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(209-238)% increased Fire Damage",
+     "affix": "Pyromancer's",
+     "group": "FireDamageWeaponPrefix"
+    }
+   ]
+  },
+  "IncreasedColdDamage": {
+   "label": "增加冰冷伤害",
+   "type": "Prefix",
+   "tierCount": 23,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "increased Cold Damage",
+   "normPattern": "increased cold damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(41-59)% increased Cold Damage if you've collected a Cold Infusion in the last 8 seconds",
+     "affix": "Glacial",
+     "group": "ColdDamageIfColdInfusionCollectedLast8Seconds"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(25-34)% increased Cold Damage",
+     "affix": "Bitter",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(50-68)% increased Cold Damage",
+     "affix": "Bitter",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(35-44)% increased Cold Damage",
+     "affix": "Biting",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(69-88)% increased Cold Damage",
+     "affix": "Biting",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(3-7)% increased Cold Damage",
+     "affix": "Bitter",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(45-54)% increased Cold Damage",
+     "affix": "Alpine",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(89-108)% increased Cold Damage",
+     "affix": "Alpine",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(8-12)% increased Cold Damage",
+     "affix": "Biting",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(55-64)% increased Cold Damage",
+     "affix": "Snowy",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(109-128)% increased Cold Damage",
+     "affix": "Snowy",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(13-17)% increased Cold Damage",
+     "affix": "Alpine",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(65-74)% increased Cold Damage",
+     "affix": "Hailing",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(129-148)% increased Cold Damage",
+     "affix": "Hailing",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-22)% increased Cold Damage",
+     "affix": "Snowy",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(75-89)% increased Cold Damage",
+     "affix": "Arctic",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(149-188)% increased Cold Damage",
+     "affix": "Arctic",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(23-26)% increased Cold Damage",
+     "affix": "Hailing",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(90-104)% increased Cold Damage",
+     "affix": "Crystalline",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(189-208)% increased Cold Damage",
+     "affix": "Crystalline",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(27-30)% increased Cold Damage",
+     "affix": "Crystalline",
+     "group": "ColdDamagePercentage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(105-119)% increased Cold Damage",
+     "affix": "Cryomancer's",
+     "group": "ColdDamageWeaponPrefix"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(209-238)% increased Cold Damage",
+     "affix": "Cryomancer's",
+     "group": "ColdDamageWeaponPrefix"
+    }
+   ]
+  },
+  "IncreasedLightningDamage": {
+   "label": "增加闪电伤害",
+   "type": "Prefix",
+   "tierCount": 23,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "increased Lightning Damage",
+   "normPattern": "increased lightning damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(41-59)% increased Lightning Damage if you've collected a Lightning Infusion in the last 8 seconds",
+     "affix": "Energising",
+     "group": "LightningDamageIfLightningInfusionCollectedLast8Seconds"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(25-34)% increased Lightning Damage",
+     "affix": "Charged",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(50-68)% increased Lightning Damage",
+     "affix": "Charged",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(35-44)% increased Lightning Damage",
+     "affix": "Hissing",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(69-88)% increased Lightning Damage",
+     "affix": "Hissing",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(3-7)% increased Lightning Damage",
+     "affix": "Charged",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(45-54)% increased Lightning Damage",
+     "affix": "Bolting",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(89-108)% increased Lightning Damage",
+     "affix": "Bolting",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(8-12)% increased Lightning Damage",
+     "affix": "Hissing",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(55-64)% increased Lightning Damage",
+     "affix": "Coursing",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(109-128)% increased Lightning Damage",
+     "affix": "Coursing",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(13-17)% increased Lightning Damage",
+     "affix": "Bolting",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(65-74)% increased Lightning Damage",
+     "affix": "Striking",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(129-148)% increased Lightning Damage",
+     "affix": "Striking",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-22)% increased Lightning Damage",
+     "affix": "Coursing",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(75-89)% increased Lightning Damage",
+     "affix": "Smiting",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(149-188)% increased Lightning Damage",
+     "affix": "Smiting",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(23-26)% increased Lightning Damage",
+     "affix": "Striking",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(90-104)% increased Lightning Damage",
+     "affix": "Ionising",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(189-208)% increased Lightning Damage",
+     "affix": "Ionising",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(27-30)% increased Lightning Damage",
+     "affix": "Smiting",
+     "group": "LightningDamagePercentage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(105-119)% increased Lightning Damage",
+     "affix": "Electromancer's",
+     "group": "LightningDamageWeaponPrefix"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(209-238)% increased Lightning Damage",
+     "affix": "Electromancer's",
+     "group": "LightningDamageWeaponPrefix"
+    }
+   ]
+  },
+  "IncreasedChaosDamage": {
+   "label": "增加混沌伤害",
+   "type": "Prefix",
+   "tierCount": 22,
+   "minLevel": 2,
+   "maxLevel": 81,
+   "englishKeyword": "increased Chaos Damage",
+   "normPattern": "increased chaos damage",
+   "tiers": [
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(25-34)% increased Chaos Damage",
+     "affix": "Impure",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 2,
+     "weight": {},
+     "text": "(50-68)% increased Chaos Damage",
+     "affix": "Impure",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(35-44)% increased Chaos Damage",
+     "affix": "Tainted",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(69-88)% increased Chaos Damage",
+     "affix": "Tainted",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(3-7)% increased Chaos Damage",
+     "affix": "Impure",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(45-54)% increased Chaos Damage",
+     "affix": "Clouded",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(89-108)% increased Chaos Damage",
+     "affix": "Clouded",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(8-12)% increased Chaos Damage",
+     "affix": "Tainted",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(55-64)% increased Chaos Damage",
+     "affix": "Darkened",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(109-128)% increased Chaos Damage",
+     "affix": "Darkened",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(13-17)% increased Chaos Damage",
+     "affix": "Clouded",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(65-74)% increased Chaos Damage",
+     "affix": "Malignant",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(129-148)% increased Chaos Damage",
+     "affix": "Malignant",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-22)% increased Chaos Damage",
+     "affix": "Darkened",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(75-89)% increased Chaos Damage",
+     "affix": "Vile",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(149-188)% increased Chaos Damage",
+     "affix": "Vile",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(23-26)% increased Chaos Damage",
+     "affix": "Malignant",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(90-104)% increased Chaos Damage",
+     "affix": "Twisted",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(189-208)% increased Chaos Damage",
+     "affix": "Twisted",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(27-30)% increased Chaos Damage",
+     "affix": "Vile",
+     "group": "IncreasedChaosDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(105-119)% increased Chaos Damage",
+     "affix": "Malevolent",
+     "group": "ChaosDamageWeaponPrefix"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(209-238)% increased Chaos Damage",
+     "affix": "Malevolent",
+     "group": "ChaosDamageWeaponPrefix"
+    }
+   ]
+  },
+  "IncreasedSpellDamage": {
+   "label": "增加法术伤害",
+   "type": "Prefix",
+   "tierCount": 36,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "increased Spell Damage",
+   "normPattern": "increased spell damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(25-34)% increased Spell Damage",
+     "affix": "Apprentice's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(50-68)% increased Spell Damage",
+     "affix": "Apprentice's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(3-7)% increased Spell Damage",
+     "affix": "Apprentice's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(35-44)% increased Spell Damage",
+     "affix": "Adept's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(69-88)% increased Spell Damage",
+     "affix": "Adept's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 9,
+     "weight": {},
+     "text": "(6-9)% increased Spell Damage",
+     "affix": "Apprentice's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 12,
+     "weight": {},
+     "text": "(20-25)% increased Spell Damage during any Flask Effect",
+     "affix": "Activating",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(45-54)% increased Spell Damage",
+     "affix": "Scholar's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(89-108)% increased Spell Damage",
+     "affix": "Scholar's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "(8-12)% increased Spell Damage",
+     "affix": "Adept's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 20,
+     "weight": {},
+     "text": "(10-13)% increased Spell Damage",
+     "affix": "Adept's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "(26-31)% increased Spell Damage during any Flask Effect",
+     "affix": "Stimulating",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 31,
+     "weight": {},
+     "text": "(14-17)% increased Spell Damage",
+     "affix": "Scholar's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(55-64)% increased Spell Damage",
+     "affix": "Professor's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(109-128)% increased Spell Damage",
+     "affix": "Professor's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "(13-17)% increased Spell Damage",
+     "affix": "Scholar's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 39,
+     "weight": {},
+     "text": "(32-37)% increased Spell Damage during any Flask Effect",
+     "affix": "Awakening",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(65-74)% increased Spell Damage",
+     "affix": "Occultist's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(129-148)% increased Spell Damage",
+     "affix": "Occultist's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-22)% increased Spell Damage",
+     "affix": "Professor's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "(18-21)% increased Spell Damage",
+     "affix": "Professor's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 53,
+     "weight": {},
+     "text": "(38-43)% increased Spell Damage during any Flask Effect",
+     "affix": "Elevating",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "(22-25)% increased Spell Damage",
+     "affix": "Occultist's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(75-89)% increased Spell Damage",
+     "affix": "Incanter's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(149-188)% increased Spell Damage",
+     "affix": "Incanter's",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(23-26)% increased Spell Damage",
+     "affix": "Occultist's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "(26-29)% increased Spell Damage",
+     "affix": "Incanter's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 67,
+     "weight": {},
+     "text": "(44-49)% increased Spell Damage during any Flask Effect",
+     "affix": "Energising",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(90-104)% increased Spell Damage",
+     "affix": "Glyphic",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(189-208)% increased Spell Damage",
+     "affix": "Glyphic",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 71,
+     "weight": {},
+     "text": "(30-34)% increased Spell Damage",
+     "affix": "Glyphic",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(27-30)% increased Spell Damage",
+     "affix": "Incanter's",
+     "group": "SpellDamage"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "(105-119)% increased Spell Damage",
+     "affix": "Runic",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "(209-238)% increased Spell Damage",
+     "affix": "Runic",
+     "group": "WeaponSpellDamage"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "(50-55)% increased Spell Damage during any Flask Effect",
+     "affix": "Exhilarating",
+     "group": "SpellDamageDuringManaFlaskEffect"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "(35-39)% increased Spell Damage",
+     "affix": "Runic",
+     "group": "SpellDamage"
+    }
+   ]
+  },
+  "IncreasedAttackDamage": {
+   "label": "增加攻击伤害",
+   "type": "Prefix",
+   "tierCount": 6,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "increased Attack Damage",
+   "normPattern": "increased attack damage",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(20-30)% increased Attack Damage while on Low Life",
+     "affix": "",
+     "group": "AttackDamageOnLowLife"
+    },
+    {
+     "level": 4,
+     "weight": {},
+     "text": "(4-8)% increased Attack Damage",
+     "affix": "Bully's",
+     "group": "AttackDamage"
+    },
+    {
+     "level": 15,
+     "weight": {},
+     "text": "(9-16)% increased Attack Damage",
+     "affix": "Thug's",
+     "group": "AttackDamage"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(17-24)% increased Attack Damage",
+     "affix": "Brute's",
+     "group": "AttackDamage"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(25-29)% increased Attack Damage",
+     "affix": "Assailant's",
+     "group": "AttackDamage"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(30-34)% increased Attack Damage",
+     "affix": "Predator's",
+     "group": "AttackDamage"
+    }
+   ]
+  },
+  "DotMultiplier": {
+   "label": "持续伤害加成",
+   "type": "Suffix",
+   "tierCount": 8,
+   "minLevel": 68,
+   "maxLevel": 80,
+   "englishKeyword": "Damage over Time Multiplier",
+   "normPattern": "damage over time multiplier",
+   "tiers": [
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(11-15)% to Chaos Damage over Time Multiplier",
+     "affix": "of the Elder",
+     "group": "ChaosDamageOverTimeMultiplier"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(11-15)% to Cold Damage over Time Multiplier",
+     "affix": "of Shaping",
+     "group": "ColdDamageOverTimeMultiplier"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(11-15)% to Fire Damage over Time Multiplier",
+     "affix": "of Shaping",
+     "group": "FireDamageOverTimeMultiplier"
+    },
+    {
+     "level": 68,
+     "weight": {},
+     "text": "+(11-15)% to Physical Damage over Time Multiplier",
+     "affix": "of the Elder",
+     "group": "PhysicalDamageOverTimeMultiplier"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(16-20)% to Chaos Damage over Time Multiplier",
+     "affix": "of the Elder",
+     "group": "ChaosDamageOverTimeMultiplier"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(16-20)% to Cold Damage over Time Multiplier",
+     "affix": "of Shaping",
+     "group": "ColdDamageOverTimeMultiplier"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(16-20)% to Fire Damage over Time Multiplier",
+     "affix": "of Shaping",
+     "group": "FireDamageOverTimeMultiplier"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "+(16-20)% to Physical Damage over Time Multiplier",
+     "affix": "of the Elder",
+     "group": "PhysicalDamageOverTimeMultiplier"
+    }
+   ]
+  },
+  "CriticalChance": {
+   "label": "暴击率",
+   "type": "Suffix",
+   "tierCount": 64,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Critical Hit Chance",
+   "normPattern": "critical hit chance",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(1.01-1.5)% to Critical Hit Chance",
+     "affix": "of Menace",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(4-5)% to Fire Spell Critical Hit Chance",
+     "affix": "of Xoph",
+     "group": "FireSpellBaseCriticalChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(0.5-1)% to Critical Hit Chance",
+     "affix": "of Ire",
+     "group": "BaseCriticalHitChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(1.1-1.5)% to Critical Hit Chance",
+     "affix": "of Anger",
+     "group": "BaseCriticalHitChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(1.6-2)% to Critical Hit Chance",
+     "affix": "of Rage",
+     "group": "BaseCriticalHitChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(2.1-2.5)% to Critical Hit Chance",
+     "affix": "of Fury",
+     "group": "BaseCriticalHitChance"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(2.5-3)% to Critical Hit Chance",
+     "affix": "of Ferocity",
+     "group": "BaseCriticalHitChance"
+    },
+    {
+     "level": 5,
+     "weight": {},
+     "text": "(10-14)% increased Critical Hit Chance",
+     "affix": "of Menace",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 5,
+     "weight": {},
+     "text": "(10-14)% increased Critical Hit Chance for Attacks",
+     "affix": "of Menace",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "(27-33)% increased Critical Hit Chance for Spells",
+     "affix": "of Menace",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "(40-49)% increased Critical Hit Chance for Spells",
+     "affix": "of Menace",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "(10-19)% increased Critical Hit Chance with Traps",
+     "affix": "of Menace",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "Allies in your Presence have (10-14)% increased Critical Hit Chance",
+     "affix": "of Menace",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "Minions have (5-12)% increased Critical Hit Chance",
+     "affix": "of Pricking",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "(7-9)% increased Critical Hit Chance for Spells",
+     "affix": "of Menace",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 20,
+     "weight": {},
+     "text": "(15-19)% increased Critical Hit Chance",
+     "affix": "of Havoc",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 20,
+     "weight": {},
+     "text": "+(1.51-2.1)% to Critical Hit Chance",
+     "affix": "of Havoc",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 20,
+     "weight": {},
+     "text": "(15-19)% increased Critical Hit Chance for Attacks",
+     "affix": "of Havoc",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "(34-39)% increased Critical Hit Chance for Spells",
+     "affix": "of Havoc",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "(50-59)% increased Critical Hit Chance for Spells",
+     "affix": "of Havoc",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "(20-39)% increased Critical Hit Chance with Traps",
+     "affix": "of Havoc",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "Allies in your Presence have (15-19)% increased Critical Hit Chance",
+     "affix": "of Havoc",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 28,
+     "weight": {},
+     "text": "(40-46)% increased Critical Hit Chance for Spells",
+     "affix": "of Disaster",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 28,
+     "weight": {},
+     "text": "(60-69)% increased Critical Hit Chance for Spells",
+     "affix": "of Disaster",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 28,
+     "weight": {},
+     "text": "(40-59)% increased Critical Hit Chance with Traps",
+     "affix": "of Disaster",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 28,
+     "weight": {},
+     "text": "Allies in your Presence have (20-24)% increased Critical Hit Chance",
+     "affix": "of Disaster",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(20-24)% increased Critical Hit Chance",
+     "affix": "of Disaster",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "+(2.11-2.7)% to Critical Hit Chance",
+     "affix": "of Disaster",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(20-24)% increased Critical Hit Chance for Attacks",
+     "affix": "of Disaster",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 32,
+     "weight": {},
+     "text": "Minions have (13-20)% increased Critical Hit Chance",
+     "affix": "of Stinging",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 32,
+     "weight": {},
+     "text": "(10-12)% increased Critical Hit Chance for Spells",
+     "affix": "of Havoc",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 41,
+     "weight": {},
+     "text": "(47-53)% increased Critical Hit Chance for Spells",
+     "affix": "of Calamity",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 41,
+     "weight": {},
+     "text": "(70-79)% increased Critical Hit Chance for Spells",
+     "affix": "of Calamity",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 41,
+     "weight": {},
+     "text": "(60-79)% increased Critical Hit Chance with Traps",
+     "affix": "of Calamity",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 41,
+     "weight": {},
+     "text": "Allies in your Presence have (25-29)% increased Critical Hit Chance",
+     "affix": "of Calamity",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "(25-29)% increased Critical Hit Chance",
+     "affix": "of Calamity",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(3.11-3.8)% to Critical Hit Chance",
+     "affix": "of Calamity",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "(25-29)% increased Critical Hit Chance for Attacks",
+     "affix": "of Calamity",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "Minions have (21-28)% increased Critical Hit Chance",
+     "affix": "of Gouging",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(13-15)% increased Critical Hit Chance for Spells",
+     "affix": "of Disaster",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(16-21)% increased Critical Hit Chance",
+     "affix": "of the Hunt",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "(30-34)% increased Critical Hit Chance",
+     "affix": "of Ruin",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "(30-34)% increased Critical Hit Chance for Attacks",
+     "affix": "of Ruin",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "Minions have (29-36)% increased Critical Hit Chance",
+     "affix": "of Puncturing",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "(16-18)% increased Critical Hit Chance for Spells",
+     "affix": "of Calamity",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "+(3.81-4.4)% to Critical Hit Chance",
+     "affix": "of Ruin",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(54-59)% increased Critical Hit Chance for Spells",
+     "affix": "of Ruin",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(80-89)% increased Critical Hit Chance for Spells",
+     "affix": "of Ruin",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(80-99)% increased Critical Hit Chance with Traps",
+     "affix": "of Ruin",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "Allies in your Presence have (30-34)% increased Critical Hit Chance",
+     "affix": "of Ruin",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "Socketed Gems have +3.5% Critical Hit Chance",
+     "affix": "of the Essence",
+     "group": "SocketedSkillsCriticalChance"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "(22-27)% increased Critical Hit Chance",
+     "affix": "of the Hunt",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "Minions have (37-44)% increased Critical Hit Chance",
+     "affix": "of Lacinating",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(19-21)% increased Critical Hit Chance for Spells",
+     "affix": "of Ruin",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 72,
+     "weight": {},
+     "text": "(35-38)% increased Critical Hit Chance",
+     "affix": "of Unmaking",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 72,
+     "weight": {},
+     "text": "(35-38)% increased Critical Hit Chance for Attacks",
+     "affix": "of Unmaking",
+     "group": "AttackCriticalStrikeChance"
+    },
+    {
+     "level": 73,
+     "weight": {},
+     "text": "+(4.41-5)% to Critical Hit Chance",
+     "affix": "of Unmaking",
+     "group": "LocalBaseCriticalStrikeChance"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(28-34)% increased Critical Hit Chance",
+     "affix": "of the Hunt",
+     "group": "CriticalStrikeChance"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "(60-73)% increased Critical Hit Chance for Spells",
+     "affix": "of Unmaking",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "(90-109)% increased Critical Hit Chance for Spells",
+     "affix": "of Unmaking",
+     "group": "SpellCriticalStrikeChance"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "(100-109)% increased Critical Hit Chance with Traps",
+     "affix": "of Unmaking",
+     "group": "TrapCriticalStrikeChance"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "Allies in your Presence have (35-38)% increased Critical Hit Chance",
+     "affix": "of Unmaking",
+     "group": "AlliesInPresenceCriticalStrikeChance"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Minions have (45-52)% increased Critical Hit Chance",
+     "affix": "of Piercing",
+     "group": "MinionCriticalStrikeChanceIncrease"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "(22-25)% increased Critical Hit Chance for Spells",
+     "affix": "of Unmaking",
+     "group": "SpellCriticalStrikeChance"
+    }
+   ]
+  },
+  "CriticalDamage": {
+   "label": "暴击伤害加成",
+   "type": "Suffix",
+   "tierCount": 46,
+   "minLevel": 1,
+   "maxLevel": 81,
+   "englishKeyword": "Critical Damage Bonus",
+   "normPattern": "critical damage bonus",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Hits against you have (30-39)% reduced Critical Damage Bonus",
+     "affix": "of the Hunt",
+     "group": "ReducedCriticalStrikeDamageTaken"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Hits against you have (40-49)% reduced Critical Damage Bonus",
+     "affix": "of the Hunt",
+     "group": "ReducedCriticalStrikeDamageTaken"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Hits against you have (50-60)% reduced Critical Damage Bonus",
+     "affix": "of the Hunt",
+     "group": "ReducedCriticalStrikeDamageTaken"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(10-14)% increased Critical Damage Bonus",
+     "affix": "of Ire",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(10-11)% to Critical Damage Bonus",
+     "affix": "of Ire",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "(10-14)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Ire",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(10-14)% to Critical Damage Bonus with Traps",
+     "affix": "of Ire",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "Allies in your Presence have (10-14)% increased Critical Damage Bonus",
+     "affix": "of Ire",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 17,
+     "weight": {},
+     "text": "Minions have (6-10)% increased Critical Damage Bonus",
+     "affix": "of Quashing",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "(15-19)% increased Critical Damage Bonus",
+     "affix": "of Anger",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "+(12-13)% to Critical Damage Bonus",
+     "affix": "of Anger",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "(15-19)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Anger",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "+(15-19)% to Critical Damage Bonus with Traps",
+     "affix": "of Anger",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "Allies in your Presence have (15-19)% increased Critical Damage Bonus",
+     "affix": "of Anger",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "+(14-16)% to Critical Damage Bonus",
+     "affix": "of Rage",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "+(20-24)% to Critical Damage Bonus with Traps",
+     "affix": "of Rage",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "Allies in your Presence have (20-24)% increased Critical Damage Bonus",
+     "affix": "of Rage",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "Minions have (11-15)% increased Critical Damage Bonus",
+     "affix": "of Purging",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 31,
+     "weight": {},
+     "text": "(20-24)% increased Critical Damage Bonus",
+     "affix": "of Rage",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 31,
+     "weight": {},
+     "text": "(20-24)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Rage",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "Hits against you have (21-27)% reduced Critical Damage Bonus",
+     "affix": "of Dulling",
+     "group": "ReducedExtraDamageFromCrits"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(17-19)% to Critical Damage Bonus",
+     "affix": "of Fury",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "+(25-29)% to Critical Damage Bonus with Traps",
+     "affix": "of Fury",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "Allies in your Presence have (25-29)% increased Critical Damage Bonus",
+     "affix": "of Fury",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 44,
+     "weight": {},
+     "text": "Minions have (16-20)% increased Critical Damage Bonus",
+     "affix": "of Elimination",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(25-29)% increased Critical Damage Bonus",
+     "affix": "of Fury",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(25-29)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Fury",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "Hits against you have (28-34)% reduced Critical Damage Bonus",
+     "affix": "of Deadening",
+     "group": "ReducedExtraDamageFromCrits"
+    },
+    {
+     "level": 57,
+     "weight": {},
+     "text": "Minions have (21-25)% increased Critical Damage Bonus",
+     "affix": "of Devastation",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "Hits against you have (35-41)% reduced Critical Damage Bonus",
+     "affix": "of Interference",
+     "group": "ReducedExtraDamageFromCrits"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(30-34)% increased Critical Damage Bonus",
+     "affix": "of Ferocity",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "+(20-22)% to Critical Damage Bonus",
+     "affix": "of Ferocity",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(30-34)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Ferocity",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "+(30-34)% to Critical Damage Bonus with Traps",
+     "affix": "of Ferocity",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "Allies in your Presence have (30-34)% increased Critical Damage Bonus",
+     "affix": "of Ferocity",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "Hits against you have (10-99)% reduced Critical Damage Bonus",
+     "affix": "of the Soul",
+     "group": "ReducedCriticalStrikeDamageTaken"
+    },
+    {
+     "level": 69,
+     "weight": {},
+     "text": "Hits against you have (42-47)% reduced Critical Damage Bonus",
+     "affix": "of Obstruction",
+     "group": "ReducedExtraDamageFromCrits"
+    },
+    {
+     "level": 69,
+     "weight": {},
+     "text": "Minions have (26-30)% increased Critical Damage Bonus",
+     "affix": "of Eradication",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 72,
+     "weight": {},
+     "text": "Hits against you have (40-50)% reduced Critical Damage Bonus",
+     "affix": "of the Essence",
+     "group": "EssenceReducedCriticalDamageAgainstYou"
+    },
+    {
+     "level": 73,
+     "weight": {},
+     "text": "+(23-25)% to Critical Damage Bonus",
+     "affix": "of Destruction",
+     "group": "LocalCriticalStrikeMultiplier"
+    },
+    {
+     "level": 73,
+     "weight": {},
+     "text": "+(35-39)% to Critical Damage Bonus with Traps",
+     "affix": "of Destruction",
+     "group": "TrapCriticalStrikeMultiplier"
+    },
+    {
+     "level": 73,
+     "weight": {},
+     "text": "Allies in your Presence have (35-39)% increased Critical Damage Bonus",
+     "affix": "of Destruction",
+     "group": "AlliesInPresenceCriticalStrikeMultiplier"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "(35-39)% increased Critical Damage Bonus",
+     "affix": "of Destruction",
+     "group": "CriticalStrikeMultiplier"
+    },
+    {
+     "level": 74,
+     "weight": {},
+     "text": "(35-39)% increased Critical Damage Bonus for Attack Damage",
+     "affix": "of Destruction",
+     "group": "AttackCriticalStrikeMultiplier"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "Minions have (31-35)% increased Critical Damage Bonus",
+     "affix": "of Extinction",
+     "group": "MinionCriticalStrikeMultiplier"
+    },
+    {
+     "level": 81,
+     "weight": {},
+     "text": "Hits against you have (48-54)% reduced Critical Damage Bonus",
+     "affix": "of the Bastion",
+     "group": "ReducedExtraDamageFromCrits"
+    }
+   ]
+  },
+  "Accuracy": {
+   "label": "命中值",
+   "type": "Prefix",
+   "tierCount": 27,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "to Accuracy Rating",
+   "normPattern": "to accuracy rating",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "+(11-32) to Accuracy Rating",
+     "affix": "Precise",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "Allies in your Presence have +(11-32) to Accuracy Rating",
+     "affix": "Precise",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 8,
+     "weight": {},
+     "text": "+(11-32) to Accuracy Rating",
+     "affix": "Precise",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "+(33-60) to Accuracy Rating",
+     "affix": "Reliable",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "Allies in your Presence have +(33-60) to Accuracy Rating",
+     "affix": "Reliable",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 13,
+     "weight": {},
+     "text": "+(33-60) to Accuracy Rating",
+     "affix": "Reliable",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "+(61-84) to Accuracy Rating",
+     "affix": "Focused",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "+(61-84) to Accuracy Rating",
+     "affix": "Focused",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "Allies in your Presence have +(61-84) to Accuracy Rating",
+     "affix": "Focused",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "+(85-123) to Accuracy Rating",
+     "affix": "Deliberate",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "+(85-123) to Accuracy Rating",
+     "affix": "Deliberate",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 26,
+     "weight": {},
+     "text": "Allies in your Presence have +(85-123) to Accuracy Rating",
+     "affix": "Deliberate",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "+(124-167) to Accuracy Rating",
+     "affix": "Consistent",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "+(124-167) to Accuracy Rating",
+     "affix": "Consistent",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "Allies in your Presence have +(124-167) to Accuracy Rating",
+     "affix": "Consistent",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 48,
+     "weight": {},
+     "text": "+(168-236) to Accuracy Rating",
+     "affix": "Steady",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 48,
+     "weight": {},
+     "text": "+(168-236) to Accuracy Rating",
+     "affix": "Steady",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 48,
+     "weight": {},
+     "text": "Allies in your Presence have +(168-236) to Accuracy Rating",
+     "affix": "Steady",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "+(237-346) to Accuracy Rating",
+     "affix": "Hunter's",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "+(237-346) to Accuracy Rating",
+     "affix": "Hunter's",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 58,
+     "weight": {},
+     "text": "Allies in your Presence have +(237-346) to Accuracy Rating",
+     "affix": "Hunter's",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 67,
+     "weight": {},
+     "text": "+(347-450) to Accuracy Rating",
+     "affix": "Ranger's",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 67,
+     "weight": {},
+     "text": "+(347-450) to Accuracy Rating",
+     "affix": "Ranger's",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 67,
+     "weight": {},
+     "text": "Allies in your Presence have +(347-450) to Accuracy Rating",
+     "affix": "Ranger's",
+     "group": "AlliesInPresenceIncreasedAccuracy"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "+(451-550) to Accuracy Rating",
+     "affix": "Amazon's",
+     "group": "IncreasedAccuracy"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "+(451-550) to Accuracy Rating",
+     "affix": "Amazon's",
+     "group": "LocalAccuracyRating"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "+(551-650) to Accuracy Rating",
+     "affix": "Valkyrie's",
+     "group": "LocalAccuracyRating"
+    }
+   ]
+  },
+  "MoveSpeed": {
+   "label": "移动速度",
+   "type": "Prefix",
+   "tierCount": 8,
+   "minLevel": 1,
+   "maxLevel": 82,
+   "englishKeyword": "Movement Speed",
+   "normPattern": "movement speed",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "10% increased Movement Speed",
+     "affix": "Runner's",
+     "group": "MovementVelocity"
+    },
+    {
+     "level": 16,
+     "weight": {},
+     "text": "15% increased Movement Speed",
+     "affix": "Sprinter's",
+     "group": "MovementVelocity"
+    },
+    {
+     "level": 33,
+     "weight": {},
+     "text": "20% increased Movement Speed",
+     "affix": "Stallion's",
+     "group": "MovementVelocity"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(10-14)% increased Movement Speed while Sprinting",
+     "affix": "Uhtred's",
+     "group": "MovementVelocityWhileSprinting"
+    },
+    {
+     "level": 46,
+     "weight": {},
+     "text": "25% increased Movement Speed",
+     "affix": "Gazelle's",
+     "group": "MovementVelocity"
+    },
+    {
+     "level": 65,
+     "weight": {},
+     "text": "30% increased Movement Speed",
+     "affix": "Cheetah's",
+     "group": "MovementVelocity"
+    },
+    {
+     "level": 78,
+     "weight": {},
+     "text": "(17-23)% increased Movement Speed while Sprinting",
+     "affix": "Uhtred's",
+     "group": "MovementVelocityWhileSprinting"
+    },
+    {
+     "level": 82,
+     "weight": {},
+     "text": "35% increased Movement Speed",
+     "affix": "Hellion's",
+     "group": "MovementVelocity"
+    }
+   ]
+  },
+  "AttackSpeed": {
+   "label": "攻击速度",
+   "type": "Suffix",
+   "tierCount": 20,
+   "minLevel": 1,
+   "maxLevel": 77,
+   "englishKeyword": "Attack Speed",
+   "normPattern": "attack speed",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(5-7)% increased Attack Speed",
+     "affix": "of Skill",
+     "group": "IncreasedAttackSpeed"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(5-7)% increased Attack Speed",
+     "affix": "of Skill",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(13-17)% increased Attack Speed if you haven't been Hit Recently",
+     "affix": "of Ulaman",
+     "group": "AttackSpeedIfNotHitRecently"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(17-23)% increased Attack Speed when on Full Life",
+     "affix": "of Kurgal",
+     "group": "AttackSpeedOnFullLife"
+    },
+    {
+     "level": 5,
+     "weight": {},
+     "text": "Allies in your Presence have (5-7)% increased Attack Speed",
+     "affix": "of Skill",
+     "group": "AlliesInPresenceIncreasedAttackSpeed"
+    },
+    {
+     "level": 11,
+     "weight": {},
+     "text": "(8-10)% increased Attack Speed",
+     "affix": "of Ease",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 20,
+     "weight": {},
+     "text": "Allies in your Presence have (8-10)% increased Attack Speed",
+     "affix": "of Ease",
+     "group": "AlliesInPresenceIncreasedAttackSpeed"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "(8-10)% increased Attack Speed",
+     "affix": "of Ease",
+     "group": "IncreasedAttackSpeed"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "(11-13)% increased Attack Speed",
+     "affix": "of Mastery",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 25,
+     "weight": {},
+     "text": "(10-15)% increased Attack Speed while missing Runic Ward",
+     "affix": "of the Stars",
+     "group": "AttackSpeedWhileMissingRunicWard"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(14-16)% increased Attack Speed",
+     "affix": "of Renown",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 35,
+     "weight": {},
+     "text": "Allies in your Presence have (11-13)% increased Attack Speed",
+     "affix": "of Mastery",
+     "group": "AlliesInPresenceIncreasedAttackSpeed"
+    },
+    {
+     "level": 37,
+     "weight": {},
+     "text": "(11-13)% increased Attack Speed",
+     "affix": "of Mastery",
+     "group": "IncreasedAttackSpeed"
+    },
+    {
+     "level": 37,
+     "weight": {},
+     "text": "(17-19)% increased Attack Speed",
+     "affix": "of Acclaim",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(20-22)% increased Attack Speed",
+     "affix": "of Fame",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(7-9)% increased Attack Speed",
+     "affix": "of the Stars",
+     "group": "IncreasedAttackSpeedNoCastSpeed"
+    },
+    {
+     "level": 55,
+     "weight": {},
+     "text": "Allies in your Presence have (14-16)% increased Attack Speed",
+     "affix": "of Renown",
+     "group": "AlliesInPresenceIncreasedAttackSpeed"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(14-16)% increased Attack Speed",
+     "affix": "of Renown",
+     "group": "IncreasedAttackSpeed"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(23-25)% increased Attack Speed",
+     "affix": "of Infamy",
+     "group": "LocalIncreasedAttackSpeed"
+    },
+    {
+     "level": 77,
+     "weight": {},
+     "text": "(26-28)% increased Attack Speed",
+     "affix": "of Celebration",
+     "group": "LocalIncreasedAttackSpeed"
+    }
+   ]
+  },
+  "CastSpeed": {
+   "label": "施法速度",
+   "type": "Suffix",
+   "tierCount": 39,
+   "minLevel": 1,
+   "maxLevel": 80,
+   "englishKeyword": "Cast Speed",
+   "normPattern": "cast speed",
+   "tiers": [
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-12)% increased Cast Speed",
+     "affix": "of Talent",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(14-19)% increased Cast Speed",
+     "affix": "of Talent",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 1,
+     "weight": {},
+     "text": "(9-12)% increased Cast Speed",
+     "affix": "of Talent",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 6,
+     "weight": {},
+     "text": "Allies in your Presence have (5-8)% increased Cast Speed",
+     "affix": "of Talent",
+     "group": "AlliesInPresenceIncreasedCastSpeed"
+    },
+    {
+     "level": 15,
+     "weight": {},
+     "text": "(13-16)% increased Cast Speed",
+     "affix": "of Nimbleness",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 15,
+     "weight": {},
+     "text": "(20-25)% increased Cast Speed",
+     "affix": "of Nimbleness",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 15,
+     "weight": {},
+     "text": "(3-4)% increased Attack and Cast Speed",
+     "affix": "of Zeal",
+     "group": "AttackAndCastSpeed"
+    },
+    {
+     "level": 18,
+     "weight": {},
+     "text": "(13-15)% increased Cast Speed",
+     "affix": "of Nimbleness",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 21,
+     "weight": {},
+     "text": "Allies in your Presence have (9-12)% increased Cast Speed",
+     "affix": "of Nimbleness",
+     "group": "AlliesInPresenceIncreasedCastSpeed"
+    },
+    {
+     "level": 22,
+     "weight": {},
+     "text": "(8-10)% increased Cast Speed during any Flask Effect",
+     "affix": "of Hurrying",
+     "group": "CastSpeedDuringManaFlaskEffect"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(17-20)% increased Cast Speed",
+     "affix": "of Expertise",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 30,
+     "weight": {},
+     "text": "(26-31)% increased Cast Speed",
+     "affix": "of Expertise",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 31,
+     "weight": {},
+     "text": "Minions have (3-4)% increased Attack and Cast Speed",
+     "affix": "of Guidance",
+     "group": "MinionAttackSpeedAndCastSpeed"
+    },
+    {
+     "level": 35,
+     "weight": {},
+     "text": "(16-18)% increased Cast Speed",
+     "affix": "of Expertise",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 36,
+     "weight": {},
+     "text": "Allies in your Presence have (13-16)% increased Cast Speed",
+     "affix": "of Expertise",
+     "group": "AlliesInPresenceIncreasedCastSpeed"
+    },
+    {
+     "level": 41,
+     "weight": {},
+     "text": "(11-13)% increased Cast Speed during any Flask Effect",
+     "affix": "of Quickening",
+     "group": "CastSpeedDuringManaFlaskEffect"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(21-24)% increased Cast Speed",
+     "affix": "of Sortilege",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(32-37)% increased Cast Speed",
+     "affix": "of Sortilege",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(5-6)% increased Attack and Cast Speed",
+     "affix": "of Fervour",
+     "group": "AttackAndCastSpeed"
+    },
+    {
+     "level": 45,
+     "weight": {},
+     "text": "(9-12)% increased Cast Speed",
+     "affix": "of the Stars",
+     "group": "IncreasedCastSpeedNoAttackSpeed"
+    },
+    {
+     "level": 51,
+     "weight": {},
+     "text": "(19-21)% increased Cast Speed",
+     "affix": "of Sortilege",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 53,
+     "weight": {},
+     "text": "Minions have (5-6)% increased Attack and Cast Speed",
+     "affix": "of Direction",
+     "group": "MinionAttackSpeedAndCastSpeed"
+    },
+    {
+     "level": 56,
+     "weight": {},
+     "text": "Allies in your Presence have (17-20)% increased Cast Speed",
+     "affix": "of Sortilege",
+     "group": "AlliesInPresenceIncreasedCastSpeed"
+    },
+    {
+     "level": 59,
+     "weight": {},
+     "text": "(14-16)% increased Cast Speed during any Flask Effect",
+     "affix": "of Hastening",
+     "group": "CastSpeedDuringManaFlaskEffect"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(25-28)% increased Cast Speed",
+     "affix": "of Legerdemain",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(38-43)% increased Cast Speed",
+     "affix": "of Legerdemain",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 60,
+     "weight": {},
+     "text": "(22-24)% increased Cast Speed",
+     "affix": "of Legerdemain",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "Socketed Gems have 20% more Attack and Cast Speed",
+     "affix": "",
+     "group": "SocketedGemsHaveMoreAttackAndCastSpeed"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "Socketed Gems have 16% more Attack and Cast Speed",
+     "affix": "of the Essence",
+     "group": "SocketedGemsHaveMoreAttackAndCastSpeed"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "10% increased Attack and Cast Speed during any Flask Effect",
+     "affix": "",
+     "group": "AttackAndCastSpeedDuringFlaskEffect"
+    },
+    {
+     "level": 66,
+     "weight": {},
+     "text": "(25-28)% increased Cast Speed",
+     "affix": "of Prestidigitation",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 69,
+     "weight": {},
+     "text": "Minions have (7-8)% increased Attack and Cast Speed",
+     "affix": "of Management",
+     "group": "MinionAttackSpeedAndCastSpeed"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(29-32)% increased Cast Speed",
+     "affix": "of Prestidigitation",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(44-49)% increased Cast Speed",
+     "affix": "of Prestidigitation",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 70,
+     "weight": {},
+     "text": "(7-8)% increased Attack and Cast Speed",
+     "affix": "of Haste",
+     "group": "AttackAndCastSpeed"
+    },
+    {
+     "level": 76,
+     "weight": {},
+     "text": "(17-19)% increased Cast Speed during any Flask Effect",
+     "affix": "of Accelerating",
+     "group": "CastSpeedDuringManaFlaskEffect"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "(33-35)% increased Cast Speed",
+     "affix": "of Finesse",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "(50-52)% increased Cast Speed",
+     "affix": "of Finesse",
+     "group": "IncreasedCastSpeed"
+    },
+    {
+     "level": 80,
+     "weight": {},
+     "text": "Minions have (9-10)% increased Attack and Cast Speed",
+     "affix": "of Control",
+     "group": "MinionAttackSpeedAndCastSpeed"
+    }
+   ]
+  },
+  "Rarity": {
+   "label": "物品稀有度",
+   "type": "Suffix",
+   "tierCount": 5,
+   "minLevel": 3,
+   "maxLevel": 75,
+   "englishKeyword": "Rarity of Items",
+   "normPattern": "rarity of items",
+   "tiers": [
+    {
+     "level": 3,
+     "weight": {},
+     "text": "(6-10)% increased Rarity of Items found",
+     "affix": "of Plunder",
+     "group": "ItemFoundRarityIncrease"
+    },
+    {
+     "level": 24,
+     "weight": {},
+     "text": "(11-14)% increased Rarity of Items found",
+     "affix": "of Raiding",
+     "group": "ItemFoundRarityIncrease"
+    },
+    {
+     "level": 40,
+     "weight": {},
+     "text": "(15-18)% increased Rarity of Items found",
+     "affix": "of Archaeology",
+     "group": "ItemFoundRarityIncrease"
+    },
+    {
+     "level": 63,
+     "weight": {},
+     "text": "(19-21)% increased Rarity of Items found",
+     "affix": "of Excavation",
+     "group": "ItemFoundRarityIncrease"
+    },
+    {
+     "level": 75,
+     "weight": {},
+     "text": "(22-25)% increased Rarity of Items found",
+     "affix": "of Windfall",
+     "group": "ItemFoundRarityIncrease"
+    }
+   ]
+  }
+ }
+}

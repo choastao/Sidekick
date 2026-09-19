@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -130,13 +130,13 @@
     <value>Home</value>
   </data>
   <data name="PoeApiDown" xml:space="preserve">
-    <value>The trade website appears to be down. Restart Sidekick when the trade website is back online.</value>
+    <value>The trade website appears to be down. Restart TAO when the trade website is back online.</value>
   </data>
   <data name="BuyMeACoffee" xml:space="preserve">
-    <value>Support Sidekick with buymeacoffee.com</value>
+    <value>Support TAO with buymeacoffee.com</value>
   </data>
   <data name="XselPackageMissing" xml:space="preserve">
-    <value>Sidekick needs the package "xsel" in order to read the items in the clipboard. Install using "apt-get install xsel".</value>
+    <value>TAO needs the package "xsel" in order to read the items in the clipboard. Install using "apt-get install xsel".</value>
   </data>
   <data name="Age_Seconds" xml:space="preserve">
     <value>{0} seconds</value>
@@ -263,5 +263,8 @@
   </data>
   <data name="Open_Settings" xml:space="preserve">
       <value>Open Settings</value>
+  </data>
+  <data name="Build_Target" xml:space="preserve">
+      <value>Target BD</value>
   </data>
 </root>

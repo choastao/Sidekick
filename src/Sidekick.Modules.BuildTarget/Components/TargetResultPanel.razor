@@ -1,0 +1,233 @@
+@using Sidekick.Game.Parser.Items
+@implements IDisposable
+
+@if (Result != null)
+{
+    <div class="flex flex-col gap-4">
+
+        @* 一句话结论：新手只看这里 *@
+        <div class="rounded-md border px-4 py-3 @VerdictBoxClass">
+            <Heading2 Class="@VerdictTextClass">@VerdictLabel</Heading2>
+            <TextBase Class="mt-1">@Result.Headline</TextBase>
+        </div>
+
+        @if (!Result.HasTemplate)
+        {
+            return;
+        }
+
+        @* 各部位：门槛 + 与当前装备的增减 *@
+        @foreach (var slot in Result.Slots)
+        {
+            <FormFieldset Legend="@slot.SlotLabel">
+                <div class="flex items-center justify-between gap-3">
+                    <TextBase Class="text-stone-400 text-sm">
+                        @Resources["Compare_Against"]
+                        @if (slot.HasEquipped)
+                        {
+                            @slot.EquippedName
+                        }
+                        else if (slot.EquippedUnparsable)
+                        {
+                            <span class="text-amber-400">@Resources["Equipped_Unparsable"]</span>
+                        }
+                        else
+                        {
+                            @Resources["Equipped_Missing"]
+                        }
+                    </TextBase>
+                    <ButtonLink OnClick="() => CaptureEquipped(slot.SlotKey)">
+                        @Resources["Equipped_Capture"]
+                    </ButtonLink>
+                </div>
+
+                @if (slot.Checks.Count > 0)
+                {
+                    <table class="w-full text-sm mt-3 border-collapse">
+                        <thead>
+                        <tr class="text-stone-400 text-left">
+                            <th class="font-normal py-1">@Resources["Label"]</th>
+                            <th class="font-normal py-1 text-right w-20">@Resources["Current_Sum"]</th>
+                            <th class="font-normal py-1 text-right w-20">@Resources["New_Sum"]</th>
+                            <th class="font-normal py-1 text-right w-20">@Resources["Delta"]</th>
+                            <th class="font-normal py-1 text-right w-20">@Resources["Min_Value"]</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var check in slot.Checks)
+                        {
+                            <tr class="border-t border-stone-700">
+                                <td class="py-1">
+                                    @check.Label
+                                    @if (!check.Required)
+                                    {
+                                        <span class="text-stone-500 text-xs ml-1">(@Resources["Optional"])</span>
+                                    }
+                                    @if (!string.IsNullOrEmpty(check.MatchedLine))
+                                    {
+                                        <div class="text-stone-500 text-xs">@check.MatchedLine</div>
+                                    }
+                                </td>
+                                <td class="py-1 text-right text-stone-400">@Format(check.Current)</td>
+                                <td class="py-1 text-right @(check.Pass ? "" : "text-red-400")">@Format(check.New)</td>
+                                <td class="py-1 text-right @DeltaClass(check.Delta)">@FormatDelta(check.Delta)</td>
+                                <td class="py-1 text-right text-stone-400">@Format(check.MinValue)</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <TextBase Class="text-stone-500 text-sm mt-2">@Resources["Result_No_Slot_Target"]</TextBase>
+                }
+            </FormFieldset>
+        }
+
+        @* 角色总目标：只含装备上的加法类词缀 *@
+        @if (Result.Character.Count > 0)
+        {
+            <FormFieldset Legend="@Resources["Estimate_Title"]">
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                    <tr class="text-stone-400 text-left">
+                        <th class="font-normal py-1">@Resources["Label"]</th>
+                        <th class="font-normal py-1 text-right w-20">@Resources["Current_Sum"]</th>
+                        <th class="font-normal py-1 text-right w-20">@Resources["New_Sum"]</th>
+                        <th class="font-normal py-1 text-right w-20">@Resources["Delta"]</th>
+                        <th class="font-normal py-1 text-right w-20">@Resources["Min_Value"]</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var estimate in Result.Character)
+                    {
+                        <tr class="border-t border-stone-700">
+                            <td class="py-1">@estimate.Label</td>
+                            <td class="py-1 text-right text-stone-400">@Format(estimate.CurrentSum)</td>
+                            <td class="py-1 text-right @(estimate.Pass ? "" : "text-red-400")">@Format(estimate.NewSum)</td>
+                            <td class="py-1 text-right @DeltaClass(estimate.Delta)">@FormatDelta(estimate.Delta)</td>
+                            <td class="py-1 text-right text-stone-400">@Format(estimate.MinValue)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+                <TextBase Class="text-stone-500 text-xs mt-2">
+                    @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Estimate_Note"].Value, Result.Character[0].CollectedSlots)
+                </TextBase>
+            </FormFieldset>
+        }
+
+        @if (!Result.Slots.Any(x => x.HasEquipped) && Result.Slots.Count > 0)
+        {
+            <TextBase Class="text-amber-400 text-sm">@Resources["No_Baseline_Hint"]</TextBase>
+        }
+
+    </div>
+}
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject BuildTargetStore Store
+@inject BuildTargetEvaluator Evaluator
+
+@code {
+
+    [CascadingParameter]
+    public required Item Item { get; set; }
+
+    private BuildTargetResult? Result { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Store.OnChanged += OnStoreChanged;
+        Evaluate();
+        base.OnInitialized();
+    }
+
+    protected override void OnParametersSet()
+    {
+        Evaluate();
+        base.OnParametersSet();
+    }
+
+    private void OnStoreChanged()
+    {
+        Evaluate();
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void Evaluate()
+    {
+        try
+        {
+            Result = Evaluator.Evaluate(Store.Active, Item);
+        }
+        catch
+        {
+            Result = null;
+        }
+    }
+
+    private void CaptureEquipped(string slotKey)
+    {
+        var template = Store.Active;
+        if (template == null)
+        {
+            return;
+        }
+
+        Store.CaptureEquipped(template, slotKey, Item.Text.Text);
+        Evaluate();
+    }
+
+    private string VerdictLabel => Result?.Verdict switch
+    {
+        Verdict.Good => Resources["Verdict_Good"],
+        Verdict.Warn => Resources["Verdict_Warn"],
+        Verdict.Bad => Resources["Verdict_Bad"],
+        _ => Resources["Verdict_Unknown"],
+    };
+
+    private string VerdictBoxClass => Result?.Verdict switch
+    {
+        Verdict.Good => "border-green-600 bg-green-950/40",
+        Verdict.Warn => "border-amber-600 bg-amber-950/40",
+        Verdict.Bad => "border-red-600 bg-red-950/40",
+        _ => "border-stone-600 bg-stone-800/40",
+    };
+
+    private string VerdictTextClass => Result?.Verdict switch
+    {
+        Verdict.Good => "text-green-400",
+        Verdict.Warn => "text-amber-400",
+        Verdict.Bad => "text-red-400",
+        _ => "text-stone-400",
+    };
+
+    private static string Format(double? value) => value.HasValue ? value.Value.ToString("0.##") : "-";
+
+    private static string FormatDelta(double? value)
+    {
+        if (!value.HasValue)
+        {
+            return "-";
+        }
+
+        return value.Value > 0 ? "+" + value.Value.ToString("0.##") : value.Value.ToString("0.##");
+    }
+
+    private static string DeltaClass(double? value)
+    {
+        if (!value.HasValue || value.Value == 0)
+        {
+            return "text-stone-400";
+        }
+
+        return value.Value > 0 ? "text-green-400" : "text-red-400";
+    }
+
+    public void Dispose()
+    {
+        Store.OnChanged -= OnStoreChanged;
+    }
+
+}

@@ -1,0 +1,496 @@
+@page "/settings/buildtarget"
+@implements IDisposable
+
+<LayoutMenu>
+    <AppContainer>
+
+        <FormFieldset Legend="@Resources["Page_Title"]">
+            <TextBase>@Resources["Page_Description"]</TextBase>
+        </FormFieldset>
+
+        @* ---------- 模板管理 ---------- *@
+        <FormFieldset Legend="@Resources["Template"]">
+            @if (Store.Templates.Count == 0)
+            {
+                <TextBase Class="text-stone-400">@Resources["Template_None"]</TextBase>
+            }
+            else
+            {
+                <FormSelect Label="@Resources["Template_Active"]"
+                            Value="@active?.Id"
+                            ValueChanged="SelectTemplate"
+                            Options="TemplateOptions"/>
+            }
+
+            <div class="mt-3">
+                <FormInput Label="@Resources["Template_Name"]"
+                           Value="@(active?.Name)"
+                           ValueChanged="RenameTemplate"/>
+            </div>
+
+            <div class="flex flex-wrap gap-2 mt-3">
+                <ButtonPrimary OnClick="NewTemplate">@Resources["Template_New"]</ButtonPrimary>
+                <ButtonSecondary OnClick="DuplicateTemplate" Disabled="@(active == null)">@Resources["Template_Duplicate"]</ButtonSecondary>
+                <ButtonSecondary OnClick="DeleteTemplate" Disabled="@(active == null)">@Resources["Template_Delete"]</ButtonSecondary>
+            </div>
+        </FormFieldset>
+
+        @* ---------- 导入 BD（PoB 分享码 / pobb.in 链接） ---------- *@
+        <FormFieldset Legend="@Resources["Import_Title"]">
+            <TextBase Class="text-stone-400 text-sm">@Resources["Import_Help"]</TextBase>
+
+            <div class="mt-3">
+                <label class="flex gap-1 mb-1 text-base font-medium dark:text-zinc-300">@Resources["Import_Label"]</label>
+                @* 原生 input 绑 oninput：FormInput 只绑 onchange，粘贴后直接点按钮可能抢不上 *@
+                <input type="text"
+                       value="@importInput"
+                       @oninput="(e) => importInput = e.Value?.ToString()"
+                       placeholder="@Resources["Import_Placeholder"]"
+                       class="@UiClasses.FormInputClasses p-2 text-base w-full" />
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 mt-3">
+                <ButtonPrimary OnClick="ImportBuild" Disabled="@(importing || string.IsNullOrWhiteSpace(importInput))">
+                    @(importing ? Resources["Import_Working"] : Resources["Import_Button"])
+                </ButtonPrimary>
+                <TextBase Class="text-stone-500 text-xs">@Resources["Import_Source_Hint"]</TextBase>
+            </div>
+
+            @if (!string.IsNullOrEmpty(importError))
+            {
+                <div class="mt-3 text-red-400 text-sm">@importError</div>
+            }
+
+            @if (importNotes.Count > 0)
+            {
+                <div class="mt-3 text-stone-400 text-sm">
+                    @foreach (var note in importNotes)
+                    {
+                        <div>@note</div>
+                    }
+                </div>
+            }
+        </FormFieldset>
+
+        @if (active == null)
+        {
+            return;
+        }
+
+        @* ---------- 角色总目标 ---------- *@
+        <FormFieldset Legend="@Resources["Character_Targets"]">
+            <TextBase Class="text-stone-400 text-sm">@Resources["Character_Help"]</TextBase>
+
+            <div class="flex flex-wrap items-end gap-2 mt-3">
+                <div class="grow min-w-48">
+                    <FormSelect Label="@Resources["Preset_Pick"]"
+                                Value="@characterPreset"
+                                ValueChanged="(v) => characterPreset = v"
+                                Options="CharacterPresetOptions"/>
+                </div>
+                <ButtonSecondary OnClick="AddCharacterPreset">@Resources["Preset_Add"]</ButtonSecondary>
+                <ButtonLink OnClick="AddCharacterRow">@Resources["Add"]</ButtonLink>
+            </div>
+
+            <div class="mt-4">
+                <StatPicker Label="@Resources["Search_Stat"]" OnPick="AddCharacterStat"/>
+            </div>
+
+            <table class="w-full text-sm mt-3 border-collapse">
+                <thead>
+                <tr class="text-stone-400 text-left">
+                    <th class="font-normal py-1">@Resources["Label"]</th>
+                    <th class="font-normal py-1">@Resources["Keywords"]</th>
+                    <th class="font-normal py-1 w-24 text-right">@Resources["Min_Value"]</th>
+                    <th class="font-normal py-1 w-20 text-center">@Resources["Required"]</th>
+                    <th class="w-16"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var row in active.Character)
+                {
+                    <tr class="border-t border-stone-700">
+                        <td class="py-1 pr-2">
+                            <FormInput Value="@row.Label" ValueChanged="(v) => { row.Label = v ?? string.Empty; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 pr-2">
+                            <FormInput Value="@string.Join(", ", row.Match)"
+                                       ValueChanged="(v) => { row.Match = SplitKeywords(v); SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 pr-2">
+                            <FormNumber Value="@row.MinValue"
+                                        ValueChanged="(v) => { row.MinValue = v ?? 0; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 text-center">
+                            <FormCheckbox Value="@row.Required"
+                                          ValueChanged="(v) => { row.Required = v; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 text-right">
+                            <ButtonLink OnClick="() => { active.Character.Remove(row); SaveActive(); }">@Resources["Remove"]</ButtonLink>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </FormFieldset>
+
+        @* ---------- 各部位门槛 ---------- *@
+        <FormFieldset Legend="@Resources["Slot_Targets"]">
+            <TextBase Class="text-stone-400 text-sm">@Resources["Slot_Help"]</TextBase>
+
+            <div class="mt-3">
+                <FormSelect Label="@Resources["Slot_Targets"]"
+                            Value="@selectedSlot"
+                            ValueChanged="OnSlotChanged"
+                            Options="SlotOptions"/>
+            </div>
+
+            <div class="flex flex-wrap items-end gap-2 mt-3">
+                <div class="grow min-w-48">
+                    <FormSelect Label="@Resources["Preset_Pick"]"
+                                Value="@slotPreset"
+                                ValueChanged="(v) => slotPreset = v"
+                                Options="SlotPresetOptions"/>
+                </div>
+                <ButtonSecondary OnClick="AddSlotPreset">@Resources["Preset_Add"]</ButtonSecondary>
+                <ButtonLink OnClick="AddSlotRow">@Resources["Add"]</ButtonLink>
+            </div>
+
+            <div class="mt-4">
+                <StatPicker Label="@Resources["Search_Stat"]" OnPick="AddSlotStat"/>
+            </div>
+
+            <table class="w-full text-sm mt-3 border-collapse">
+                <thead>
+                <tr class="text-stone-400 text-left">
+                    <th class="font-normal py-1">@Resources["Label"]</th>
+                    <th class="font-normal py-1">@Resources["Keywords"]</th>
+                    <th class="font-normal py-1 w-24 text-right">@Resources["Min_Value"]</th>
+                    <th class="font-normal py-1 w-20 text-center">@Resources["Required"]</th>
+                    <th class="w-16"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var row in CurrentSlotTargets())
+                {
+                    <tr class="border-t border-stone-700">
+                        <td class="py-1 pr-2">
+                            <FormInput Value="@row.Label" ValueChanged="(v) => { row.Label = v ?? string.Empty; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 pr-2">
+                            <FormInput Value="@string.Join(", ", row.Match)"
+                                       ValueChanged="(v) => { row.Match = SplitKeywords(v); SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 pr-2">
+                            <FormNumber Value="@row.MinValue"
+                                        ValueChanged="(v) => { row.MinValue = v ?? 0; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 text-center">
+                            <FormCheckbox Value="@row.Required"
+                                          ValueChanged="(v) => { row.Required = v; SaveActive(); }"/>
+                        </td>
+                        <td class="py-1 text-right">
+                            <ButtonLink OnClick="() => { CurrentSlotTargets().Remove(row); SaveActive(); }">@Resources["Remove"]</ButtonLink>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </FormFieldset>
+
+        @* ---------- 当前装备采集 ---------- *@
+        <FormFieldset Legend="@Resources["Equipped"]">
+            <TextBase Class="text-stone-400 text-sm">@Resources["Equipped_Help"]</TextBase>
+
+            <div class="flex items-center justify-between gap-3 mt-3">
+                <TextBase>
+                    @SlotLabel(selectedSlot)：
+                    <span class="text-stone-400">
+                        @(HasEquipped(selectedSlot) ? Resources["Equipped_Captured"].Value : Resources["Equipped_Missing"].Value)
+                    </span>
+                </TextBase>
+                <ButtonLink OnClick="ClearEquipped" Disabled="@(!HasEquipped(selectedSlot))">@Resources["Equipped_Clear"]</ButtonLink>
+            </div>
+
+            <div class="mt-3">
+                <FormTextarea Label="@Resources["Equipped"]"
+                              Value="@equippedPaste"
+                              ValueChanged="(v) => equippedPaste = v"/>
+            </div>
+
+            <div class="flex gap-2 mt-3">
+                <ButtonSecondary OnClick="SaveEquippedPaste" Disabled="@(string.IsNullOrWhiteSpace(equippedPaste))">
+                    @Resources["Equipped_Capture"]
+                </ButtonSecondary>
+            </div>
+        </FormFieldset>
+
+    </AppContainer>
+</LayoutMenu>
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject BuildTargetStore Store
+@inject PobBuildImporter Importer
+
+@code {
+
+    private BuildTargetTemplate? active;
+
+    private string? characterPreset;
+    private string? slotPreset;
+    private string selectedSlot = SlotKeys.Helmet;
+    private string? equippedPaste;
+    private string? importInput;
+    private string? importError;
+    private List<string> importNotes = [];
+    private bool importing;
+
+    protected override void OnInitialized()
+    {
+        active = Store.Active;
+        Store.OnChanged += OnStoreChanged;
+        base.OnInitialized();
+    }
+
+    private void OnStoreChanged()
+    {
+        active = Store.Active;
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private List<SelectOption> TemplateOptions =>
+        Store.Templates.Select(x => new SelectOption { Label = string.IsNullOrWhiteSpace(x.Name) ? x.Id : x.Name, Value = x.Id }).ToList();
+
+    private List<SelectOption> SlotOptions =>
+        SlotKeys.All.Select(x => new SelectOption { Label = SlotLabel(x), Value = x }).ToList();
+
+    private List<SelectOption> CharacterPresetOptions =>
+        StatPresets.ForCharacterTargets().Select(x => new SelectOption { Label = x.Label, Value = x.Key }).ToList();
+
+    private List<SelectOption> SlotPresetOptions =>
+        StatPresets.ForSlot(selectedSlot).Select(x => new SelectOption { Label = x.Label, Value = x.Key }).ToList();
+
+    private List<ModTarget> CurrentSlotTargets()
+    {
+        if (active == null)
+        {
+            return [];
+        }
+
+        if (!active.Slots.TryGetValue(selectedSlot, out var list))
+        {
+            list = [];
+            active.Slots[selectedSlot] = list;
+        }
+
+        return list;
+    }
+
+    private void SelectTemplate(string? id)
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            Store.SetActive(id);
+        }
+    }
+
+    private void RenameTemplate(string? name)
+    {
+        if (active == null)
+        {
+            return;
+        }
+
+        active.Name = name ?? "";
+        SaveActive();
+    }
+
+    private void NewTemplate()
+    {
+        Store.Create(Resources["Template_Placeholder"].Value);
+    }
+
+    private void DuplicateTemplate()
+    {
+        if (active != null)
+        {
+            Store.Duplicate(active);
+        }
+    }
+
+    private void DeleteTemplate()
+    {
+        if (active != null)
+        {
+            Store.Delete(active.Id);
+            active = Store.Active;
+        }
+    }
+
+    private void AddCharacterRow()
+    {
+        active?.Character.Add(new ModTarget { Label = "", Match = [], MinValue = 0 });
+        SaveActive();
+    }
+
+    private void AddCharacterPreset() => AddPreset(active?.Character);
+
+    private void AddSlotRow()
+    {
+        CurrentSlotTargets().Add(new ModTarget { Label = "", Match = [], MinValue = 0 });
+        SaveActive();
+    }
+
+    private void AddSlotPreset() => AddPreset(CurrentSlotTargets());
+
+    private void AddPreset(List<ModTarget>? list)
+    {
+        if (list == null)
+        {
+            return;
+        }
+
+        var preset = StatPresets.Find(characterPreset != null && list == active?.Character ? characterPreset : slotPreset);
+        if (preset == null)
+        {
+            return;
+        }
+
+        list.Add(new ModTarget
+        {
+            Label = preset.Label,
+            Match = [.. preset.Keywords],
+            MinValue = 0,
+        });
+
+        SaveActive();
+    }
+
+    /// <summary>从词缀搜索器选一条：用词缀原文当匹配模板（# 为数值通配）。</summary>
+    private void AddCharacterStat(TradeStatDefinition stat) => AddStat(active?.Character, stat);
+
+    private void AddSlotStat(TradeStatDefinition stat) => AddStat(CurrentSlotTargets(), stat);
+
+    private void AddStat(List<ModTarget>? list, TradeStatDefinition stat)
+    {
+        if (list == null || string.IsNullOrWhiteSpace(stat.Text))
+        {
+            return;
+        }
+
+        list.Add(new ModTarget
+        {
+            Label = stat.Text,
+            Match = [stat.Text],
+            MinValue = 0,
+        });
+
+        SaveActive();
+    }
+
+    private void OnSlotChanged(string? slot)
+    {
+        if (!string.IsNullOrEmpty(slot))
+        {
+            selectedSlot = slot;
+            equippedPaste = null;
+        }
+    }
+
+    private bool HasEquipped(string slotKey) => active?.Equipped.ContainsKey(slotKey) == true;
+
+    private void ClearEquipped()
+    {
+        if (active == null)
+        {
+            return;
+        }
+
+        active.Equipped.Remove(selectedSlot);
+        SaveActive();
+    }
+
+    private void SaveEquippedPaste()
+    {
+        if (active == null || string.IsNullOrWhiteSpace(equippedPaste))
+        {
+            return;
+        }
+
+        Store.CaptureEquipped(active, selectedSlot, equippedPaste);
+        equippedPaste = null;
+    }
+
+    /// <summary>导入 PoB BD：生成一份新模板（部位门槛 + 角色目标 + 当前装备基准都来自这套 BD）。</summary>
+    private async Task ImportBuild()
+    {
+        if (importing || string.IsNullOrWhiteSpace(importInput))
+        {
+            return;
+        }
+
+        importing = true;
+        importError = null;
+        importNotes = [];
+        StateHasChanged();
+
+        try
+        {
+            var result = await Importer.ImportAsync(importInput);
+            importNotes = result.Notes;
+
+            if (result.Template == null)
+            {
+                importError = result.Error ?? Resources["Import_Invalid_Code"].Value;
+                return;
+            }
+
+            // 用 Store 现有的建模板入口，再把导入内容整套覆盖上去
+            var created = Store.Create(result.Template.Name);
+            created.Name = result.Template.Name;
+            created.Character = result.Template.Character;
+            created.Slots = result.Template.Slots;
+            created.Equipped = result.Template.Equipped;
+            created.EquippedStats = result.Template.EquippedStats;
+            created.EquippedNames = result.Template.EquippedNames;
+            created.ImportedFrom = result.Template.ImportedFrom;
+            Store.Save(created);
+
+            active = created;
+            importInput = null;
+        }
+        catch (Exception ex)
+        {
+            importError = ex.Message;
+        }
+        finally
+        {
+            importing = false;
+        }
+    }
+
+    private void SaveActive()
+    {
+        if (active != null)
+        {
+            Store.Save(active);
+        }
+    }
+
+    private static List<string> SplitKeywords(string? value) =>
+        string.IsNullOrWhiteSpace(value)
+            ? []
+            : value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+
+    private string SlotLabel(string slotKey)
+    {
+        var text = Resources["Slot_" + slotKey];
+        return text.ResourceNotFound ? slotKey : text.Value;
+    }
+
+    public void Dispose()
+    {
+        Store.OnChanged -= OnStoreChanged;
+    }
+
+}

@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text.Json;
 using Avalonia;
 using Avalonia.Controls;
@@ -21,7 +21,7 @@ public partial class OverlayWindow : Window
 
     public OverlayWindow()
     {
-        Title = "Sidekick";
+        Title = "TAO";
         Width = WIDTH;
         Height = HEIGHT;
         Background = Brushes.Transparent;

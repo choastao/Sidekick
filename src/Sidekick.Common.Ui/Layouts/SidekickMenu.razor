@@ -6,14 +6,11 @@
 
 <MenuList>
     <MenuItem Href="/home">@Resources["Home"]</MenuItem>
-    @if (Configuration.Value.ApplicationType.SupportsAuthentication())
-    {
-        <MenuItem Href="/wealth">@Resources["WealthTracker"]</MenuItem>
-    }
 
     <MenuLegend Legend="@Resources["Settings"]"/>
     <MenuItem Href="/settings/game">@Resources["Game"]</MenuItem>
     <MenuItem Href="/settings/application">@Resources["Application"]</MenuItem>
+    <MenuItem Href="/settings/buildtarget">@Resources["Build_Target"]</MenuItem>
 
     @if (Configuration.Value.ApplicationType.SupportsKeybinds())
     {
@@ -22,7 +19,6 @@
     }
 
     <MenuLegend Legend="@Resources["Help"]"/>
-    <MenuItem Href="/about">@Resources["About"]</MenuItem>
     <MenuItem Href="/logs">@Resources["Logs"]</MenuItem>
 
     @if (Debugger.IsAttached)
@@ -30,12 +26,6 @@
         <MenuLegend Legend="@Resources["Development"]"/>
         <MenuItem Href="/development">@Resources["Development"]</MenuItem>
     }
-
-    <div class="grow"></div>
-
-    <div class="py-4 flex justify-center items-center">
-        <AppBuyMeACoffeeButton/>
-    </div>
 </MenuList>
 
 @inject IStringLocalizer<UiResources> Resources

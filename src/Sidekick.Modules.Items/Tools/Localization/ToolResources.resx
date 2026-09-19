@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -124,7 +124,7 @@
       <value>Chromatic Calculator</value>
   </data>
   <data name="Chromatic_Credits" xml:space="preserve">
-      <value>This feature has been adapted for Sidekick from the original implementation at https://github.com/Siveran/siveran.github.io&lt;br&gt;Credit goes to the original author(s) for the inspiration and foundational logic.</value>
+      <value>This feature has been adapted for TAO from the original implementation at https://github.com/Siveran/siveran.github.io&lt;br&gt;Credit goes to the original author(s) for the inspiration and foundational logic.</value>
   </data>
   <data name="Chromatic_Sockets" xml:space="preserve">
       <value># of sockets</value>

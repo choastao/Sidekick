@@ -1,0 +1,16 @@
+@using Sidekick.Game.Parser.Items
+
+@if (Item != null)
+{
+    <TabItem Id="buildtarget"
+             Text="@Resources["Tab_Title"]"/>
+}
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+
+@code {
+
+    [CascadingParameter]
+    public required Item Item { get; set; }
+
+}

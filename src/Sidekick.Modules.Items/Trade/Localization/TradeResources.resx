@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -347,10 +347,10 @@ Click the button to open in your browser.</value>
       <value>Override global settings?</value>
   </data>
   <data name="Stat_Fuzzy" xml:space="preserve">
-      <value>Sidekick couldn’t interpret this stat with full accuracy, so the result is an estimate. Please double‑check it on the official trade site if anything looks off.</value>
+      <value>TAO couldn’t interpret this stat with full accuracy, so the result is an estimate. Please double‑check it on the official trade site if anything looks off.</value>
   </data>
   <data name="Stat_NoTradeSupport" xml:space="preserve">
-      <value>This stat isn’t supported by the trade system, so Sidekick can’t generate a search for it. You’ll need to check the trade site manually if you want to list or price this item.</value>
+      <value>This stat isn’t supported by the trade system, so TAO can’t generate a search for it. You’ll need to check the trade site manually if you want to list or price this item.</value>
   </data>
   <data name="AutoSelect_SelectCategories" xml:space="preserve">
       <value>Select Categories</value>

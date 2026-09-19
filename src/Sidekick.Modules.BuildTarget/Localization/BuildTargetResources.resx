@@ -1,0 +1,597 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Menu_Title" xml:space="preserve">
+    <value>Target BD</value>
+  </data>
+  <data name="Page_Title" xml:space="preserve">
+    <value>Target BD</value>
+  </data>
+  <data name="Page_Description" xml:space="preserve">
+    <value>Describe what a good item looks like for your build. After that, every item you copy in game is judged against it.</value>
+  </data>
+  <data name="Template" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="Template_Active" xml:space="preserve">
+    <value>Active template</value>
+  </data>
+  <data name="Template_Name" xml:space="preserve">
+    <value>Template name</value>
+  </data>
+  <data name="Template_New" xml:space="preserve">
+    <value>New template</value>
+  </data>
+  <data name="Template_Duplicate" xml:space="preserve">
+    <value>Duplicate</value>
+  </data>
+  <data name="Template_Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Template_None" xml:space="preserve">
+    <value>No template yet.</value>
+  </data>
+  <data name="Template_Placeholder" xml:space="preserve">
+    <value>New template</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="Saved" xml:space="preserve">
+    <value>Saved</value>
+  </data>
+  <data name="Character_Targets" xml:space="preserve">
+    <value>Character-wide targets</value>
+  </data>
+  <data name="Character_Help" xml:space="preserve">
+    <value>Summed across all slots you have captured. Only additive stats (life, energy shield, resistances) can be estimated without a full damage engine.</value>
+  </data>
+  <data name="Estimate_Title" xml:space="preserve">
+    <value>Gear total (estimate)</value>
+  </data>
+  <data name="Estimate_Note" xml:space="preserve">
+    <value>Gear only, passives not included. Based on {0}/10 slots captured.</value>
+  </data>
+  <data name="Estimate_Collected" xml:space="preserve">
+    <value>Captured slots</value>
+  </data>
+  <data name="Current_Sum" xml:space="preserve">
+    <value>Current</value>
+  </data>
+  <data name="New_Sum" xml:space="preserve">
+    <value>After swap</value>
+  </data>
+  <data name="Delta" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Slot_Targets" xml:space="preserve">
+    <value>Per-slot requirements</value>
+  </data>
+  <data name="Slot_Help" xml:space="preserve">
+    <value>Set the minimums a piece needs before its slot is worth considering.</value>
+  </data>
+  <data name="Label" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="Keywords" xml:space="preserve">
+    <value>Keywords (comma separated)</value>
+  </data>
+  <data name="Min_Value" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="Required" xml:space="preserve">
+    <value>Required</value>
+  </data>
+  <data name="Optional" xml:space="preserve">
+    <value>Bonus</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="Preset_Add" xml:space="preserve">
+    <value>Quick add</value>
+  </data>
+  <data name="Preset_Pick" xml:space="preserve">
+    <value>Pick a common stat</value>
+  </data>
+  <data name="Search_Stat" xml:space="preserve">
+    <value>Search affix (start typing to filter)</value>
+  </data>
+  <data name="Search_No_Match" xml:space="preserve">
+    <value>No matching affix.</value>
+  </data>
+  <data name="Search_Library" xml:space="preserve">
+    <value>Affix library loaded: {0} entries (follows your item language).</value>
+  </data>
+  <data name="Search_More" xml:space="preserve">
+    <value>{0} matches, showing first {1}. Type more to narrow down.</value>
+  </data>
+  <data name="Equipped" xml:space="preserve">
+    <value>Current gear</value>
+  </data>
+  <data name="Equipped_Help" xml:space="preserve">
+    <value>In game, hover each piece you already wear and press the item hotkey once per slot. That becomes the baseline new items are compared against.</value>
+  </data>
+  <data name="Equipped_Missing" xml:space="preserve">
+    <value>Not captured</value>
+  </data>
+  <data name="Equipped_Unparsable" xml:space="preserve">
+    <value>Captured, but could not be parsed — check your item language setting.</value>
+  </data>
+  <data name="Equipped_Capture" xml:space="preserve">
+    <value>Use this as current</value>
+  </data>
+  <data name="Equipped_Captured" xml:space="preserve">
+    <value>Captured</value>
+  </data>
+  <data name="Equipped_Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Import_Title" xml:space="preserve">
+    <value>Import a build (Path of Building)</value>
+  </data>
+  <data name="Import_Help" xml:space="preserve">
+    <value>Paste a PoB share code or a pobb.in link. The whole template is filled in from that build: per-slot minimums come from its gear, character totals from the sum of its gear, and its gear becomes the baseline new items are compared against.</value>
+  </data>
+  <data name="Import_Label" xml:space="preserve">
+    <value>Build share code, or pobb.in link</value>
+  </data>
+  <data name="Import_Placeholder" xml:space="preserve">
+    <value>https://pobb.in/xxxx  或  eNrtPWtz27ayn6tfwfHMudMz...</value>
+  </data>
+  <data name="Import_Button" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Import_Working" xml:space="preserve">
+    <value>Importing...</value>
+  </data>
+  <data name="Import_Source_Hint" xml:space="preserve">
+    <value>From PoB: Import / Export → Generate build sharing code. Or copy &quot;IMPORT CODE FOR PATH OF BUILDING&quot; from any poe.ninja build page — it is the same format.</value>
+  </data>
+  <data name="Import_From_Ninja" xml:space="preserve">
+    <value>Tip: poe.ninja builds work directly — their codes carry full item affixes, so per-slot minimums come out accurate.</value>
+  </data>
+  <data name="Import_Invalid_Code" xml:space="preserve">
+    <value>Could not read that build code. Check it was copied completely.</value>
+  </data>
+  <data name="Import_Failed" xml:space="preserve">
+    <value>Import failed: {0}</value>
+  </data>
+  <data name="Import_No_Items" xml:space="preserve">
+    <value>This build has no equippable items in the slots this tool tracks.</value>
+  </data>
+  <data name="Import_Note_Skipped_Slot" xml:space="preserve">
+    <value>Skipped a slot this tool does not track: {0}</value>
+  </data>
+  <data name="Import_Note_No_Stats" xml:space="preserve">
+    <value>Skipped {0} ({1}): no recognizable stats</value>
+  </data>
+  <data name="Import_Note_Slot_Fallback" xml:space="preserve">
+    <value>{0}: no known stats found (usually a unique), filled in recommended mods for you to set values</value>
+  </data>
+  <data name="Import_Note_Summary" xml:space="preserve">
+    <value>Imported {0} slots and {1} character targets. Character totals cover gear only, not passives.</value>
+  </data>
+  <data name="Tab_Title" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="Result_No_Template" xml:space="preserve">
+    <value>No target template yet. Create one under Settings &gt; Target BD.</value>
+  </data>
+  <data name="Result_Unknown_Slot" xml:space="preserve">
+    <value>Cannot tell which slot this item belongs to.</value>
+  </data>
+  <data name="Result_No_Slot_Target" xml:space="preserve">
+    <value>No requirements set for this slot.</value>
+  </data>
+  <data name="Result_Failed" xml:space="preserve">
+    <value>Fails required checks: {0}</value>
+  </data>
+  <data name="Result_Better" xml:space="preserve">
+    <value>Better than your current item — {0} stat(s) up.</value>
+  </data>
+  <data name="Result_Mixed" xml:space="preserve">
+    <value>Mixed — {0} up, {1} down.</value>
+  </data>
+  <data name="Result_Worse" xml:space="preserve">
+    <value>Worse than your current item — {0} stat(s) down.</value>
+  </data>
+  <data name="Result_Even" xml:space="preserve">
+    <value>About the same as your current item.</value>
+  </data>
+  <data name="Result_Pass_No_Baseline" xml:space="preserve">
+    <value>Passes all required checks (no current item captured to compare).</value>
+  </data>
+  <data name="Result_Pass_No_Comparable" xml:space="preserve">
+    <value>Passes all required checks.</value>
+  </data>
+  <data name="Verdict_Good" xml:space="preserve">
+    <value>Equip it</value>
+  </data>
+  <data name="Verdict_Warn" xml:space="preserve">
+    <value>Worth keeping</value>
+  </data>
+  <data name="Verdict_Bad" xml:space="preserve">
+    <value>Not worth it</value>
+  </data>
+  <data name="Verdict_Unknown" xml:space="preserve">
+    <value>Not enough info</value>
+  </data>
+  <data name="Compare_Against" xml:space="preserve">
+    <value>Compared with:</value>
+  </data>
+  <data name="No_Baseline_Hint" xml:space="preserve">
+    <value>Capture your current gear in Settings &gt; Target BD to compare upgrades.</value>
+  </data>
+  <data name="Slot_weapon" xml:space="preserve">
+    <value>Weapon</value>
+  </data>
+  <data name="Slot_offhand" xml:space="preserve">
+    <value>Off-hand</value>
+  </data>
+  <data name="Slot_helmet" xml:space="preserve">
+    <value>Helmet</value>
+  </data>
+  <data name="Slot_bodyarmour" xml:space="preserve">
+    <value>Body armour</value>
+  </data>
+  <data name="Slot_gloves" xml:space="preserve">
+    <value>Gloves</value>
+  </data>
+  <data name="Slot_boots" xml:space="preserve">
+    <value>Boots</value>
+  </data>
+  <data name="Slot_amulet" xml:space="preserve">
+    <value>Amulet</value>
+  </data>
+  <data name="Slot_ring1" xml:space="preserve">
+    <value>Ring 1</value>
+  </data>
+  <data name="Slot_ring2" xml:space="preserve">
+    <value>Ring 2</value>
+  </data>
+  <data name="Slot_belt" xml:space="preserve">
+    <value>Belt</value>
+  </data>
+  <data name="Craft_Title" xml:space="preserve">
+    <value>Crafting cost (estimate)</value>
+  </data>
+  <data name="Craft_Source" xml:space="preserve">
+    <value>Price data: {0}, fetched {1}</value>
+  </data>
+  <data name="Craft_Source_Stale" xml:space="preserve">
+    <value>Prices may be out of date — update your distribution package.</value>
+  </data>
+  <data name="Craft_No_Data" xml:space="preserve">
+    <value>No price data found.</value>
+  </data>
+  <data name="Craft_No_Data_Hint" xml:space="preserve">
+    <value>Looked for currency-prices.json in:</value>
+  </data>
+  <data name="Craft_No_Data_Load_Failed" xml:space="preserve">
+    <value>Could not read the price file: {0}</value>
+  </data>
+  <data name="Craft_Needs_Title" xml:space="preserve">
+    <value>What needs changing</value>
+  </data>
+  <data name="Craft_Need_Add" xml:space="preserve">
+    <value>Needs new affix: {0}</value>
+  </data>
+  <data name="Craft_Need_Reroll" xml:space="preserve">
+    <value>Needs a value reroll: {0}</value>
+  </data>
+  <data name="Craft_Need_Replace" xml:space="preserve">
+    <value>Needs this affix replaced — a value reroll can never reach the target: {0}</value>
+  </data>
+  <data name="Craft_Reroll_Cap_Unknown" xml:space="preserve">
+    <value>(tier ceiling unknown — the reroll may still not reach the target)</value>
+  </data>
+  <data name="Craft_Replace_Detail" xml:space="preserve">
+    <value>{0}: current {1} is in {2} ({3}-{4}); the target {5} is above that tier's cap and needs {6} or higher. A Divine Orb reroll never changes the tier, so it can never reach it.</value>
+  </data>
+  <data name="Craft_Replace_Higher_Tier" xml:space="preserve">
+    <value>a higher tier</value>
+  </data>
+  <data name="Craft_Replace_Random_Note" xml:space="preserve">
+    <value>⚠ The Chaos Orb removes 1 random affix and adds 1 random affix — the new affix is random, so this does not guarantee the affix you want comes back. (This tool does not predict success rates.)</value>
+  </data>
+  <data name="Craft_Replace_Omen_Note" xml:space="preserve">
+    <value>Optional omen: Omen of Whittling (always removes the lowest-tier affix) or the Sinistral/Dextral Erasure omen (removes only from that side).</value>
+  </data>
+  <data name="Craft_Up_To_Date" xml:space="preserve">
+    <value>Current gear already meets the targets — nothing to craft.</value>
+  </data>
+  <data name="Craft_Cost_Title" xml:space="preserve">
+    <value>Cost estimate (lower bound)</value>
+  </data>
+  <data name="Craft_Cost" xml:space="preserve">
+    <value>About {0} {1} ≈ {2} {3}</value>
+  </data>
+  <data name="Craft_Cost_Formula" xml:space="preserve">
+    <value>{0} × {1} + {2} × {3}</value>
+  </data>
+  <data name="Craft_Cost_Note" xml:space="preserve">
+    <value>Assumes one currency use per affix. Failed attempts are not counted, so the real cost is usually higher. This tool does not predict success rates.</value>
+  </data>
+  <data name="Craft_Table_Title" xml:space="preserve">
+    <value>Currency price lookup</value>
+  </data>
+  <data name="Craft_Search_Placeholder" xml:space="preserve">
+    <value>Search currency by name (Chinese or English)</value>
+  </data>
+  <data name="Craft_Search_Scope" xml:space="preserve">
+    <value>All {0} entries across currencies, essences and runes.</value>
+  </data>
+  <data name="Craft_Search_No_Match" xml:space="preserve">
+    <value>No matching currency.</value>
+  </data>
+  <data name="Craft_Search_More" xml:space="preserve">
+    <value>Showing the first {0} of {1} matches.</value>
+  </data>
+  <data name="Craft_Volume_Top" xml:space="preserve">
+    <value>Top {0} by trade volume</value>
+  </data>
+  <data name="Craft_Col_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Craft_Col_Divine" xml:space="preserve">
+    <value>Value in divine</value>
+  </data>
+  <data name="Craft_Col_Chaos" xml:space="preserve">
+    <value>Value in chaos</value>
+  </data>
+  <data name="Craft_Col_Change" xml:space="preserve">
+    <value>7-day change</value>
+  </data>
+  <data name="Craft_No_Affix_Data" xml:space="preserve">
+    <value>No affix type data found — prefix/suffix and omen advice are hidden.</value>
+  </data>
+  <data name="Craft_No_Affix_Data_Load_Failed" xml:space="preserve">
+    <value>Could not read the affix type file: {0}</value>
+  </data>
+  <data name="Craft_No_Affix_Data_Hint" xml:space="preserve">
+    <value>Looked for affix-types.json in:</value>
+  </data>
+  <data name="Craft_Hard_Title" xml:space="preserve">
+    <value>Hard requirements (an item is unusable without these)</value>
+  </data>
+  <data name="Craft_Hard_None" xml:space="preserve">
+    <value>All hard requirements are met.</value>
+  </data>
+  <data name="Craft_Bonus_Title" xml:space="preserve">
+    <value>Bonus targets (optional improvements)</value>
+  </data>
+  <data name="Craft_Bonus_None" xml:space="preserve">
+    <value>No bonus targets set.</value>
+  </data>
+  <data name="Craft_Side_Prefix" xml:space="preserve">
+    <value>prefix</value>
+  </data>
+  <data name="Craft_Side_Suffix" xml:space="preserve">
+    <value>suffix</value>
+  </data>
+  <data name="Craft_Side_Unknown" xml:space="preserve">
+    <value>(type unknown)</value>
+  </data>
+  <data name="Craft_Type_Format" xml:space="preserve">
+    <value> ({0})</value>
+  </data>
+  <data name="Craft_Tier_Format" xml:space="preserve">
+    <value>T{0}</value>
+  </data>
+  <data name="Craft_Type_Unknown_No_Omen" xml:space="preserve">
+    <value>Affix type unknown — no omen advice for that one.</value>
+  </data>
+  <data name="Craft_Op_Add_Space" xml:space="preserve">
+    <value>If that side still has room — add 1 affix: {0}</value>
+  </data>
+  <data name="Craft_Op_Replace_Full" xml:space="preserve">
+    <value>If that side is already full — replace an existing affix with: {0}</value>
+  </data>
+  <data name="Craft_Op_Replace_Chaos" xml:space="preserve">
+    <value>Use a Chaos Orb — remove 1 random affix and add 1 random affix: {0}</value>
+  </data>
+  <data name="Craft_Op_Reroll" xml:space="preserve">
+    <value>Reroll its values (affix types stay the same): {0}</value>
+  </data>
+  <data name="Craft_Line_Currency" xml:space="preserve">
+    <value>Currency: {0} ×1 ≈ {1} {2} (≈ {3} {4})</value>
+  </data>
+  <data name="Craft_Line_Omen" xml:space="preserve">
+    <value>Optional omen: {0} ≈ {1} {2} (≈ {3} {4})</value>
+  </data>
+  <data name="Craft_Line_Omen_None" xml:space="preserve">
+    <value>No omen applies to this operation.</value>
+  </data>
+  <data name="Craft_Missing_Price" xml:space="preserve">
+    <value>{0}: not in the price table, counted as 0.</value>
+  </data>
+  <data name="Craft_Must_Title" xml:space="preserve">
+    <value>Must spend (hard requirements)</value>
+  </data>
+  <data name="Craft_Optional_Title" xml:space="preserve">
+    <value>If every bonus target is met too (reference)</value>
+  </data>
+  <data name="Craft_Sum_Currency" xml:space="preserve">
+    <value>Currency: {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Sum_Omen" xml:space="preserve">
+    <value>Omens (optional): {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Sum_Total" xml:space="preserve">
+    <value>Total: {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Sum_IfFull" xml:space="preserve">
+    <value>If that side is already full, the replace path costs: {0} {1} (≈ {2} {3})</value>
+  </data>
+  <data name="Craft_Note_Space" xml:space="preserve">
+    <value>This estimate is for the piece you are wearing. The tool cannot tell how many prefixes/suffixes it already uses, so both paths are listed — check the item in game and pick the one that applies.</value>
+  </data>
+  <data name="Craft_Note_Omen_Activate" xml:space="preserve">
+    <value>⚠ Omens only take effect after you activate them (right-click) in your bag.</value>
+  </data>
+  <data name="Craft_Note_BodyArmour" xml:space="preserve">
+    <value>⚠ Body armour does not support omens in 0.5 — ignore the omen advice for this slot.</value>
+  </data>
+  <data name="Craft_Note_Annul" xml:space="preserve">
+    <value>To free a slot first: Orb of Annulment removes 1 random affix (with a Sinistral/Dextral Annulment omen, from one chosen side). Not counted in this estimate.</value>
+  </data>
+  <data name="Preset_Life" xml:space="preserve">
+    <value>Maximum life</value>
+  </data>
+  <data name="Preset_EnergyShield" xml:space="preserve">
+    <value>Energy shield</value>
+  </data>
+  <data name="Preset_Mana" xml:space="preserve">
+    <value>Maximum mana</value>
+  </data>
+  <data name="Preset_FireRes" xml:space="preserve">
+    <value>Fire resistance</value>
+  </data>
+  <data name="Preset_ColdRes" xml:space="preserve">
+    <value>Cold resistance</value>
+  </data>
+  <data name="Preset_LightningRes" xml:space="preserve">
+    <value>Lightning resistance</value>
+  </data>
+  <data name="Preset_ChaosRes" xml:space="preserve">
+    <value>Chaos resistance</value>
+  </data>
+  <data name="Preset_AllEleRes" xml:space="preserve">
+    <value>All elemental resistances</value>
+  </data>
+  <data name="Preset_MoveSpeed" xml:space="preserve">
+    <value>Movement speed</value>
+  </data>
+  <data name="Preset_AttackSpeed" xml:space="preserve">
+    <value>Attack speed</value>
+  </data>
+  <data name="Preset_CastSpeed" xml:space="preserve">
+    <value>Cast speed</value>
+  </data>
+  <data name="Preset_Rarity" xml:space="preserve">
+    <value>Item rarity</value>
+  </data>
+  <data name="Preset_Spirit" xml:space="preserve">
+    <value>Spirit</value>
+  </data>
+</root>

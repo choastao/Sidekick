@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="New_Update_Alert" xml:space="preserve">
+    <value>有新版本可用</value>
+  </data>
+  <data name="Open_Website" xml:space="preserve">
+    <value>打开官网</value>
+  </data>
+  <data name="Checking_For_Updates" xml:space="preserve">
+    <value>正在检查更新…</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Updating" xml:space="preserve">
+    <value>正在下载并更新…</value>
+  </data>
+  <data name="NoChangelog" xml:space="preserve">
+    <value>未找到更新日志。请打开官网查看最新改动。</value>
+  </data>
+  <data name="Update" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>跳过检查</value>
+  </data>
+  <data name="TimedOut" xml:space="preserve">
+    <value>检查更新耗时过长。你可以从官网下载最新版本。</value>
+  </data>
+  <data name="No_Updates" xml:space="preserve">
+    <value>未发现更新，你已是最新版本。</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
+</root>

@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -20,7 +20,7 @@ public partial class DialogWindow : Window
 
     public DialogWindow(DialogProvider.Type type, string message)
     {
-        Title = "Sidekick";
+        Title = "TAO";
         SizeToContent = SizeToContent.Height;
         Width = WIDTH;
         MinHeight = MINHEIGHT;

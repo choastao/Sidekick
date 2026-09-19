@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!--
     Microsoft ResX Schema
@@ -150,7 +150,7 @@
     <comment>Used in LeagueIdEditor.razor</comment>
   </data>
   <data name="League_Hint" xml:space="preserve">
-    <value>For convenience, Sidekick supports both Path of Exile 2 and Path of Exile 1, simply choose the appropriate league when playing either of them.</value>
+    <value>For convenience, TAO supports both Path of Exile 2 and Path of Exile 1, simply choose the appropriate league when playing either of them.</value>
   </data>
   <data name="OpenHomeOnLaunch" xml:space="preserve">
     <value>Open home view on launch</value>
@@ -165,7 +165,7 @@
     <value>Overlay Settings</value>
   </data>
   <data name="SilentStart" xml:space="preserve">
-    <value>Initialize in background when starting Sidekick</value>
+    <value>Initialize in background when starting TAO</value>
   </data>
   <data name="OpenHomeOnLaunch_Hint" xml:space="preserve">
     <value>Ignored if initializing in background is enabled</value>
@@ -177,7 +177,7 @@
       <value>Use Hardware Acceleration</value>
   </data>
   <data name="RestartRequired" xml:space="preserve">
-      <value>A Sidekick restart is required for changes to this setting to take effect.</value>
+      <value>A TAO restart is required for changes to this setting to take effect.</value>
   </data>
   <data name="Item_Overlay" xml:space="preserve">
       <value>Item Overlay</value>

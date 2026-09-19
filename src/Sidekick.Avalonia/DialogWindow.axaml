@@ -95,7 +95,7 @@
                         FontSize="28"
                         FontWeight="SemiBold"
                         Foreground="#FFFFFF"
-                        Text="Sidekick" />
+                        Text="TAO" />
                 </StackPanel>
             </Border>
 

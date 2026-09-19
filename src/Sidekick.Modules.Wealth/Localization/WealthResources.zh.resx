@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Unauthenticated" xml:space="preserve">
+    <value>未登录</value>
+  </data>
+  <data name="Item_Total_Minimum" xml:space="preserve">
+    <value>物品总价值下限</value>
+  </data>
+  <data name="Authenticated" xml:space="preserve">
+    <value>已登录</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>正在登录…</value>
+  </data>
+  <data name="Total_Value" xml:space="preserve">
+    <value>总价值</value>
+  </data>
+  <data name="Stash_Value" xml:space="preserve">
+    <value>仓库价值</value>
+  </data>
+  <data name="Clear_All_Data" xml:space="preserve">
+    <value>清空全部数据</value>
+  </data>
+  <data name="Clear_All_Data_Confirmation" xml:space="preserve">
+    <value>这会删除财富统计的全部数据，确定吗？</value>
+  </data>
+  <data name="Performance_Warning" xml:space="preserve">
+    <value>仓库页数量过多可能影响性能。不支持传奇物品和星团珠宝。</value>
+  </data>
+  <data name="Stash_Tabs" xml:space="preserve">
+    <value>仓库页</value>
+  </data>
+  <data name="Change" xml:space="preserve">
+    <value>更改</value>
+  </data>
+  <data name="Fetch_Tabs" xml:space="preserve">
+    <value>获取仓库页</value>
+  </data>
+  <data name="Item_Settings" xml:space="preserve">
+    <value>物品设置</value>
+  </data>
+  <data name="Last_Updated" xml:space="preserve">
+    <value>最后更新</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>已完成</value>
+  </data>
+  <data name="Running" xml:space="preserve">
+    <value>进行中</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>失败</value>
+  </data>
+  <data name="Stopped" xml:space="preserve">
+    <value>已停止</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="Wealth_Tracker" xml:space="preserve">
+    <value>财富统计</value>
+  </data>
+  <data name="Not_Supported_Game" xml:space="preserve">
+    <value>财富统计目前仅支持流放之路 1。</value>
+  </data>
+  <data name="Not_Supported" xml:space="preserve">
+    <value>当前版本的 TAO 不支持财富统计。</value>
+  </data>
+  <data name="Tabs_Selected" xml:space="preserve">
+    <value>已选 {0} 个仓库页</value>
+  </data>
+  <data name="No_Tabs_Selected" xml:space="preserve">
+    <value>未选择仓库页</value>
+  </data>
+  <data name="No_Stash_Selected" xml:space="preserve">
+    <value>未找到仓库页。</value>
+  </data>
+  <data name="Tabs_Selection" xml:space="preserve">
+    <value>选择仓库页</value>
+  </data>
+</root>
