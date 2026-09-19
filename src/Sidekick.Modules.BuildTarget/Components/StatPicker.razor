@@ -1,5 +1,9 @@
+@using System.Globalization
+@using Sidekick.Common.Settings
 @using Sidekick.Game.Parser
+@using Sidekick.Game.Parser.Items
 @using Sidekick.Game.TradeStats
+@using Sidekick.Modules.BuildTarget.Models
 
 @* 全量词缀搜索选择器：直接复用解析器启动时已加载的交易席词缀表，不额外读盘 *@
 <div>
@@ -14,12 +18,43 @@
            @oninput="OnInput"
            class="@UiClasses.FormInputClasses p-2 text-base w-full" />
 
+    @* 只显示本部位能出的词缀：默认开，拿不到装备上下文时置灰并说明原因（不静默过滤） *@
+    <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+        <FormCheckbox Dense="true"
+                      Readonly="@(!CanFilter)"
+                      Value="@filterBySlot"
+                      ValueChanged="OnFilterBySlotChanged">
+            @Resources["Search_Filter_BySlot"]
+        </FormCheckbox>
+
+        @if (!CanFilter)
+        {
+            <TextBase Class="text-amber-400 text-xs">@UnavailableHint</TextBase>
+        }
+    </div>
+
     <TextBase Class="text-stone-500 text-xs mt-1">
-        @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Search_Library"].Value, TotalInLibrary)
+        @string.Format(CultureInfo.CurrentCulture, Resources["Search_Library"].Value, TotalInLibrary)
     </TextBase>
+
+    @if (FilterActive)
+    {
+        <TextBase Class="text-stone-500 text-xs">
+            @string.Format(CultureInfo.CurrentCulture, Resources["Search_Filter_Tags"].Value, PoolTags.TagText)
+        </TextBase>
+        @if (PoolTags.Degraded)
+        {
+            <TextBase Class="text-amber-400 text-xs">
+                @string.Format(CultureInfo.CurrentCulture, Resources["Search_Filter_Degraded"].Value, PoolTags.TagText)
+            </TextBase>
+        }
+    }
 
     @if (!string.IsNullOrWhiteSpace(query))
     {
+        @* 过滤前 / 过滤后两个数字都给，用户才知道自己少看了多少 *@
+        <TextBase Class="text-stone-400 text-xs mt-1">@CountText</TextBase>
+
         <div class="mt-2 max-h-64 overflow-y-auto rounded border border-stone-700 bg-stone-900/60">
             @if (Results.Count == 0)
             {
@@ -39,7 +74,7 @@
                 @if (TotalMatches > Results.Count)
                 {
                     <div class="px-3 py-1 text-stone-500 text-xs">
-                        @string.Format(System.Globalization.CultureInfo.CurrentCulture, Resources["Search_More"].Value, TotalMatches, Results.Count)
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Search_More"].Value, TotalMatches, Results.Count)
                     </div>
                 }
             }
@@ -49,6 +84,8 @@
 
 @inject IStringLocalizer<BuildTargetResources> Resources
 @inject StatParser StatParser
+@inject ISettingsService SettingsService
+@inject AffixPoolStatFilter Filter
 
 @code {
 
@@ -57,22 +94,115 @@
     [Parameter]
     public string? Label { get; set; }
 
+    /// <summary>界面上选中的部位键（SlotKeys.*）：只在物品类别解析不出来时当兜底。</summary>
+    [Parameter]
+    public string? SlotKey { get; set; }
+
+    /// <summary>
+    /// 当前正在看的装备。拿不到（比如设置页还没采集过这个部位的基准）就不按部位过滤，
+    /// 开关置灰并在界面上说明 —— 绝不猜一个部位。
+    /// </summary>
+    [CascadingParameter]
+    public Item? Item { get; set; }
+
     [Parameter]
     public EventCallback<TradeStatDefinition> OnPick { get; set; }
 
     private string? query;
     private List<TradeStatDefinition> Results { get; set; } = [];
+
+    /// <summary>过滤后的条数（没开过滤就是全部匹配条数）。</summary>
     private int TotalMatches { get; set; }
+
+    /// <summary>未过滤时的条数。</summary>
+    private int TotalBeforeFilter { get; set; }
+
+    /// <summary>「只显示本部位能出的词缀」开关（记进设置，默认开）。</summary>
+    private bool filterBySlot = true;
+
+    /// <summary>当前装备的词缀池标签集（槽位 + armour 伞 + 护甲子类）。</summary>
+    private AffixPoolTagSet PoolTags { get; set; } = new([], Degraded: false);
+
+    /// <summary>词缀库 → 权重表词缀池的索引；null = 还没建好或建不起来。</summary>
+    private AffixPoolIndex? index;
+
+    /// <summary>过滤不可用时的说明资源键（null = 可用）。</summary>
+    private string? unavailableKey;
 
     /// <summary>页面级缓存：词缀表在启动时已加载好，这里只做一次去重排序。</summary>
     private List<TradeStatDefinition> all = [];
 
     public int TotalInLibrary => all.Count;
 
-    protected override void OnInitialized()
+    /// <summary>能不能按部位过滤：要有装备上下文，标签集也要解析得出来。</summary>
+    private bool CanFilter => Item is not null && !PoolTags.IsEmpty && index is not null;
+
+    /// <summary>这一刻是不是真的在过滤。</summary>
+    private bool FilterActive => filterBySlot && CanFilter;
+
+    private string UnavailableHint => Resources[unavailableKey ?? "Search_Filter_NoItem"];
+
+    private string CountText => FilterActive
+                                    ? string.Format(
+                                        CultureInfo.CurrentCulture,
+                                        Resources["Search_Filter_Count"].Value,
+                                        TotalMatches,
+                                        TotalBeforeFilter)
+                                    : string.Format(
+                                        CultureInfo.CurrentCulture,
+                                        Resources["Search_Filter_Total"].Value,
+                                        TotalBeforeFilter);
+
+    protected override async Task OnInitializedAsync()
     {
         all = BuildList();
-        base.OnInitialized();
+        filterBySlot = await SettingsService.GetBool(SettingKeys.StatSearchFilterBySlot);
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // 装备上下文可能在打开之后才有（比如刚采集完这个部位的基准），每次参数变化都重解一遍
+        index = null;
+        unavailableKey = null;
+
+        if (Item is null)
+        {
+            PoolTags = new AffixPoolTagSet([], Degraded: false);
+            unavailableKey = "Search_Filter_NoItem";
+        }
+        else
+        {
+            // 复用 AffixWeight.cs 里那一套：槽位 + armour 伞 + 护甲子类
+            PoolTags = AffixPoolTags.Resolve(Item, SlotKey);
+
+            if (PoolTags.IsEmpty)
+            {
+                unavailableKey = "Search_Filter_NoSlot";
+            }
+            else
+            {
+                index = await Filter.GetIndexAsync(Item.Game);
+                if (index is null)
+                {
+                    unavailableKey = "Search_Filter_Unavailable";
+                }
+            }
+        }
+
+        await base.OnParametersSetAsync();
+
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            Refresh();
+        }
+    }
+
+    private async Task OnFilterBySlotChanged(bool value)
+    {
+        filterBySlot = value;
+        await SettingsService.Set(SettingKeys.StatSearchFilterBySlot, value);
+        Refresh();
     }
 
     private void OnInput(ChangeEventArgs e)
@@ -87,12 +217,21 @@
         {
             Results = [];
             TotalMatches = 0;
+            TotalBeforeFilter = 0;
             return;
         }
 
         var keyword = query.Trim();
 
-        var matched = all.Where(x => x.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
+        var matched = all
+            .Where(x => x.Text.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        TotalBeforeFilter = matched.Count;
+
+        // 没开过滤（或没上下文）时 index / tags 传空，原样返回
+        matched = AffixSearchFilter.Apply(matched, FilterActive ? index : null, PoolTags.Tags);
+
         TotalMatches = matched.Count;
         Results = [.. matched.Take(MaxResults)];
     }
@@ -123,6 +262,7 @@
         query = null;
         Results = [];
         TotalMatches = 0;
+        TotalBeforeFilter = 0;
     }
 
 }

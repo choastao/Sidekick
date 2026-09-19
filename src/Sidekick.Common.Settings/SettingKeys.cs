@@ -48,4 +48,7 @@ public static class SettingKeys
     public const string SaveWindowPositions = nameof(SaveWindowPositions);
 
     public const string WealthItemTotalMinimum = nameof(WealthItemTotalMinimum);
+
+    /// <summary>词缀搜索器：只显示当前这件装备能出的词缀。默认开。</summary>
+    public const string StatSearchFilterBySlot = nameof(StatSearchFilterBySlot);
 }

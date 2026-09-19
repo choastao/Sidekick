@@ -135,6 +135,15 @@
   <data name="Icon1" xml:space="preserve">
     <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
   </data>
+  <data name="Name1" xml:space="preserve">
+    <value>this is my long string</value>
+  </data>
+  <data name="Bitmap1" xml:space="preserve">
+    <value>[base64 mime encoded serialized .NET Framework object]</value>
+  </data>
+  <data name="Icon1" xml:space="preserve">
+    <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+  </data>
   <data name="Menu_Title" xml:space="preserve">
     <value>Target BD</value>
   </data>
@@ -272,6 +281,30 @@
   </data>
   <data name="Search_More" xml:space="preserve">
     <value>{0} matches, showing first {1}. Type more to narrow down.</value>
+  </data>
+  <data name="Search_Filter_BySlot" xml:space="preserve">
+    <value>Only show affixes this slot can roll</value>
+  </data>
+  <data name="Search_Filter_Count" xml:space="preserve">
+    <value>{0} matches (rollable on this item; {1} without the filter)</value>
+  </data>
+  <data name="Search_Filter_Total" xml:space="preserve">
+    <value>{0} matches</value>
+  </data>
+  <data name="Search_Filter_NoItem" xml:space="preserve">
+    <value>No item in view — not filtering by slot.</value>
+  </data>
+  <data name="Search_Filter_NoSlot" xml:space="preserve">
+    <value>Could not tell which slot this item is — not filtering by slot.</value>
+  </data>
+  <data name="Search_Filter_Unavailable" xml:space="preserve">
+    <value>Affix weight data is unavailable — not filtering by slot.</value>
+  </data>
+  <data name="Search_Filter_Tags" xml:space="preserve">
+    <value>Filtering with pool tags: {0}</value>
+  </data>
+  <data name="Search_Filter_Degraded" xml:space="preserve">
+    <value>No defence values on this item — filtering by {0} only; armour subtype affixes may be hidden.</value>
   </data>
   <data name="Equipped" xml:space="preserve">
     <value>Current gear</value>

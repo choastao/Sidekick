@@ -1,5 +1,7 @@
 @page "/settings/buildtarget"
 @implements IDisposable
+@using Sidekick.Game.Parser
+@using Sidekick.Game.Parser.Items
 
 <LayoutMenu>
     <AppContainer>
@@ -157,7 +159,12 @@
             </div>
 
             <div class="mt-4">
-                <StatPicker Label="@Resources["Search_Stat"]" OnPick="AddSlotStat"/>
+                @* 带上当前选中部位 + 这个部位的「当前装备」快照：搜索器才有部位上下文做过滤。
+                   没采集过基准时不传装备，搜索器会置灰开关并说明「没有正在看的装备」。 *@
+                <StatPicker Label="@Resources["Search_Stat"]"
+                            OnPick="AddSlotStat"
+                            SlotKey="@selectedSlot"
+                            Item="@equippedItem"/>
             </div>
 
             <table class="w-full text-sm mt-3 border-collapse">
@@ -232,6 +239,7 @@
 @inject IStringLocalizer<BuildTargetResources> Resources
 @inject BuildTargetStore Store
 @inject PobBuildImporter Importer
+@inject ItemParser ItemParser
 
 @code {
 
@@ -246,17 +254,58 @@
     private List<string> importNotes = [];
     private bool importing;
 
+    /// <summary>当前选中部位的「当前装备」快照（解析不出来就是 null，搜索器不做部位过滤）。</summary>
+    private Item? equippedItem;
+
+    private string? equippedItemSource;
+    private bool equippedItemParsed;
+
     protected override void OnInitialized()
     {
         active = Store.Active;
         Store.OnChanged += OnStoreChanged;
+        RefreshEquippedItem();
         base.OnInitialized();
     }
 
     private void OnStoreChanged()
     {
         active = Store.Active;
+        RefreshEquippedItem();
         _ = InvokeAsync(StateHasChanged);
+    }
+
+    /// <summary>
+    /// 解析当前部位的装备快照（和 CandidateBasketPanel 里做替换对比时是同一套解析器）。
+    /// 只在部位或原文变了才重解析；解析失败按「没有装备上下文」处理，不抛异常。
+    /// </summary>
+    private void RefreshEquippedItem()
+    {
+        var text = active != null && active.Equipped.TryGetValue(selectedSlot, out var snapshot) ? snapshot : null;
+
+        if (equippedItemParsed && string.Equals(equippedItemSource, text, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        equippedItemParsed = true;
+        equippedItemSource = text;
+        equippedItem = null;
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return;
+        }
+
+        try
+        {
+            equippedItem = ItemParser.ParseItem(text);
+        }
+        catch
+        {
+            // 解析不了（多是导入 BD 的英文物品文本）：不猜，按没有上下文降级
+            equippedItem = null;
+        }
     }
 
     private List<SelectOption> TemplateOptions =>
@@ -395,6 +444,7 @@
         {
             selectedSlot = slot;
             equippedPaste = null;
+            RefreshEquippedItem();
         }
     }
 
@@ -423,6 +473,7 @@
         active.Equipped.Remove(selectedSlot);
         active.EquippedStats.Remove(selectedSlot);
         active.EquippedSource.Remove(selectedSlot);
+        RefreshEquippedItem();
         SaveActive();
     }
 
@@ -435,6 +486,7 @@
 
         Store.CaptureEquipped(active, selectedSlot, equippedPaste);
         equippedPaste = null;
+        RefreshEquippedItem();
     }
 
     /// <summary>导入 PoB BD：生成一份新模板（部位门槛 + 角色目标 + 当前装备基准都来自这套 BD）。</summary>

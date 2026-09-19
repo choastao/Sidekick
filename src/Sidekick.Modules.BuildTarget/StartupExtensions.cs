@@ -21,6 +21,7 @@ public static class StartupExtensions
         services.AddSingleton<CurrencyPriceService>();
         services.AddSingleton<AffixTypeService>();
         services.AddSingleton<AffixWeightService>();
+        services.AddSingleton<AffixPoolStatFilter>();
 
         // 备选篮：内存态 + candidate-basket.json
         services.AddSingleton<CandidateBasketService>();
@@ -29,6 +30,9 @@ public static class StartupExtensions
         // 默认热键 Ctrl+B（B = Basket）。挑它的原因见 AddToBasketKeybindHandler 的注释：
         // 不和 Ctrl+D / Ctrl+F / Alt+W / Space，以及多开窗口2 的 Ctrl+Shift+D 撞车。
         services.SetSidekickDefaultSetting(SettingKeys.KeyAddToBasket, "Ctrl+B");
+
+        // 词缀搜索器默认只显示当前部位能出的词缀（用户可以自己关掉）。
+        services.SetSidekickDefaultSetting(SettingKeys.StatSearchFilterBySlot, true);
 
         return services;
     }
