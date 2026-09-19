@@ -112,7 +112,7 @@ public class BaselineSourceTests
     [Fact]
     public async Task Imported_build_marks_recorded_slot_as_bd()
     {
-        var result = await new PobBuildImporter(new TestLocalizer()).ImportAsync(BuildShareCode());
+        var result = await new PobBuildImporter(new PoeNinjaClient(), new TestLocalizer()).ImportAsync(BuildShareCode());
 
         Assert.Null(result.Error);
         var template = Assert.IsType<BuildTargetTemplate>(result.Template);

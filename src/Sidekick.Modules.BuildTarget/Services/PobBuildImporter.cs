@@ -34,7 +34,7 @@ public class PobImportResult
 /// 2. 角色总目标 = 全身装备合计（只含装备、不含天赋，与界面「装备合计」口径一致）
 /// 3. 当前装备快照 = 这套 BD 的装备，作为「换新装备是提升还是下降」的基准
 /// </summary>
-public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
+public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTargetResources> resources)
 {
     private static readonly HttpClient HttpClient = CreateHttpClient();
 
@@ -98,8 +98,16 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
         string xml;
         try
         {
-            var code = await ResolveCodeAsync(codeOrUrl);
-            xml = Inflate(code);
+            var (code, error) = await ResolveCodeAsync(codeOrUrl);
+            if (error != null)
+            {
+                // 已经有针对性的失败原因（poe.ninja 那几条），直接采用，
+                // 别再套一层 Import_Failed —— 否则用户看到的是"Import failed: ..."而不是原因。
+                result.Error = error;
+                return result;
+            }
+
+            xml = Inflate(code!);
         }
         catch (Exception ex)
         {
@@ -118,19 +126,53 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
         }
     }
 
-    /// <summary>输入可能是 pobb.in 链接，先把它换成真正的分享码。</summary>
-    private static async Task<string> ResolveCodeAsync(string codeOrUrl)
+    /// <summary>
+    /// 输入可能是 poe.ninja 角色页链接或 pobb.in 链接，先把它换成真正的分享码。
+    /// 返回 (code, error)：error 非空表示已经备好用户可读的失败原因，调用方直接用它，
+    /// 不要再包一层，否则那几条针对性提示会被"Import failed"盖掉。
+    /// </summary>
+    private async Task<(string? Code, string? Error)> ResolveCodeAsync(string codeOrUrl)
     {
         var trimmed = codeOrUrl.Trim();
+
+        // poe.ninja 分支放在 pobb.in 之前：两者互不匹配，先判定更具体的链接没有副作用。
+        if (PoeNinjaClient.TryParseCharacterUrl(trimmed, out var target))
+        {
+            var ninja = await poeNinja.ResolveExportCodeAsync(target);
+            return ninja.Error == PoeNinjaError.None
+                       ? (ninja.Code, null)
+                       : (null, DescribeNinjaError(ninja.Error, ninja.Detail, target.League));
+        }
+
         var match = PobbRegex.Match(trimmed);
         if (match.Success)
         {
             var raw = await HttpClient.GetStringAsync($"https://pobb.in/{match.Groups[1].Value}/raw");
-            return raw.Trim();
+            return (raw.Trim(), null);
         }
 
-        return trimmed;
+        return (trimmed, null);
     }
+
+    /// <summary>
+    /// poe.ninja 的失败原因 -&gt; 用户可读文案。
+    /// 内部可见是为了能把这四条文案离线验一遍：真正走这个分支要联网。
+    /// </summary>
+    internal string DescribeNinjaError(PoeNinjaError error, string? detail, string league) =>
+        error switch
+        {
+            PoeNinjaError.LeagueNotFound => string.Format(
+                CultureInfo.CurrentCulture,
+                resources["Import_Ninja_League_Unknown"].Value,
+                league),
+            PoeNinjaError.CharacterNotFound => resources["Import_Ninja_Character_Not_Found"].Value,
+            PoeNinjaError.NoExportCode => resources["Import_Ninja_No_Export"].Value,
+            PoeNinjaError.HttpError => string.Format(
+                CultureInfo.CurrentCulture,
+                resources["Import_Ninja_Failed"].Value,
+                detail),
+            _ => string.Empty,
+        };
 
     /// <summary>PoB 分享码 = base64url(zlib(xml))。</summary>
     private static string Inflate(string code)

@@ -17,6 +17,7 @@ public static class StartupExtensions
 
         services.AddSingleton<BuildTargetStore>();
         services.AddSingleton<BuildTargetEvaluator>();
+        services.AddSingleton<PoeNinjaClient>();
         services.AddSingleton<PobBuildImporter>();
         services.AddSingleton<CurrencyPriceService>();
         services.AddSingleton<AffixTypeService>();

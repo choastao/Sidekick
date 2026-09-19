@@ -304,13 +304,13 @@
     <value>导入 BD（Path of Building）</value>
   </data>
   <data name="Import_Help" xml:space="preserve">
-    <value>粘贴 PoB 分享码或 pobb.in 链接，整套模板由这份 BD 自动填好：各部位门槛取自它的装备、角色总目标取自它全身装备合计，并且它的装备会作为之后对比新装备的基准。</value>
+    <value>粘贴 PoB 分享码、pobb.in 链接，或 poe.ninja 角色页链接，整套模板由这份 BD 自动填好：各部位门槛取自它的装备、角色总目标取自它全身装备合计，并且它的装备会作为之后对比新装备的基准。</value>
   </data>
   <data name="Import_Label" xml:space="preserve">
-    <value>BD 分享码 或 pobb.in 链接</value>
+    <value>BD 分享码、pobb.in 链接 或 poe.ninja 角色页链接</value>
   </data>
   <data name="Import_Placeholder" xml:space="preserve">
-    <value>https://pobb.in/xxxx  或  eNrtPWtz27ayn6tfwfHMudMz...</value>
+    <value>https://poe.ninja/poe2/builds/.../character/...  ·  https://pobb.in/xxxx  ·  eNrtPWtz27ayn6tfwfHMudMz...</value>
   </data>
   <data name="Import_Button" xml:space="preserve">
     <value>导入</value>
@@ -319,7 +319,7 @@
     <value>导入中…</value>
   </data>
   <data name="Import_Source_Hint" xml:space="preserve">
-    <value>在 PoB 里：导入/导出 → 生成分享码。也可以从 poe.ninja 任意 BD 页面复制「IMPORT CODE FOR PATH OF BUILDING」——同一种格式，直接可用。</value>
+    <value>在 PoB 里：导入/导出 → 生成分享码。或者直接把 poe.ninja 角色页链接粘进来，程序会自己去取并转换成分享码。</value>
   </data>
   <data name="Import_From_Ninja" xml:space="preserve">
     <value>提示：poe.ninja 的 BD 可直接导入——它的分享码带完整装备词缀，所以各部位门槛算出来是准的。</value>
@@ -343,7 +343,19 @@
     <value>{0}：没有识别到已知词缀（一般是独特装），已放入推荐词缀、数值留空待你填</value>
   </data>
   <data name="Import_Note_Summary" xml:space="preserve">
-    <value>已导入 {0} 个部位、{1} 条角色目标。角色合计只含装备、不含天赋被动。</value>
+    <value>已导入 {0} 个部位、{1} 条角色总目标。角色合计只含装备，不含天赋。</value>
+  </data>
+  <data name="Import_Ninja_League_Unknown" xml:space="preserve">
+    <value>poe.ninja 上没有「{0}」这个赛季。</value>
+  </data>
+  <data name="Import_Ninja_Character_Not_Found" xml:space="preserve">
+    <value>在 poe.ninja 上找不到这个角色——角色不存在，或该账号的资料未公开。</value>
+  </data>
+  <data name="Import_Ninja_No_Export" xml:space="preserve">
+    <value>拿到了角色数据，但里面没有 Path of Building 导出码。</value>
+  </data>
+  <data name="Import_Ninja_Failed" xml:space="preserve">
+    <value>连接 poe.ninja 失败：{0}</value>
   </data>
   <data name="Tab_Title" xml:space="preserve">
     <value>目标对比</value>

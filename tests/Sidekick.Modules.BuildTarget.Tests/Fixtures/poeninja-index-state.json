@@ -1,0 +1,106 @@
+{
+ "snapshotVersions": [
+  {
+   "url": "forbiddenrites",
+   "name": "Forbidden Rites",
+   "timeMachineLabels": [
+    "hour-6",
+    "hour-18",
+    "week-2",
+    "week-1",
+    "day-6",
+    "hour-3",
+    "day-4",
+    "hour-12",
+    "day-2",
+    "day-5",
+    "day-3",
+    "day-1"
+   ],
+   "version": "1650-20260919-45662",
+   "snapshotName": "forbidden-rites",
+   "overviewType": 0,
+   "passiveTree": "PassiveTree-0.5"
+  },
+  {
+   "url": "runesofaldur",
+   "name": "Runes of Aldur",
+   "timeMachineLabels": [
+    "week-14",
+    "hour-6",
+    "hour-18",
+    "week-3",
+    "week-2",
+    "week-6",
+    "week-4",
+    "week-7",
+    "week-1",
+    "week-13",
+    "day-6",
+    "hour-3",
+    "week-15",
+    "week-5",
+    "day-4",
+    "week-10",
+    "hour-12",
+    "week-16",
+    "day-2",
+    "day-5",
+    "day-3",
+    "day-1",
+    "week-8",
+    "week-12",
+    "week-11",
+    "week-9"
+   ],
+   "version": "1759-20260919-21177",
+   "snapshotName": "runes-of-aldur",
+   "overviewType": 0,
+   "passiveTree": "PassiveTree-0.5"
+  },
+  {
+   "url": "forbiddenriteshc",
+   "name": "HC Forbidden Rites",
+   "timeMachineLabels": [
+    "hour-6",
+    "hour-18",
+    "week-2",
+    "week-1",
+    "day-6",
+    "hour-3",
+    "day-4",
+    "hour-12",
+    "day-2",
+    "day-5",
+    "day-3",
+    "day-1"
+   ],
+   "version": "1816-20260919-36070",
+   "snapshotName": "hc-forbidden-rites",
+   "overviewType": 0,
+   "passiveTree": "PassiveTree-0.5"
+  },
+  {
+   "url": "forbiddenritesssf",
+   "name": "SSF Forbidden Rites",
+   "timeMachineLabels": [
+    "hour-6",
+    "hour-18",
+    "week-2",
+    "week-1",
+    "day-6",
+    "hour-3",
+    "day-4",
+    "hour-12",
+    "day-2",
+    "day-5",
+    "day-3",
+    "day-1"
+   ],
+   "version": "1817-20260919-30583",
+   "snapshotName": "ssf-forbidden-rites",
+   "overviewType": 0,
+   "passiveTree": "PassiveTree-0.5"
+  }
+ ]
+}

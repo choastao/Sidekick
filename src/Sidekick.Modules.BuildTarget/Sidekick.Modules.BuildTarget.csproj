@@ -12,6 +12,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- 下面两个内部入口只给测试用真实夹具离线验证（index-state 映射、四条 poe.ninja 失败文案），不对外开放。 -->
+    <InternalsVisibleTo Include="Sidekick.Modules.BuildTarget.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- 通货价格数据随程序发布：复制到主程序根目录，供 CurrencyPriceService 读取 -->
     <None Include="currency-prices.json"
           Condition="Exists('currency-prices.json')">

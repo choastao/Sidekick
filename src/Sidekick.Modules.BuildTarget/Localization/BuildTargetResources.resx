@@ -304,13 +304,13 @@
     <value>Import a build (Path of Building)</value>
   </data>
   <data name="Import_Help" xml:space="preserve">
-    <value>Paste a PoB share code or a pobb.in link. The whole template is filled in from that build: per-slot minimums come from its gear, character totals from the sum of its gear, and its gear becomes the baseline new items are compared against.</value>
+    <value>Paste a PoB share code, a pobb.in link, or a poe.ninja character page link. The whole template is filled in from that build: per-slot minimums come from its gear, character totals from the sum of its gear, and its gear becomes the baseline new items are compared against.</value>
   </data>
   <data name="Import_Label" xml:space="preserve">
-    <value>Build share code, or pobb.in link</value>
+    <value>Build share code, pobb.in link, or poe.ninja character page</value>
   </data>
   <data name="Import_Placeholder" xml:space="preserve">
-    <value>https://pobb.in/xxxx  或  eNrtPWtz27ayn6tfwfHMudMz...</value>
+    <value>https://poe.ninja/poe2/builds/.../character/...  ·  https://pobb.in/xxxx  ·  eNrtPWtz27ayn6tfwfHMudMz...</value>
   </data>
   <data name="Import_Button" xml:space="preserve">
     <value>Import</value>
@@ -319,7 +319,7 @@
     <value>Importing...</value>
   </data>
   <data name="Import_Source_Hint" xml:space="preserve">
-    <value>From PoB: Import / Export → Generate build sharing code. Or copy &quot;IMPORT CODE FOR PATH OF BUILDING&quot; from any poe.ninja build page — it is the same format.</value>
+    <value>From PoB: Import / Export → Generate build sharing code. Or just paste the poe.ninja character page URL — it is fetched and converted for you.</value>
   </data>
   <data name="Import_From_Ninja" xml:space="preserve">
     <value>Tip: poe.ninja builds work directly — their codes carry full item affixes, so per-slot minimums come out accurate.</value>
@@ -344,6 +344,18 @@
   </data>
   <data name="Import_Note_Summary" xml:space="preserve">
     <value>Imported {0} slots and {1} character targets. Character totals cover gear only, not passives.</value>
+  </data>
+  <data name="Import_Ninja_League_Unknown" xml:space="preserve">
+    <value>poe.ninja has no league called &quot;{0}&quot;.</value>
+  </data>
+  <data name="Import_Ninja_Character_Not_Found" xml:space="preserve">
+    <value>That character was not found on poe.ninja — it does not exist, or that account's profile is not public.</value>
+  </data>
+  <data name="Import_Ninja_No_Export" xml:space="preserve">
+    <value>Got the character data, but it contains no Path of Building export code.</value>
+  </data>
+  <data name="Import_Ninja_Failed" xml:space="preserve">
+    <value>Could not reach poe.ninja: {0}</value>
   </data>
   <data name="Tab_Title" xml:space="preserve">
     <value>Target</value>
