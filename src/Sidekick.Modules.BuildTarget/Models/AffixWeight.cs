@@ -232,9 +232,12 @@ public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, 
 /// 「装备 -&gt; 词缀池标签集」的映射。
 ///
 /// 规则（与权重表的 weightKey 对齐）：
-///   ⚠ 已知缺口：数据里还有 `ranged`（3 条）和 `genesis_tree_*`（83+68 条）等键，
-///   代码不产出它们 —— 后者是 0.5 赛季机制专用，前者语义未定（1 条 ilvl82 命中的就靠它）。
-///   审计（2026-09-19）记录在案，未擅自补，避免猜错把不该显示的词缀放出来。
+///   ⚠ 已知缺口（审计 + 复审 2026-09-19 记录在案，未擅自补 —— 猜错会把不该显示的词缀放出来）：
+///     · `ranged`   28 条 —— 语义未定（不传武器类别的调用路径会漏）
+///     · `talisman` 47 条 —— 护身符槽位，本工具目前没有该槽位
+///     · `trap`    136 条 —— 陷阱技能相关，本工具不涉及技能宝石
+///     · `genesis_tree_*` 83 + 68 条 —— 0.5 赛季机制专用；**注意它们权重是 1，不是 0**
+///   这四类都只在「用户恰好需要它们」时才成为问题；目前不做也不影响加法类词缀的结论。
 ///
 ///   1. 槽位键：helmet | body_armour | gloves | boots | belt | amulet | ring | shield | focus | quiver；
 ///   2. 护甲槽位（helmet / body_armour / gloves / boots / shield）**额外加 armour 这把伞**——

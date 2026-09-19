@@ -75,8 +75,14 @@ public class CandidateBasketService
         get => file.ResistanceCap;
         set
         {
-            file.ResistanceCap = value;
-            Persist();
+            // 写侧必须和读侧（Items 快照）用同一把锁：
+            // 只给读侧加锁挡不住「读快照的同时列表被改」，那正是 Collection was modified 的来源。
+            // 复审（2026-09-19）指出 Items 快照是「一侧锁」。锁可重入，Persist 内的 lock 不会自锁。
+            lock (fileLock)
+            {
+                file.ResistanceCap = value;
+                Persist();
+            }
         }
     }
 
@@ -86,88 +92,109 @@ public class CandidateBasketService
     /// </summary>
     public CandidateBasketItem Add(Item item, string slotKey)
     {
-        var id = ComputeId(item.Text.Text);
-        var contribution = CandidateBasketCalculator.Contribute(item);
-        var name = DisplayName(item);
-        var baseType = item.Type ?? item.Definition?.Name ?? "";
-
-        var existing = file.Items.FirstOrDefault(x => x.Id == id);
-        if (existing != null)
+        lock (fileLock)
         {
-            existing.Name = name;
-            existing.BaseType = baseType;
-            existing.SlotKey = slotKey;
-            existing.AddedAt = DateTimeOffset.Now;
-            existing.Contribution = contribution;
+            var id = ComputeId(item.Text.Text);
+            var contribution = CandidateBasketCalculator.Contribute(item);
+            var name = DisplayName(item);
+            var baseType = item.Type ?? item.Definition?.Name ?? "";
+
+            var existing = file.Items.FirstOrDefault(x => x.Id == id);
+            if (existing != null)
+            {
+                existing.Name = name;
+                existing.BaseType = baseType;
+                existing.SlotKey = slotKey;
+                existing.AddedAt = DateTimeOffset.Now;
+                existing.Contribution = contribution;
+                Persist();
+                return existing;
+            }
+
+            var entry = new CandidateBasketItem
+            {
+                Id = id,
+                Name = name,
+                BaseType = baseType,
+                SlotKey = slotKey,
+                AddedAt = DateTimeOffset.Now,
+                Enabled = true,
+                Contribution = contribution,
+            };
+
+            file.Items.Add(entry);
             Persist();
-            return existing;
+            return entry;
         }
-
-        var entry = new CandidateBasketItem
-        {
-            Id = id,
-            Name = name,
-            BaseType = baseType,
-            SlotKey = slotKey,
-            AddedAt = DateTimeOffset.Now,
-            Enabled = true,
-            Contribution = contribution,
-        };
-
-        file.Items.Add(entry);
-        Persist();
-        return entry;
     }
 
     public bool Remove(string id)
     {
-        var removed = file.Items.RemoveAll(x => x.Id == id) > 0;
-        if (removed)
+        lock (fileLock)
         {
-            Persist();
-        }
+            var removed = file.Items.RemoveAll(x => x.Id == id) > 0;
+            if (removed)
+            {
+                Persist();
+            }
 
-        return removed;
+            return removed;
+        }
     }
 
     public void Clear()
     {
-        if (file.Items.Count == 0)
+        lock (fileLock)
         {
-            return;
-        }
+            if (file.Items.Count == 0)
+            {
+                return;
+            }
 
-        file.Items.Clear();
-        Persist();
+            file.Items.Clear();
+            Persist();
+        }
     }
 
     /// <summary>勾选 / 取消勾选一件备选（合计按勾选的算）。</summary>
     public bool Toggle(string id)
     {
-        var item = file.Items.FirstOrDefault(x => x.Id == id);
-        if (item == null)
+        lock (fileLock)
         {
-            return false;
-        }
+            var item = file.Items.FirstOrDefault(x => x.Id == id);
+            if (item == null)
+            {
+                return false;
+            }
 
-        item.Enabled = !item.Enabled;
-        Persist();
-        return item.Enabled;
+            item.Enabled = !item.Enabled;
+            Persist();
+            return item.Enabled;
+        }
     }
 
     public void SetEnabled(string id, bool enabled)
     {
-        var item = file.Items.FirstOrDefault(x => x.Id == id);
-        if (item == null || item.Enabled == enabled)
+        lock (fileLock)
         {
-            return;
-        }
+            var item = file.Items.FirstOrDefault(x => x.Id == id);
+            if (item == null || item.Enabled == enabled)
+            {
+                return;
+            }
 
-        item.Enabled = enabled;
-        Persist();
+            item.Enabled = enabled;
+            Persist();
+        }
     }
 
-    public CandidateBasketItem? Find(string id) => file.Items.FirstOrDefault(x => x.Id == id);
+    public CandidateBasketItem? Find(string id)
+    {
+        lock (fileLock)
+        {
+            return file.Items.FirstOrDefault(x => x.Id == id);
+        }
+    }
 
     /// <summary>物品文本的 hash：同一件装备（甚至从不同地方复制的同一件）算一个 id。</summary>
     public static string ComputeId(string itemText)

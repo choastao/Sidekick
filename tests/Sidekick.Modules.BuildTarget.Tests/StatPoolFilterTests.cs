@@ -139,7 +139,8 @@ public class StatPoolFilterTests
 
         var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, armour: 200), "shield");
 
-        // 两族都要在：str_shield 是数据里真实用的键，str_armour 留着防止误藏
+        // 两族都要在：str_shield 是数据里真实用的键（AdditionalPhysicalDamageReduction1-5_
+        // 的权重就是 {default:1, str_shield:1}，default 恒 0 = 排除），str_armour 留着防止误藏。
         Assert.Contains(AffixPoolTags.Armour, shield.Tags);
         Assert.Contains("str_shield", shield.Tags);
         Assert.Contains("str_armour", shield.Tags);
@@ -147,8 +148,13 @@ public class StatPoolFilterTests
         var filtered = AffixSearchFilter.Apply(matched, index, shield.Tags);
         output.WriteLine($"力量盾：未过滤 {matched.Count} 条，过滤后 {filtered.Count} 条 [{shield.TagText}]");
 
-        // 就是这条被藏过（AllResistances 的权重是 {str_int_shield, ring, amulet}）
-        Assert.Contains(filtered, x => x.Text.Contains("全元素抗性"));
+        // ⚠ 这里原来断言 filtered 含「全元素抗性」—— 是假绿，已删（复审 2026-09-19 指出）：
+        //   MaximumElementalResistance1/2 的权重就是 {"shield":1}，而 "shield" 是本槽位键、
+        //   永远在标签集里，所以那条断言对任何盾牌都恒真，根本测不到 str_shield 这一族。
+        //   而真正含「全元素抗性」的 AllResistances1-6 权重是 {str_int_shield, ring, amulet}，
+        //   **力量盾本来就看不到** —— 原来那条注释把它按在力量盾上是张冠李戴。
+        //   单属性 / 混合盾的家族键覆盖由 StrInt_shield_... 用例和 AffixPoolChanceTests 保证。
+        Assert.NotEmpty(filtered);
     }
 
     [Fact]
@@ -157,7 +163,8 @@ public class StatPoolFilterTests
         var index = await IndexAsync();
         var matched = await SearchAsync();
 
-        // 力智盾：AllResistances1-6 的权重里只有 str_int_shield 这一个盾牌键
+        // 力智盾：AllResistances1-6 的权重是 {str_int_shield:1, ring:1, amulet:1} ——
+        // 盾牌键只有 str_int_shield 这一个
         var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, armour: 100, energyShield: 50), "shield");
 
         Assert.Contains("str_int_shield", shield.Tags);
@@ -165,7 +172,11 @@ public class StatPoolFilterTests
 
         var filtered = AffixSearchFilter.Apply(matched, index, shield.Tags);
         output.WriteLine($"力智盾：未过滤 {matched.Count} 条，过滤后 {filtered.Count} 条 [{shield.TagText}]");
-        Assert.Contains(filtered, x => x.Text.Contains("全元素抗性"));
+
+        // 上面那句「含全元素抗性」单独用是假绿（MaximumElementalResistance 的 w 就是 {"shield":1}，
+        // 任何盾牌都满足）—— 必须排除掉它，剩下的才是 AllResistances 这一族。
+        // 对照：Helmet_... 用例断言过头盔看不到任何含「全元素抗性」的条目，两边合起来才构成有效对照。
+        Assert.Contains(filtered, x => x.Text.Contains("全元素抗性") && !x.Text.Contains("最大"));
     }
 
     /// <summary>纯敏盾在数据里没有对应的 shield 键，不许硬造 —— 只保留 armour 伞和 *_armour。</summary>
