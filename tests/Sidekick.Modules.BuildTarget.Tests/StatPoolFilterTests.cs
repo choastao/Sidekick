@@ -139,8 +139,9 @@ public class StatPoolFilterTests
 
         var shield = AffixPoolTags.Resolve(Item(ItemClass.Shield, armour: 200), "shield");
 
-        // 两族都要在：str_shield 是数据里真实用的键（AdditionalPhysicalDamageReduction1-5_
-        // 的权重就是 {default:1, str_shield:1}，default 恒 0 = 排除），str_armour 留着防止误藏。
+        // 两族都要在：str_shield 是数据里真实用的键 —— AdditionalPhysicalDamageReduction1-5_
+        // 的权重是 {str_shield:1, default:0}（default 权重 0 = 排除语义），
+        // 所以这几条**只有力量盾看得到**。str_armour 留着防止误藏。
         Assert.Contains(AffixPoolTags.Armour, shield.Tags);
         Assert.Contains("str_shield", shield.Tags);
         Assert.Contains("str_armour", shield.Tags);

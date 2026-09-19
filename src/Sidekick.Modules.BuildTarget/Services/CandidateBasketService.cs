@@ -46,6 +46,14 @@ public class CandidateBasketService
     }
 
     /// <summary>篮子内容或抗性上限变化时触发。</summary>
+    /// <summary>
+    /// 列表内容变化时触发。
+    ///
+    /// ⚠ 契约：本事件**在 fileLock 内**触发（调用方的外层锁还没退，Persist 的内层锁退了而已）。
+    /// 当前两个订阅方都是 `_ = InvokeAsync(...)` 即发即忘，不会死锁；
+    /// **但如果将来有人写阻塞型订阅方，会和写侧交叉死锁** —— 订阅方必须保持非阻塞。
+    /// 这条契约是给备选篮加写侧锁时引入的（复审 2026-09-19 指出）。
+    /// </summary>
     public event Action? OnChanged;
 
     public string FilePath => filePathOverride ?? SidekickPaths.GetDataFilePath("candidate-basket.json");
