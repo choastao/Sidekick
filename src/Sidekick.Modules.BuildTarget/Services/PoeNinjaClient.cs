@@ -47,10 +47,30 @@ public sealed class PoeNinjaClient
 
     private static readonly HttpClient HttpClient = CreateHttpClient();
 
-    /// <summary>缓存：联赛 url（即链接里的那一段）-&gt; (version, snapshotName)。</summary>
+    /// <summary>
+    /// 缓存：联赛 url（即链接里的那一段）-&gt; (version, snapshotName)。
+    ///
+    /// 为什么缓存里的 version 变旧是安全的（真机实测，结论反直觉）：后端根本不校验 version。
+    /// 同一个角色，旧 version（1650-20260919-45662）与伪造 version（9999-20200101-00000）都返回 HTTP 200，
+    /// 只有"真 version + 假角色名"才 404。可见 version 只是"快照提示"，过期不会 404。
+    /// 所以缓存过期把 version 用旧，顶多是快照略旧，绝不会把正常角色误报成"不存在"——
+    /// 因此不必在 404 时绕过缓存重取 index-state 再试一次（那只是白白多打一次接口）。
+    /// </summary>
     private static readonly object IndexCacheLock = new();
     private static Dictionary<string, (string Version, string SnapshotName)>? indexCache;
     private static DateTimeOffset indexCacheExpiresAt;
+
+    /// <summary>
+    /// 从聊天/文档里复制链接常会把尾随标点一起带进来（…/CN_FEC.）。
+    /// 这些字符不可能是角色页路径的一部分，留着会让请求打到"带标点的角色名"上，
+    /// 后端回 404，用户却看到"角色不存在"——真实原因只是多粘了一个标点。先剥掉再匹配。
+    /// 相邻的 pobb.in 正则本来就用收紧的字符类，这里补上松紧一致。
+    /// </summary>
+    private static readonly char[] TrailingPunctuation =
+    [
+        '.', ',', ';', ':', '!', '?', '"', '\'', ')', ']', '}', '>',
+        '。', '，', '、', '；', '：', '！', '？', '）', '】', '》', '」', '』',
+    ];
 
     /// <summary>
     /// 角色页链接：/poe2/builds/{league}/character/{account}/{character}。
@@ -73,7 +93,9 @@ public sealed class PoeNinjaClient
             return false;
         }
 
-        var match = CharacterUrlRegex.Match(input.Trim());
+        // 首尾空白 + 常见尾随标点都是粘贴污染，先清掉再匹配（不影响 ?query / #fragment / 结尾斜杠）。
+        var cleaned = input.Trim().TrimEnd(TrailingPunctuation).Trim();
+        var match = CharacterUrlRegex.Match(cleaned);
         if (!match.Success)
         {
             return false;
@@ -125,7 +147,10 @@ public sealed class PoeNinjaClient
             using var response = await HttpClient.GetAsync(requestUrl, ct);
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
-                // 角色不存在 / 资料未公开都走这里，返回的是 ASP.NET 的 JSON 错误体。
+                // 实测：version 过期或伪造都不会 404（后端不校验 version），所以 404 只可能表示
+                // 这个角色确实不在该快照里 —— 不存在、资料未公开、或快照没收录它。
+                // 也就是说 404 与"缓存里的 version 太旧"无关，无需绕过缓存重取 index-state 再试。
+                // 返回的是 ASP.NET 的 JSON 错误体。
                 return new PoeNinjaResult(null, PoeNinjaError.CharacterNotFound, "404");
             }
 

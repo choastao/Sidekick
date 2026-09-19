@@ -357,6 +357,9 @@
   <data name="Import_Ninja_Failed" xml:space="preserve">
     <value>Could not reach poe.ninja: {0}</value>
   </data>
+  <data name="Import_Ninja_Bad_Link" xml:space="preserve">
+    <value>That looks like a poe.ninja link, but the character page could not be recognised. Expected form: https://poe.ninja/poe2/builds/&lt;league&gt;/character/&lt;account&gt;/&lt;character&gt;</value>
+  </data>
   <data name="Tab_Title" xml:space="preserve">
     <value>Target</value>
   </data>

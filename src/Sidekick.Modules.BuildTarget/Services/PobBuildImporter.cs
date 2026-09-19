@@ -144,6 +144,14 @@ public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTar
                        : (null, DescribeNinjaError(ninja.Error, ninja.Detail, target.League));
         }
 
+        // 输入里明摆着是 poe.ninja，正则却没认出来（例如账号段带了未编码的 '#'）：说明是链接格式不对。
+        // 绝不能掉进下面的"当成纯分享码"分支，否则用户看到的是 base64 报错，跟 poe.ninja 毫无关系。
+        // 纯分享码和 pobb.in 链接都不含 poe.ninja，所以这道守卫不会误伤下面两条既有路径。
+        if (MentionsPoeNinjaHost(trimmed))
+        {
+            return (null, resources["Import_Ninja_Bad_Link"]);
+        }
+
         var match = PobbRegex.Match(trimmed);
         if (match.Success)
         {
@@ -153,6 +161,13 @@ public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTar
 
         return (trimmed, null);
     }
+
+    /// <summary>
+    /// 输入里是否出现 poe.ninja 主机名（忽略大小写）。
+    /// 内部可见是为了离线断言"这条守卫只可能拦 poe.ninja 链接，不会碰到分享码 / pobb.in"。
+    /// </summary>
+    internal static bool MentionsPoeNinjaHost(string input) =>
+        input.Contains("poe.ninja", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
     /// poe.ninja 的失败原因 -&gt; 用户可读文案。

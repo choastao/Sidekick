@@ -53,6 +53,48 @@ public class PoeNinjaTests(ITestOutputHelper output)
         Assert.Equal("IMBigcousin#6756", target.Account);
     }
 
+    // ---- 2b. 粘贴污染：尾随标点必须被剥掉，不能混进角色名（否则会假报"角色不存在"）----
+
+    [Theory]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC.")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC,")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC」")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC。")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC).")]
+    [InlineData("  https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC.  ")]
+    public void Strips_trailing_punctuation_from_pasted_url(string input)
+    {
+        Assert.True(PoeNinjaClient.TryParseCharacterUrl(input, out var target), $"应能解析：{input}");
+        Assert.Equal("forbiddenrites", target.League);
+        Assert.Equal("IMBigcousin-6756", target.Account);
+        // 关键：角色名不带尾随标点 —— 否则会拿着 "CN_FEC." 去打接口，回 404 变成假报"角色不存在"。
+        Assert.Equal("CN_FEC", target.Character);
+    }
+
+    // ---- 2c. 尾随标点剥离不能伤到既有形态（?query / #fragment / 结尾斜杠 / %23 编码）----
+
+    [Theory]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC?i=2&search=class%3DBlood%2BMage")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC#equipment")]
+    [InlineData("https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC/")]
+    [InlineData("poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin-6756/CN_FEC")]
+    public void Trailing_punctuation_trim_keeps_existing_url_forms(string input)
+    {
+        Assert.True(PoeNinjaClient.TryParseCharacterUrl(input, out var target), $"应能解析：{input}");
+        Assert.Equal("CN_FEC", target.Character);
+    }
+
+    [Fact]
+    public void Trailing_punctuation_trim_keeps_encoded_account()
+    {
+        // %23 结尾形态：剥离表里没有 '%'，编码账号必须原样保住。
+        const string input = "https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin%236756/CN_FEC";
+
+        Assert.True(PoeNinjaClient.TryParseCharacterUrl(input, out var target));
+        Assert.Equal("IMBigcousin#6756", target.Account);
+        Assert.Equal("CN_FEC", target.Character);
+    }
+
     // ---- 3. 反例：这些都不能命中，否则会抢走既有的导入路径 ----
 
     [Theory]
@@ -161,6 +203,56 @@ public class PoeNinjaTests(ITestOutputHelper output)
         // 兜底文案是 "Import failed: …" / "导入失败：…"：这四条文案里绝不能带上它。
         var genericWrapper = localizer["Import_Failed"].Value.Replace("{0}", string.Empty).Trim();
         Assert.DoesNotContain(genericWrapper, message, StringComparison.Ordinal);
+    }
+
+    // ---- 6. 含 poe.ninja 却认不出的链接：报"格式不对"，不能掉进 base64 分支 ----
+
+    [Fact]
+    public async Task Unrecognised_ninja_link_surfaces_bad_link_message_instead_of_base64_error()
+    {
+        // 账号段里是未编码的 '#'（应为 %23）：正则认不出来，但输入里明明有 poe.ninja。
+        const string badLink = "https://poe.ninja/poe2/builds/forbiddenrites/character/IMBigcousin#6756/CN_FEC";
+
+        Assert.False(PoeNinjaClient.TryParseCharacterUrl(badLink, out _));
+        Assert.True(PobBuildImporter.MentionsPoeNinjaHost(badLink));
+
+        var localizer = new TestLocalizer();
+        var importer = new PobBuildImporter(new PoeNinjaClient(), localizer);
+
+        var result = await importer.ImportAsync(badLink);
+
+        // 走的是新资源键的文案（TestLocalizer 缺键会回退成键名，所以这一条同时守着"资源存在"）。
+        Assert.NotEqual("Import_Ninja_Bad_Link", localizer["Import_Ninja_Bad_Link"].Value);
+        Assert.Equal(localizer["Import_Ninja_Bad_Link"].Value, result.Error);
+
+        // 这正是被修掉的症状：以前会掉进 base64 分支，报 "The input is not a valid Base-64 string …"。
+        Assert.DoesNotContain("Base-64", result.Error!, StringComparison.OrdinalIgnoreCase);
+        Assert.Null(result.Template);
+    }
+
+    // ---- 7. 守卫的负例：既有的两条导入路径不可能被它拦到 ----
+
+    [Theory]
+    [InlineData("https://pobb.in/xxxx")]
+    [InlineData("eNrtPWtz8kC3P3jBH5K704mZd3IuZgYzA8jCzAJmZgYzA8jCzAJmZgYzA8jCzAJmZgYzA8jCzAJmZgYzA")]
+    public void Poe_ninja_guard_does_not_catch_pobb_or_share_code(string input)
+    {
+        Assert.False(PobBuildImporter.MentionsPoeNinjaHost(input), $"不该被 poe.ninja 守卫拦：{input}");
+    }
+
+    [Fact]
+    public async Task Pure_share_code_still_takes_the_base64_path()
+    {
+        var code = ExtractExportCode();
+
+        Assert.False(PobBuildImporter.MentionsPoeNinjaHost(code));
+
+        var importer = new PobBuildImporter(new PoeNinjaClient(), new TestLocalizer());
+        var result = await importer.ImportAsync(code);
+
+        // 守卫没拦它：继续走 base64 解压并成功建出模板（若被拦，这里会是 Bad_Link 文案、Template 为 null）。
+        Assert.Null(result.Error);
+        Assert.NotNull(result.Template);
     }
 
     private static string ExtractExportCode()

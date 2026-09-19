@@ -357,6 +357,9 @@
   <data name="Import_Ninja_Failed" xml:space="preserve">
     <value>连接 poe.ninja 失败：{0}</value>
   </data>
+  <data name="Import_Ninja_Bad_Link" xml:space="preserve">
+    <value>这看起来是 poe.ninja 的链接，但没认出角色页的格式。正确形态：https://poe.ninja/poe2/builds/&lt;联赛&gt;/character/&lt;账号&gt;/&lt;角色&gt;</value>
+  </data>
   <data name="Tab_Title" xml:space="preserve">
     <value>目标对比</value>
   </data>
