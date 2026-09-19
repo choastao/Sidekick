@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Sidekick.Common;
+using Sidekick.Game.Parser.Items;
 using Sidekick.Modules.BuildTarget.Models;
 
 namespace Sidekick.Modules.BuildTarget.Services;
@@ -93,9 +94,9 @@ public class BuildTargetStore
     }
 
     /// <summary>把一件装备的原始文本记为某部位的当前装备快照。</summary>
-    public void CaptureEquipped(BuildTargetTemplate template, string slotKey, string itemText)
+    public void CaptureEquipped(BuildTargetTemplate template, string slotKey, string itemText, Item? parsed)
     {
-        BaselineSources.MarkManual(template, slotKey, itemText);
+        BaselineSources.MarkManual(template, slotKey, itemText, parsed);
         Save(template);
     }
 
@@ -135,7 +136,24 @@ public class BuildTargetStore
 
             var json = System.IO.File.ReadAllText(FilePath);
             file = JsonSerializer.Deserialize<BuildTargetFile>(json, JsonOptions) ?? new BuildTargetFile();
-            logger.LogInformation("[BuildTarget] Loaded {Count} template(s) from {Path}", file.Templates.Count, FilePath);
+            // 一次性迁移：把导入型模板的部位门槛从「硬性」降级为「参考值」。
+            // 不迁移的话，老模板会继续把「BD 那件装备的数值」当硬性标准，
+            // 于是任何属性不同的装备（包括用户自己正穿着的那件）都被判「不建议」。
+            var migratedCount = 0;
+            foreach (var template in file.Templates)
+            {
+                if (TargetNormalizer.NormalizeImported(template))
+                {
+                    migratedCount++;
+                }
+            }
+
+            if (migratedCount > 0)
+            {
+                Persist();
+            }
+
+            logger.LogInformation("[BuildTarget] Loaded {Count} template(s) from {Path} (migrated {Migrated})", file.Templates.Count, FilePath, migratedCount);
         }
         catch (Exception ex)
         {

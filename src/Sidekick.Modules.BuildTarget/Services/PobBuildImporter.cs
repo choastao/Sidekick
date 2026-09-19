@@ -85,12 +85,6 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
         "Strength", "Dexterity", "Intelligence", "AllAttributes",
     ];
 
-    /// <summary>这些词缀在部位级标记为"硬性门槛"，其余只作加分项（避免门槛定得太死）。</summary>
-    private static readonly string[] RequiredKeys =
-    [
-        "Life", "EnergyShield", "IncreasedEnergyShield", "FireRes", "ColdRes", "LightningRes", "ChaosRes", "AllEleRes",
-    ];
-
     public async Task<PobImportResult> ImportAsync(string codeOrUrl)
     {
         var result = new PobImportResult();
@@ -175,6 +169,8 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
         {
             Name = BuildName(doc),
             ImportedFrom = source.Length > 120 ? source[..120] : source,
+            // 导入的门槛一律是参考值，不是硬性要求（见 TargetNormalizer 的说明）。
+            ImportedTargetsOptional = true,
         };
 
         // 角色合计（只统计能匹配上预设的词缀）
@@ -248,7 +244,10 @@ public class PobBuildImporter(IStringLocalizer<BuildTargetResources> resources)
                     Label = preset.Label,
                     Match = [.. preset.Keywords],
                     MinValue = value,
-                    Required = RequiredKeys.Contains(preset.Key),
+                    // ⚠ 一律非硬性。这里曾经按 RequiredKeys 把「生命/护盾/抗性」标成硬性门槛，
+                    //   实际效果是「你必须穿得和这套 BD 一模一样」——用户把自己正穿的头盔
+                    //   标为当前装备后仍被判「不建议」。硬性标准只留给用户自己在界面上勾。
+                    Required = false,
                 });
             }
 

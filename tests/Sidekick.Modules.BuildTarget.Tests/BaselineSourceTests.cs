@@ -112,7 +112,7 @@ public class BaselineSourceTests
     [Fact]
     public async Task Imported_build_marks_recorded_slot_as_bd()
     {
-        var result = await new PobBuildImporter(new ResxLocalizer()).ImportAsync(BuildShareCode());
+        var result = await new PobBuildImporter(new TestLocalizer()).ImportAsync(BuildShareCode());
 
         Assert.Null(result.Error);
         var template = Assert.IsType<BuildTargetTemplate>(result.Template);
@@ -145,11 +145,17 @@ public class BaselineSourceTests
             EquippedSource = { [SlotKeys.Helmet] = BaselineSources.Build },
         };
 
-        // BuildTargetStore.CaptureEquipped 调的就是这个方法
-        BaselineSources.MarkManual(template, SlotKeys.Helmet, "物品类别: 头盔\n稀有度: 稀有\n我的头盔\n灵主之冠");
+        // BuildTargetStore.CaptureEquipped 调的就是这个方法。
+        // 传 parsed: null 模拟「快照解析不出来」——这时必须把导入时抽的数值一起清掉。
+        BaselineSources.MarkManual(template, SlotKeys.Helmet, "物品类别: 头盔\n稀有度: 稀有\n我的头盔\n灵主之冠", parsed: null);
 
         Assert.Equal(BaselineSources.Manual, template.EquippedSource[SlotKeys.Helmet]);
         Assert.Equal("物品类别: 头盔\n稀有度: 稀有\n我的头盔\n灵主之冠", template.Equipped[SlotKeys.Helmet]);
+
+        // 关键：不能留着 BD 那件的数值和名字。否则快照一解析失败，
+        // 评估会拿 BD 的数值冒充「你的当前装备」，静默给出错误结论。
+        Assert.False(template.EquippedStats.ContainsKey(SlotKeys.Helmet));
+        Assert.False(template.EquippedNames.ContainsKey(SlotKeys.Helmet));
 
         // 同一个部位只能算一次，算到 manual 里，不再算 bd
         var summary = BaselineSummaryCalculator.Compute(template, slotKey => slotKey == SlotKeys.Helmet);
@@ -201,8 +207,8 @@ public class BaselineSourceTests
     [Fact]
     public void Baseline_sentence_shows_the_source_breakdown()
     {
-        var chinese = new ResxLocalizer(CultureInfo.GetCultureInfo("zh"));
-        var english = new ResxLocalizer(CultureInfo.InvariantCulture);
+        var chinese = new TestLocalizer(CultureInfo.GetCultureInfo("zh"));
+        var english = new TestLocalizer(CultureInfo.InvariantCulture);
 
         // 导入的 BD 给 6 个部位、手动补了 2 个（用户就是被「1/10」误导的）
         var summary = new BaselineSummary { WithBaseline = 8, FromBuild = 6, Manual = 2 };
@@ -222,7 +228,7 @@ public class BaselineSourceTests
     [Fact]
     public void Source_labels_cover_bd_manual_and_old_data()
     {
-        var chinese = new ResxLocalizer(CultureInfo.GetCultureInfo("zh"));
+        var chinese = new TestLocalizer(CultureInfo.GetCultureInfo("zh"));
 
         Assert.Equal("来自导入的 BD", BaselineNoteFormatter.SourceLabel(BaselineSources.Build, chinese));
         Assert.Equal("手动采集", BaselineNoteFormatter.SourceLabel(BaselineSources.Manual, chinese));
@@ -329,39 +335,4 @@ public class BaselineSourceTests
         return Convert.ToBase64String(buffer.ToArray()).TrimEnd('=').Replace('+', '-').Replace('/', '_');
     }
 
-    /// <summary>从真实的 resx 取文案：缺键会直接报出来，正好当资源检查用。</summary>
-    private sealed class ResxLocalizer : IStringLocalizer<BuildTargetResources>
-    {
-        private readonly ResourceManager manager = new(
-            "Sidekick.Modules.BuildTarget.Localization.BuildTargetResources",
-            typeof(BuildTargetResources).Assembly);
-
-        private readonly CultureInfo culture;
-
-        public ResxLocalizer(CultureInfo? culture = null) =>
-            this.culture = culture ?? CultureInfo.GetCultureInfo("zh");
-
-        public LocalizedString this[string name]
-        {
-            get
-            {
-                var value = manager.GetString(name, culture);
-                return new LocalizedString(name, value ?? name, value == null);
-            }
-        }
-
-        public LocalizedString this[string name, params object[] arguments]
-        {
-            get
-            {
-                var value = manager.GetString(name, culture);
-                return new LocalizedString(
-                    name,
-                    value == null ? name : string.Format(culture, value, arguments),
-                    value == null);
-            }
-        }
-
-        public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures) => [];
-    }
 }

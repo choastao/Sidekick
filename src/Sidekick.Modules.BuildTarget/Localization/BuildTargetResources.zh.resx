@@ -405,6 +405,15 @@
   <data name="Result_Pass_No_Comparable" xml:space="preserve">
     <value>硬性门槛全过。</value>
   </data>
+  <data name="Result_Is_Current" xml:space="preserve">
+    <value>这就是该部位你现在穿的装备，不用换。</value>
+  </data>
+  <data name="Result_None_Provided" xml:space="preserve">
+    <value>这件装备不提供该部位的任何目标属性，没有能和当前装备比较的项目。</value>
+  </data>
+  <data name="Stat_Not_Provided_Note" xml:space="preserve">
+    <value>「—」= 这件装备不提供该条属性，「没有这条」不等于「不达标」。</value>
+  </data>
   <data name="Verdict_Good" xml:space="preserve">
     <value>建议换上</value>
   </data>
@@ -796,7 +805,7 @@
     <value>{0}：当前装备「{1}」→ 该部位已勾选的备选合计</value>
   </data>
   <data name="Basket_Compare_Unparsable" xml:space="preserve">
-    <value>⚠️ 当前装备快照一个抗性 / 属性都没解析出来（常见于导入 BD 的英文物品文本），这个替换前后对比可能不准。</value>
+    <value>⚠️ 当前装备快照里没有任何抗性 / 属性。如果那件装备本来就不带这类词缀，这是正常的；也可能是快照的物品文本没解析出来（比如物品语言设置和客户端不一致），那样这个替换前后对比就不准。</value>
   </data>
   <data name="Basket_No_Snapshot" xml:space="preserve">
     <value>这个部位还没有基准，所以这里只显示合计。导入一份 BD（BD 自带的装备就是基准），或者在游戏里悬停那件装备按一次物品热键再在这里采集。</value>

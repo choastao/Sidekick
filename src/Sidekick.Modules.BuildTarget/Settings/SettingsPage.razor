@@ -490,7 +490,19 @@
             return;
         }
 
-        Store.CaptureEquipped(active, selectedSlot, equippedPaste);
+        // 解析成功就把这个部位的「当前装备数值」一起换掉：不清掉会留着导入 BD 时
+        // 那件装备的数值，一旦这份快照解析失败就会拿别人的数冒充你的当前装备。
+        Item? parsed = null;
+        try
+        {
+            parsed = ItemParser.ParseItem(equippedPaste);
+        }
+        catch
+        {
+            parsed = null;
+        }
+
+        Store.CaptureEquipped(active, selectedSlot, equippedPaste, parsed);
         equippedPaste = null;
         RefreshEquippedItem();
     }

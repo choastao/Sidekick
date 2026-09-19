@@ -405,6 +405,15 @@
   <data name="Result_Pass_No_Comparable" xml:space="preserve">
     <value>Passes all required checks.</value>
   </data>
+  <data name="Result_Is_Current" xml:space="preserve">
+    <value>This is already the item you have equipped for this slot.</value>
+  </data>
+  <data name="Result_None_Provided" xml:space="preserve">
+    <value>This item provides none of this slot's target stats, so there is nothing to compare with your current item.</value>
+  </data>
+  <data name="Stat_Not_Provided_Note" xml:space="preserve">
+    <value>「—」means this item does not provide that stat (which is not the same as failing the target).</value>
+  </data>
   <data name="Verdict_Good" xml:space="preserve">
     <value>Equip it</value>
   </data>
@@ -796,7 +805,7 @@
     <value>{0}: current &quot;{1}&quot; → the checked candidates for that slot</value>
   </data>
   <data name="Basket_Compare_Unparsable" xml:space="preserve">
-    <value>⚠️ The equipped snapshot yielded no resistance/attribute at all (often an imported English item text), so this before/after comparison can be wrong.</value>
+    <value>⚠️ The equipped snapshot holds no resistance/attribute at all. That is normal if that item genuinely has none; it can also mean the snapshot's item text failed to parse (e.g. item-language setting mismatch), in which case this before/after comparison is wrong.</value>
   </data>
   <data name="Basket_No_Snapshot" xml:space="preserve">
     <value>No baseline for that slot yet, so only the total is shown. Import a build (its gear becomes the baseline), or hover that piece in game, press your item hotkey and capture it here.</value>

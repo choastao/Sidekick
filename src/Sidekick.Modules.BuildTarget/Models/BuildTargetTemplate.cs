@@ -69,6 +69,16 @@ public class BuildTargetTemplate
     /// <summary>来源：手动建立，或导入的 BD 标识。</summary>
     public string? ImportedFrom { get; set; }
 
+    /// <summary>
+    /// 「从 BD 导入的部位门槛已改成参考值」的迁移标记。
+    ///
+    /// 早期版本把导入时那件装备的数值直接写成了该部位的**硬性门槛**（Required=true），
+    /// 结果任何属性不同的装备都被判「不建议」——用户实测：把自己正穿着的头盔标为
+    /// 当前装备后，照样被判「不建议装备」。现在导入的门槛一律是参考值（Required=false），
+    /// 硬性标准只留给用户自己勾。这个标记用于对老模板做一次性迁移。
+    /// </summary>
+    public bool ImportedTargetsOptional { get; set; }
+
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.Now;
 }
 

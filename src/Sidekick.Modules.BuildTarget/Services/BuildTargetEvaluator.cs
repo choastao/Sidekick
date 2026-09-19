@@ -83,6 +83,8 @@ public class BuildTargetEvaluator
             HasEquipped = currentItem != null || imported != null,
             EquippedName = currentItem?.Name ?? currentItem?.Type ?? GetImportedName(template, slotKey),
             BaselineSource = currentItem != null || imported != null ? BaselineSummaryCalculator.Source(template, slotKey) : null,
+            // 用户把自己身上那件复制了一遍：文本一模一样就认定是同一件，不再给换装建议。
+            IsCurrentItem = hasSnapshot && TextKey(newItem.Text.Text) == TextKey(snapshotText!),
         };
 
         foreach (var target in targets)
@@ -115,62 +117,14 @@ public class BuildTargetEvaluator
         return evaluation;
     }
 
+    /// <summary>
+    /// 判定结论。逻辑在 <see cref="VerdictDecider"/>（纯函数，可单独测试）。
+    /// </summary>
     private void ComputeVerdict(SlotEvaluation evaluation)
     {
-        if (evaluation.Checks.Count == 0)
-        {
-            evaluation.Verdict = Verdict.Unknown;
-            evaluation.Headline = resources["Result_No_Slot_Target"];
-            return;
-        }
-
-        var required = evaluation.Checks.Where(x => x.Required).ToList();
-        var failed = required.Where(x => !x.Pass).ToList();
-
-        if (failed.Count > 0)
-        {
-            evaluation.Verdict = Verdict.Bad;
-            evaluation.Headline = string.Format(
-                CultureInfo.CurrentCulture,
-                resources["Result_Failed"],
-                string.Join("、", failed.Select(x => x.Label)));
-            return;
-        }
-
-        var deltas = evaluation.Checks.Where(x => x.Delta.HasValue).Select(x => x.Delta!.Value).ToList();
-
-        if (deltas.Count == 0)
-        {
-            evaluation.Verdict = Verdict.Warn;
-            evaluation.Headline = evaluation.HasEquipped
-                ? resources["Result_Pass_No_Comparable"]
-                : resources["Result_Pass_No_Baseline"];
-            return;
-        }
-
-        var up = deltas.Count(x => x > 0);
-        var down = deltas.Count(x => x < 0);
-
-        if (down == 0 && up > 0)
-        {
-            evaluation.Verdict = Verdict.Good;
-            evaluation.Headline = string.Format(CultureInfo.CurrentCulture, resources["Result_Better"], up);
-        }
-        else if (up > 0 && down > 0)
-        {
-            evaluation.Verdict = Verdict.Warn;
-            evaluation.Headline = string.Format(CultureInfo.CurrentCulture, resources["Result_Mixed"], up, down);
-        }
-        else if (down > 0)
-        {
-            evaluation.Verdict = Verdict.Bad;
-            evaluation.Headline = string.Format(CultureInfo.CurrentCulture, resources["Result_Worse"], down);
-        }
-        else
-        {
-            evaluation.Verdict = Verdict.Warn;
-            evaluation.Headline = resources["Result_Even"];
-        }
+        var (verdict, headline) = VerdictDecider.Decide(evaluation, resources);
+        evaluation.Verdict = verdict;
+        evaluation.Headline = headline;
     }
 
     private List<CharacterEstimate> EvaluateCharacter(BuildTargetTemplate template, Item newItem, string[] newItemSlotKeys, BaselineSummary baseline)
@@ -380,6 +334,13 @@ public class BuildTargetEvaluator
 
         return null;
     }
+
+    /// <summary>
+    /// 物品文本比对用的归一化键：统一换行、去掉空行和每行首尾空白。
+    /// 用来判断「复制进来的这件」是不是就是某部位已采集的当前装备。
+    /// </summary>
+    private static string TextKey(string text) =>
+        string.Join("\n", text.Replace("\r\n", "\n").Split('\n').Select(x => x.Trim()).Where(x => x.Length > 0));
 
     private string SlotLabel(string slotKey) => resources["Slot_" + slotKey];
 }

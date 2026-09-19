@@ -35,6 +35,13 @@ public class ModCheck
     /// <summary>是否达标。</summary>
     public bool Pass => New.HasValue && New.Value >= MinValue;
 
+    /// <summary>
+    /// 这件装备是否提供了该条目标属性。
+    /// 没提供（New 为 null）表示「这件装备不涉及这条」，**不等于「不达标」**——
+    /// 否则「一件护甲头盔没有能量护盾」会被判成不合格（用户实测就是这个现象）。
+    /// </summary>
+    public bool Provided => New.HasValue;
+
     /// <summary>相对当前装备的增减；无法比较时为 null。</summary>
     public double? Delta => New.HasValue && Current.HasValue ? New - Current : null;
 
@@ -80,6 +87,12 @@ public class SlotEvaluation
     /// 该部位没有基准时也是 null——用 <see cref="HasEquipped"/> 区分这两种 null。
     /// </summary>
     public string? BaselineSource { get; set; }
+
+    /// <summary>
+    /// 被评估的这件装备就是该部位已采集的当前装备（用户把自己身上那件复制了一遍）。
+    /// 这种情况下要明确告诉用户「这就是你现在穿的」，不能给「不建议装备」之类的换装建议。
+    /// </summary>
+    public bool IsCurrentItem { get; set; }
 }
 
 /// <summary>一次完整评估的输出。</summary>
