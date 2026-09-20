@@ -16,11 +16,18 @@ namespace Sidekick.Modules.BuildTarget.Tests;
 /// </summary>
 public class PobItemTextTests
 {
+    /// <summary>
+    /// 英文模板表 —— ⚠ 这里刻意用**真实形状**：`trade-stats.json` 的模板**不带行首 `+`**
+    /// （`+` 在定义正则里、是捕获组外的字面量，见 data/poe2/en/trade-stats.json 的 `# to maximum Life`）。
+    /// 之前这里的夹具是手工写成 `+#…` 的，于是「转换输出丢了 `+`」这条真机上炸出来的问题，
+    /// 单测永远看不见（审计 C5：给的是假信心）。别改回带 `+` 的写法。
+    /// </summary>
     private static readonly Dictionary<string, string> InvariantStats = new()
     {
-        ["explicit.stat_fire_res"] = "+#% to Fire Resistance",
-        ["explicit.stat_life"] = "+# to maximum Life",
-        ["implicit.stat_es"] = "+# to maximum Energy Shield",
+        ["explicit.stat_fire_res"] = "#% to Fire Resistance",
+        ["explicit.stat_life"] = "# to maximum Life",
+        ["implicit.stat_es"] = "# to maximum Energy Shield",
+        ["explicit.stat_armour_pct"] = "#% increased Armour (Local)",
     };
 
     private static Item Helmet()
@@ -79,6 +86,77 @@ public class PobItemTextTests
         Assert.Contains("+45% to Fire Resistance", lines);   // # 已被数值替换
         Assert.Contains("+88 to maximum Life", lines);
         Assert.DoesNotContain(lines, x => x.Contains('#'));  // 不该留下占位符
+    }
+
+    /// <summary>
+    /// 平添型词缀必须补上行首 `+`。实测（tao-plus-sign-test.py）：PoB 对缺 `+` 的行是**静默忽略**的 ——
+    /// 同一件头盔追加 `60 to maximum Life` 与不追加，DPS/EHP 逐位相同；带 `+` 才会生效。
+    /// 而英文 trade-stats 的模板本来就不带 `+`，所以这一步只能由「命中的定义文本是否以 `+` 开头」决定。
+    /// </summary>
+    [Fact]
+    public void Flat_affixes_get_the_leading_plus_the_template_lacks()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+        item.Stats.Add(Stat(StatCategory.Implicit, "+30 最大能量护盾", [30], "implicit.stat_es", "+# 最大能量护盾"));
+
+        var result = PobItemText.Build(item, InvariantStats);
+        var lines = result.Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        Assert.Equal(2, result.MappedStats);
+        Assert.Contains("+88 to maximum Life", lines);
+        Assert.Contains("+30 to maximum Energy Shield", lines);
+
+        // 反证：模板里本身没有 `+`，这两行能带 `+` 只能是因为补号那一步生效了
+        Assert.DoesNotContain(lines, x => x == "88 to maximum Life");
+        Assert.DoesNotContain(lines, x => x == "30 to maximum Energy Shield");
+    }
+
+    /// <summary>
+    /// 反证的反面：非平添型词缀（定义文本不以 `+` 开头）**不许**被补 `+` ——
+    /// 无脑补号会把 `60% increased Armour` 变成 `+60% increased Armour`，同样是错行。
+    /// </summary>
+    [Fact]
+    public void Non_flat_affixes_do_not_get_a_plus()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "60% 增加护甲", [60], "explicit.stat_armour_pct", "#% 增加护甲"));
+
+        var lines = PobItemText.Build(item, InvariantStats).Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        Assert.Contains("60% increased Armour (Local)", lines);
+        Assert.DoesNotContain(lines, x => x.StartsWith('+') && x.Contains("increased Armour"));
+    }
+
+    /// <summary>
+    /// 稀有物品在 PoB 眼里是「名字 + 基底」两行，**只发一行会让 baseName 变 nil 并把 Lua 报错抛给用户**
+    /// （实测 tao-charm-test.py：RARE + 单行 → `Classes/Item.lua:1867 attempt to concatenate field 'baseName'`；
+    /// RARE + 同名两行 → 正常且词缀生效）。名称取不到时把基底重复一次当 title 行。
+    /// </summary>
+    [Fact]
+    public void Rare_items_without_a_distinct_name_still_get_a_title_line()
+    {
+        var item = Helmet();
+        item.InvariantTradeItem = new TradeItem { Type = "Kamasan Tiara" };   // 没有 Name
+
+        var lines = PobItemText.Build(item, InvariantStats).Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        var baseLines = lines.Where(x => x == "Kamasan Tiara").ToList();
+        Assert.Equal(2, baseLines.Count);                        // title 行 + 基底行
+        Assert.Equal(1, lines.IndexOf("Kamasan Tiara"));         // 紧跟 Rarity 之后
+    }
+
+    /// <summary>反证：魔法物品本来就只有一行，不许被补出多余的 title 行。</summary>
+    [Fact]
+    public void Magic_items_are_not_given_an_extra_title_line()
+    {
+        var item = Helmet();
+        item.Properties.Rarity = Rarity.Magic;
+        item.InvariantTradeItem = new TradeItem { Type = "Kamasan Tiara" };
+
+        var lines = PobItemText.Build(item, InvariantStats).Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        Assert.Equal(1, lines.Count(x => x == "Kamasan Tiara"));
     }
 
     [Fact]

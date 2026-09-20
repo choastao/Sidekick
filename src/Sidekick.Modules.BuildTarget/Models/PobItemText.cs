@@ -49,6 +49,17 @@ public static class PobItemText
         {
             lines.Add(name!);
         }
+        else if (NeedsTitleLine(item.Properties.Rarity) && !string.IsNullOrWhiteSpace(type))
+        {
+            // ⚠ 稀有/传奇物品在 PoB 眼里是「名字 + 基底」两行：它把 Rarity 之后的第一行当 title，
+            //   **第二行才是 baseName**。英文名与基底同名时（名称取不到、或本来就相同）上面那条守卫
+            //   会不发名字行，于是唯一那行被当成 title → baseName = nil →
+            //   PoB 内部 BuildRaw 直接炸：`Classes/Item.lua:1867: attempt to concatenate field 'baseName'`。
+            //   实测（tao-charm-test.py，试穿到 Charm 1）：
+            //     RARE + 单行基底 → 报错；RARE + 同名两行 → 正常且词缀生效；MAGIC + 单行 → 正常。
+            //   所以这里把基底重复一次当 title 行，保住稀有度语义（换成 MAGIC/NORMAL 会改词缀条数规则）。
+            lines.Add(type!);
+        }
 
         if (!string.IsNullOrWhiteSpace(type))
         {
@@ -78,13 +89,13 @@ public static class PobItemText
 
             totalStats++;
 
-            var template = FindTemplate(stat, invariantStatText);
-            if (template == null)
+            var found = FindTemplate(stat, invariantStatText);
+            if (found is not { } match)
             {
                 continue;
             }
 
-            var line = FillValues(template, stat.Values);
+            var line = FillValues(match.Template, stat.Values);
             if (string.IsNullOrWhiteSpace(line))
             {
                 continue;
@@ -99,6 +110,8 @@ public static class PobItemText
             {
                 continue;
             }
+
+            line = ApplySign(line, match.RequiresPlus);
 
             mapped++;
             if (stat.Category == StatCategory.Implicit)
@@ -125,8 +138,13 @@ public static class PobItemText
     /// <summary>
     /// 一条 stat 可能匹配到多个定义，取第一个能在英文表里查到的模板。
     /// 查不到就是「引擎不认识这条词缀」—— 交给调用方如实报出来。
+    ///
+    /// 顺带把**命中的那条定义**的平添符号带出来：英文 trade-stats 的模板里没有行首 `+`
+    /// （它只是文本模板），而游戏/PoB 的定义文本是 `+# to maximum Life` —— 见 <see cref="ApplySign"/>。
     /// </summary>
-    private static string? FindTemplate(Stat stat, IReadOnlyDictionary<string, string> invariantStatText)
+    private static (string Template, bool RequiresPlus)? FindTemplate(
+        Stat stat,
+        IReadOnlyDictionary<string, string> invariantStatText)
     {
         foreach (var definition in stat.Definitions)
         {
@@ -139,12 +157,37 @@ public static class PobItemText
             {
                 if (invariantStatText.TryGetValue(id, out var template) && !string.IsNullOrWhiteSpace(template))
                 {
-                    return template;
+                    return (template, RequiresPlusSign(definition.Text));
                 }
             }
         }
 
         return null;
+    }
+
+    /// <summary>定义文本以 <c>+</c> 开头 = 这条是「平添」型词缀（`+# to maximum Life`）。</summary>
+    private static bool RequiresPlusSign(string? definitionText) =>
+        definitionText != null && definitionText.StartsWith('+');
+
+    /// <summary>
+    /// 给平添型词缀补上行首 `+`。
+    ///
+    /// 为什么必须有这一步（实测，别删）：PoB2 对**缺 `+` 的行是静默忽略**的 ——
+    /// 同一件头盔追加 `60 to maximum Life` 与不追加，DPS/EHP 逐位相同（引擎直接当它不存在）；
+    /// 追加 `+60 to maximum Life` 才会生效（EHP 23554 → 23810）。
+    /// 而英文 trade-stats.json 的模板就是 `# to maximum Life`（`+` 在定义正则里、是捕获组外的字面量），
+    /// 于是「引擎不认识的词缀条数」显示 0、数字却算少了一块 —— 假成功，比报错更坏。
+    /// 数据侧对照：en `stats.json` 里 1008 条定义文本以 `+` 开头（zh 287 条，如 `+#最大生命`）。
+    /// 模板自带符号的（trade-stats 里有 285 处）不重复补。
+    /// </summary>
+    private static string ApplySign(string line, bool requiresPlus)
+    {
+        if (!requiresPlus || line.Length == 0 || line[0] is '+' or '-')
+        {
+            return line;
+        }
+
+        return "+" + line;
     }
 
     /// <summary>把模板里的 <c>#</c> 按顺序替换成数值。数值不够时保留 #（PoB 会当它是通配，不编数字）。</summary>
@@ -187,6 +230,12 @@ public static class PobItemText
 
     private static string? FirstNonEmpty(params string?[] candidates) =>
         candidates.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+
+    /// <summary>
+    /// 稀有/传奇物品要不要「名字 + 基底」两行 —— 见 <see cref="Build"/> 里那段说明
+    /// （只发一行会让 PoB 把基底当 title，baseName 变 nil 直接炸）。
+    /// </summary>
+    private static bool NeedsTitleLine(Rarity rarity) => rarity is Rarity.Rare or Rarity.Unique;
 
     /// <summary>PoB 的 Rarity 行要全大写。</summary>
     private static string RarityText(Rarity rarity) => rarity switch

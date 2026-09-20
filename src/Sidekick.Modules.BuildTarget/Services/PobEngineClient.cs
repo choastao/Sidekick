@@ -31,6 +31,7 @@ public sealed class PobEngineClient : IDisposable
     private Process? process;
     private int nextId;
     private bool disposed;
+    private int generation;
 
     public PobEngineClient(ILogger<PobEngineClient> logger)
     {
@@ -39,6 +40,17 @@ public sealed class PobEngineClient : IDisposable
 
     /// <summary>helper 是否活着。引擎没配好 / 已崩溃都是 false。</summary>
     public bool IsRunning => !disposed && process is { HasExited: false };
+
+    /// <summary>
+    /// 引擎进程的**代际号**：每次启动成功、每次杀进程都 +1。
+    ///
+    /// 为什么需要它：引擎是**有状态**的（`load_build` 把 BD 载进 Lua 里），而进程一重启，
+    /// 引擎里的 BD 就没了。任何「引擎里已经载入过什么」的缓存都必须把它一起当缓存键 ——
+    /// 只认模板 id 的缓存会在引擎被杀之后**永久失效**：缓存命中 → 跳过 load_build →
+    /// `equip` 打到 Lua 侧 `no build loaded` → 此后每一次试穿都失败，且没有自愈路径
+    /// （审计 audit-report-c1.md 的 L1，C2 批量会整批报销）。
+    /// </summary>
+    public int Generation => Volatile.Read(ref generation);
 
     /// <summary>引擎目录（找到才有值）。界面用它说明「引擎装在哪」。</summary>
     public string? EngineDirectory { get; private set; }
@@ -201,7 +213,11 @@ public sealed class PobEngineClient : IDisposable
             }
 
             LastError = null;
-            logger.LogInformation("[BuildTarget] PoB engine helper ready at {Directory}", directory);
+            Interlocked.Increment(ref generation);
+            logger.LogInformation(
+                "[BuildTarget] PoB engine helper ready at {Directory} (generation {Generation})",
+                directory,
+                Generation);
             return true;
         }
         catch (Exception ex)
@@ -256,14 +272,18 @@ public sealed class PobEngineClient : IDisposable
                     x => JsonSerializer.SerializeToElement(x.Value, PobEngineProtocol.Options)),
             };
 
-            await target.StandardInput.WriteLineAsync(PobEngineProtocol.Encode(request));
-            await target.StandardInput.FlushAsync();
-
+            // ⚠ 超时 CTS 必须**在写之前**建好（审计 L2）：写也要受超时保护。
+            //   触发形状是「子进程活着但不读 stdin」——正是超时要防的卡死形态：
+            //   load_build 的 XML 可有几十~几百 KB，远超匿名管道默认缓冲，
+            //   原先无 token 的 WriteLineAsync 会**无限等待**，还握着串行闸，连超时兜底都没有。
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             linked.CancelAfter(timeout);
 
             try
             {
+                await target.StandardInput.WriteLineAsync(PobEngineProtocol.Encode(request).AsMemory(), linked.Token);
+                await target.StandardInput.FlushAsync(linked.Token);
+
                 // ⚠ 引擎启动时会往 **stdout** 打一堆日志（"Loading main script..."、"missing node ..."），
                 //   所以不能「读一行就当应答」。只认以 { 开头、能解出来、且 id 对得上的那一行，
                 //   其余当噪音跳过（有超时兜底，不会死循环）。
@@ -301,10 +321,23 @@ public sealed class PobEngineClient : IDisposable
             }
             catch (OperationCanceledException)
             {
-                // 超时基本等于引擎卡死（重算进了死循环之类）：留着一个卡住的进程没有意义。
-                LastError = $"engine timed out after {timeout.TotalSeconds:0}s on '{method}'";
-                logger.LogWarning("[BuildTarget] PoB engine timeout on {Method}", method);
-                StopProcess();
+                // ⚠ 必须区分「超时」与「调用方取消」（审计 L3）：C2 的批量会传 token，
+                //   若把用户取消也当成引擎卡死，取消一次批量就会杀掉引擎 —— 并顺着 L1
+                //   变成「之后每次试穿都失败」。只有超时才杀进程。
+                var timedOut = linked.IsCancellationRequested && !cancellationToken.IsCancellationRequested;
+                if (timedOut)
+                {
+                    // 超时基本等于引擎卡死（重算进了死循环之类）：留着一个卡住的进程没有意义。
+                    LastError = $"engine timed out after {timeout.TotalSeconds:0}s on '{method}'";
+                    logger.LogWarning("[BuildTarget] PoB engine timeout on {Method}", method);
+                    StopProcess();
+                }
+                else
+                {
+                    LastError = $"engine request '{method}' cancelled by the caller";
+                    logger.LogInformation("[BuildTarget] PoB engine request {Method} cancelled by the caller", method);
+                }
+
                 return null;
             }
         }
@@ -349,6 +382,9 @@ public sealed class PobEngineClient : IDisposable
         {
             process?.Dispose();
             process = null;
+
+            // 进程没了 = 引擎里载入过的 BD 也没了，代际号 +1（见 Generation 的说明）
+            Interlocked.Increment(ref generation);
         }
     }
 

@@ -27,8 +27,8 @@ public class PobCompareService(
 {
     private readonly SemaphoreSlim gate = new(1, 1);
 
-    private string? loadedTemplateId;
-    private PobStats? loadedBaseStats;
+    /// <summary>「引擎里已载入哪份 BD」的缓存（键 = 模板 id + 引擎代际号，见 <see cref="BaselineCache"/>）。</summary>
+    private readonly BaselineCache baselineCache = new();
 
     /// <summary>侧边栏的部位键 → PoB 的槽位名（见 Engine/README.md，权威来源是 PoB 的 ItemsTab.baseSlots）。</summary>
     private static readonly Dictionary<string, string> PobSlotNames = new(StringComparer.OrdinalIgnoreCase)
@@ -116,18 +116,44 @@ public class PobCompareService(
                 return PobCompareResult.Not(PobCompareStatus.BaseUnknown);
             }
 
-            var response = await engine.SendAsync(
-                PobEngineProtocol.MethodEquip,
-                new Dictionary<string, object?>
+            var response = await EquipAsync(pobSlot, text.Text, cancellationToken);
+
+            // 引擎被换代过（例如恰好赶在一次超时重启之后）：Lua 侧会回 "no build loaded"。
+            // 兜底重载一次再试 —— 正常路径靠 BaselineCache 的代际号就拦住了，这是最后一道保险
+            // （审计 L1：原先这条路径完全没有自愈，一次超时之后每次试穿都永久失败）。
+            if (response is not { Ok: true } && IsNoBuildLoaded(response))
+            {
+                logger.LogWarning("[BuildTarget] Engine reports no build loaded, reloading the baseline once");
+                baselineCache.Invalidate();
+
+                baseline = await EnsureBaselineAsync(template, cancellationToken);
+                if (baseline == null)
                 {
-                    ["slot"] = pobSlot,
-                    ["item"] = text.Text,
-                },
-                TimeSpan.FromSeconds(15),
-                cancellationToken);
+                    return PobCompareResult.Not(PobCompareStatus.Failed, engine.LastError);
+                }
+
+                response = await EquipAsync(pobSlot, text.Text, cancellationToken);
+            }
 
             if (response is not { Ok: true })
             {
+                // PoB 认不出基底时是**抛 Lua 错**（`Classes/Item.lua:1867: attempt to concatenate field 'baseName'`）。
+                // 对用户来说这和「基底取不到英文名」是同一件事 —— 别把 Lua 栈丢到界面上
+                // （真机冒烟实测：咒符那件就这么显示了整条 Lua 报错）。
+                if (IsEngineBaseNameFailure(response))
+                {
+                    logger.LogWarning(
+                        "[BuildTarget] Engine could not resolve the item base ({Error}). Item text:\n{Text}",
+                        response.Error,
+                        text.Text);
+                    return PobCompareResult.Not(PobCompareStatus.BaseUnknown);
+                }
+
+                // 失败时把转换出来的文本一起记下来：没有它，下次定位要重跑一遍真机
+                logger.LogWarning(
+                    "[BuildTarget] PoB equip failed: {Error}. Item text:\n{Text}",
+                    response.Error ?? engine.LastError,
+                    text.Text);
                 return PobCompareResult.Not(PobCompareStatus.Failed, response?.Error ?? engine.LastError);
             }
 
@@ -161,13 +187,40 @@ public class PobCompareService(
         }
     }
 
-    /// <summary>载入基准 BD。同一个模板只载一次（引擎侧 load_build 约 400 ms，不必每次重来）。</summary>
+    /// <summary>试穿一件物品到某个 PoB 槽位（单次 ~15 ms，超时给 15 s 是上限兜底）。</summary>
+    private Task<PobEngineResponse?> EquipAsync(string pobSlot, string itemText, CancellationToken cancellationToken) =>
+        engine.SendAsync(
+            PobEngineProtocol.MethodEquip,
+            new Dictionary<string, object?>
+            {
+                ["slot"] = pobSlot,
+                ["item"] = itemText,
+            },
+            TimeSpan.FromSeconds(15),
+            cancellationToken);
+
+    /// <summary>
+    /// Lua 侧「没载入 BD」的报错（<c>tao-engine-server.lua</c> 的 <c>if state.calcFunc == nil then error("no build loaded")</c>）。
+    /// 命中它 = 引擎里没有基准，缓存该失效重载，而不是把报错丢给用户。
+    /// </summary>
+    private static bool IsNoBuildLoaded(PobEngineResponse? response) =>
+        response?.Error?.Contains("no build loaded", StringComparison.OrdinalIgnoreCase) == true;
+
+    /// <summary>PoB 内部因为 baseName 为空而抛的 Lua 错（等于「引擎认不出这个词基底」）。</summary>
+    private static bool IsEngineBaseNameFailure(PobEngineResponse? response) =>
+        response?.Error?.Contains("baseName", StringComparison.OrdinalIgnoreCase) == true;
+
+    /// <summary>载入基准 BD。同一个模板 + 同一个引擎代次只载一次（引擎侧 load_build 约 400 ms）。</summary>
     private async Task<PobStats?> EnsureBaselineAsync(BuildTargetTemplate template, CancellationToken cancellationToken)
     {
-        if (loadedTemplateId == template.Id && loadedBaseStats != null)
+        if (baselineCache.IsValid(template.Id, engine.Generation))
         {
-            return loadedBaseStats;
+            return baselineCache.Stats;
         }
+
+        // ⚠ 代际号要在发请求**之前**记下来：若引擎在载入过程中被杀/重启，
+        //   这份数值就不属于新一代引擎，下次调用必须重载（宁可多重载一次，不可用错基准）。
+        var generation = engine.Generation;
 
         var response = await engine.SendAsync(
             PobEngineProtocol.MethodLoadBuild,
@@ -181,14 +234,13 @@ public class PobCompareService(
 
         if (response is not { Ok: true })
         {
-            loadedTemplateId = null;
-            loadedBaseStats = null;
+            baselineCache.Invalidate();
             return null;
         }
 
-        loadedTemplateId = template.Id;
-        loadedBaseStats = ReadStats(response);
-        return loadedBaseStats;
+        var stats = ReadStats(response);
+        baselineCache.Store(template.Id, generation, stats);
+        return stats;
     }
 
     /// <summary>

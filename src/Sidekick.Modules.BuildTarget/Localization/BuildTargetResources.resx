@@ -142,7 +142,7 @@
     <value>PoB2 engine (equip &amp; compare DPS / EHP)</value>
   </data>
   <data name="Option_PobEngine_Help" xml:space="preserve">
-    <value>Would start a separate local engine process and needs a PoB build file as the baseline. Not implemented yet — this switch is a placeholder.</value>
+    <value>Once on, the overlay shows an equip &amp; compare panel: the item you copy is put into the build's PoB file and the engine recomputes DPS / EHP against it. Needs the engine installed next to the app (pob2/luajit.exe + tao-engine-server.lua); without it the panel says the engine is unavailable.</value>
   </data>
   <data name="Pob_Title" xml:space="preserve">
     <value>PoB engine: equip &amp; compare</value>
