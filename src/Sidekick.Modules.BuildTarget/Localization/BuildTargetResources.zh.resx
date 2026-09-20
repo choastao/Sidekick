@@ -186,6 +186,9 @@
   <data name="Pob_Unsupported_Slot" xml:space="preserve">
     <value>这件物品的部位不在引擎的槽位体系里。</value>
   </data>
+  <data name="Pob_Socketed_Item" xml:space="preserve">
+    <value>珠宝镶在天赋树上，不是穿戴槽位，引擎试穿暂不支持珠宝。</value>
+  </data>
   <data name="Pob_No_Engine" xml:space="preserve">
     <value>引擎不可用：{0}</value>
   </data>
@@ -341,6 +344,9 @@
   </data>
   <data name="Search_Filter_NoSlot" xml:space="preserve">
     <value>认不出这件装备是哪个部位，未按部位过滤</value>
+  </data>
+  <data name="Search_Filter_NoSlotTags" xml:space="preserve">
+    <value>药剂 / 咒符 / 珠宝在权重表里没有对应的部位标签，这三个部位不做部位过滤（按全库列出）</value>
   </data>
   <data name="Search_Filter_Unavailable" xml:space="preserve">
     <value>读不到词缀权重数据，未按部位过滤</value>
@@ -521,6 +527,24 @@
   </data>
   <data name="Slot_belt" xml:space="preserve">
     <value>腰带</value>
+  </data>
+  <data name="Slot_flask1" xml:space="preserve">
+    <value>生命药剂</value>
+  </data>
+  <data name="Slot_flask2" xml:space="preserve">
+    <value>魔力药剂</value>
+  </data>
+  <data name="Slot_charm1" xml:space="preserve">
+    <value>咒符1</value>
+  </data>
+  <data name="Slot_charm2" xml:space="preserve">
+    <value>咒符2</value>
+  </data>
+  <data name="Slot_charm3" xml:space="preserve">
+    <value>咒符3</value>
+  </data>
+  <data name="Slot_jewel" xml:space="preserve">
+    <value>珠宝</value>
   </data>
   <data name="Craft_Title" xml:space="preserve">
     <value>改造 / 洗装成本估算</value>
@@ -922,6 +946,6 @@
     <value>物品稀有度</value>
   </data>
   <data name="Preset_Spirit" xml:space="preserve">
-    <value>精神</value>
+    <value>精魂</value>
   </data>
 </root>

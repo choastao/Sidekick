@@ -43,6 +43,12 @@ public class PobCompareService(
         ["belt"] = "Belt",
         ["weapon"] = "Weapon 1",
         ["offhand"] = "Weapon 2",
+        // 药剂 / 咒符：槽键与 PoB 槽名 1:1（见 SlotKeys 的口径说明）
+        ["flask1"] = "Flask 1",
+        ["flask2"] = "Flask 2",
+        ["charm1"] = "Charm 1",
+        ["charm2"] = "Charm 2",
+        ["charm3"] = "Charm 3",
     };
 
     public static string? MapSlot(string? slotKey) =>
@@ -67,6 +73,13 @@ public class PobCompareService(
         if (string.IsNullOrWhiteSpace(template.PobXml))
         {
             return PobCompareResult.Not(PobCompareStatus.NoBuildXml);
+        }
+
+        if (slotKey == SlotKeys.Jewel)
+        {
+            // 珠宝在 PoB 里是天赋树上的镶嵌孔（SocketIdURL nodeId），没有槽位名可传；
+            // 要试穿得先选一个孔，本版不做 —— 如实说「暂不支持」，不要退回泛泛的「不在槽位体系里」。
+            return PobCompareResult.Not(PobCompareStatus.SocketedItem);
         }
 
         var pobSlot = MapSlot(slotKey);

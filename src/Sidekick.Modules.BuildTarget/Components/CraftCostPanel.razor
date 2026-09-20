@@ -562,7 +562,10 @@
 
         // 池不可用：连部位/类别都认不出来（v3.6 起池按 CoE 底材取，标签不再参与建池；
         // 这条分支现在只是把「认不出物品」说得比 No_Base 更早、更具体）。
-        if (PoolTags.IsEmpty)
+        // ⚠ 判据必须排除 NoSlotFilter：药剂 / 咒符 / 珠宝的标签集**本来就地空着**
+        //   （权重表没有这三个部位的标签），只看 IsEmpty 会把这三个能算的类别误报成
+        //   「认不出这件物品」并直接跳过估算 —— 那才是真的功能倒退。
+        if (PoolTags.IsEmpty && !PoolTags.NoSlotFilter && BaseId is null)
         {
             return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
         }

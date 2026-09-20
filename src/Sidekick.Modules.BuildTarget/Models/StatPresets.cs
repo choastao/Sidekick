@@ -40,7 +40,11 @@ public static class StatPresets
         new("Dexterity", "敏捷", ["to Dexterity", "敏捷"]),
         new("Intelligence", "智慧", ["to Intelligence", "智慧"]),
         new("AllAttributes", "全部属性", ["to all Attributes", "全部屬性", "全部属性"]),
-        new("Spirit", "精神", ["Spirit", "精神"]),
+        // ⚠ 关键词不能只写 "Spirit"：PoE2 的区域内词缀「#% increased chance of Azmeri Spirits」、
+        //   独特咒符的机制行「Possessed by Spirit Of The Owl for 20 seconds on use」都含这个词，
+        //   会把 20 当成「精魂 +20」写进角色合计（导入 BD 时实测踩到，随咒符部位接入一起暴露）。
+        //   游戏里真正的精魂词缀只有「+# to Spirit」/「#% increased Spirit」（繁体文本是「#精魂」/「增加#%精魂」）。
+        new("Spirit", "精魂", ["to Spirit", "increased Spirit", "精魂"]),
 
         // ---- 伤害 / 输出 ----
         new("IncreasedPhysicalDamage", "增加物理伤害", ["increased Physical Damage", "增加物理傷害", "增加物理伤害"]),
@@ -125,6 +129,34 @@ public static class StatPresets
         [
             "Life", "EnergyShield", "IncreasedEnergyShield", "IncreasedArmour", "Strength", "LifeRegen",
             "FireRes", "ColdRes", "LightningRes", "ChaosRes",
+        ],
+        // 药剂 / 咒符 / 珠宝：这三个部位走的是「回复量 / 充能 / 持续时间」这类词缀，
+        // 先给能通用的那条（生命 / 魔力 / 抗性 / 属性），专用词缀用设置页的词缀搜索加。
+        // ⚠ 这只是「推荐词缀」清单，与词缀池无关（池按 CoE 底材 id 取，见 AffixPoolTags.ResolveBase）。
+        [SlotKeys.Flask1] =
+        [
+            "Life", "LifeRegen", "Mana", "ManaRegen", "StunThreshold",
+        ],
+        [SlotKeys.Flask2] =
+        [
+            "Mana", "ManaRegen", "LifeRegen", "StunThreshold",
+        ],
+        [SlotKeys.Charm1] =
+        [
+            "Life", "Mana", "FireRes", "ColdRes", "LightningRes", "ChaosRes", "StunThreshold",
+        ],
+        [SlotKeys.Charm2] =
+        [
+            "Life", "Mana", "FireRes", "ColdRes", "LightningRes", "ChaosRes", "StunThreshold",
+        ],
+        [SlotKeys.Charm3] =
+        [
+            "Life", "Mana", "FireRes", "ColdRes", "LightningRes", "ChaosRes", "StunThreshold",
+        ],
+        [SlotKeys.Jewel] =
+        [
+            "Life", "EnergyShield", "Mana", "FireRes", "ColdRes", "LightningRes", "ChaosRes",
+            "AllAttributes", "Strength", "Dexterity", "Intelligence",
         ],
     };
 

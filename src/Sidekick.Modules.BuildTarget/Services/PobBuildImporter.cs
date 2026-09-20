@@ -51,6 +51,13 @@ public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTar
         ["Ring 1"] = SlotKeys.Ring1,
         ["Ring 2"] = SlotKeys.Ring2,
         ["Belt"] = SlotKeys.Belt,
+        // 药剂 / 咒符：PoB 槽名与我们的槽键 1:1（2 药剂 + 3 咒符，见 SlotKeys 的口径说明）。
+        // 珠宝不在这里 —— 它是天赋树上的 SocketIdURL（没有槽位名），不进模板的部位集。
+        ["Flask 1"] = SlotKeys.Flask1,
+        ["Flask 2"] = SlotKeys.Flask2,
+        ["Charm 1"] = SlotKeys.Charm1,
+        ["Charm 2"] = SlotKeys.Charm2,
+        ["Charm 3"] = SlotKeys.Charm3,
     };
 
     /// <summary>PoB 物品文本里的元数据行前缀（不是词缀）。</summary>

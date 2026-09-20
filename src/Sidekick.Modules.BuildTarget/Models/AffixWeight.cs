@@ -226,8 +226,19 @@ public class AffixWeightSnapshot
 /// （少了 str/dex/int 那些防御子类键）→ 搜索过滤按「任一标签命中」取并集，所以结果**只会漏、不会多列**。
 /// 用户可见文案 `Search_Filter_Degraded`（「护甲子类词缀可能被漏掉」）就是这个方向 —— 别写成相反。
 /// 该标记只对搜索过滤成立，不要拿去描述概率。
+///
+/// <see cref="NoSlotFilter"/> = true 表示**这个类别本来就不做部位过滤**（药剂 / 咒符 / 珠宝）。
+/// 与 <see cref="Degraded"/>、与 <see cref="IsEmpty"/> 都不是一回事，界面必须分开说：
+///   · `IsEmpty` + 不带本标记 = 认不出部位（可以说「认不出这件装备」）；
+///   · 带本标记 = 部位认得出来、但权重表没有这个部位的标签，**过滤本身不适用**
+///     （说「认不出装备」是假话，见 search_filter 文案 `Search_Filter_NoSlotTags`）。
+/// 这类别**不影响概率/成本**：池按 CoE 底材 id 取（药剂 60/61、咒符 241、珠宝 26/27/28），照常算得出。
 /// </summary>
-public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, string? Reason = null)
+public sealed record AffixPoolTagSet(
+    IReadOnlyList<string> Tags,
+    bool Degraded,
+    string? Reason = null,
+    bool NoSlotFilter = false)
 {
     public bool IsEmpty => Tags.Count == 0;
 
@@ -278,6 +289,18 @@ public static class AffixPoolTags
 
     public const string OneHandWeapon = "one_hand_weapon";
     public const string TwoHandWeapon = "two_hand_weapon";
+
+    /// <summary>
+    /// 药剂 / 咒符 / 珠宝：`affix-weights.json` 的 60 个标签里**没有** flask / charm / jewel，
+    /// 给这三个类别配一个匹配不到任何词缀的标签，只会把词缀搜索过滤成空列表（看起来像功能坏了）。
+    /// 所以这三个部位**显式不做部位过滤**，理由是「权重表没有这个部位的标签」，
+    /// 而不是「认不出这件装备」—— 后者是假话，界面文案必须分开。
+    /// </summary>
+    public const string NoSlotFilterReason = "no-slot-tags";
+
+    /// <summary>不做部位过滤的类别（判定见 <see cref="Resolve(string?, int, int, int, ItemClass?)"/>）。</summary>
+    private static bool IsNoSlotFilterCategory(ItemClass? itemClass) =>
+        itemClass is ItemClass.LifeFlask or ItemClass.ManaFlask or ItemClass.Charms or ItemClass.Jewel;
 
     /// <summary>物品类别 -&gt; 槽位键。</summary>
     private static readonly Dictionary<ItemClass, string> SlotKeyByClass = new()
@@ -380,6 +403,13 @@ public static class AffixPoolTags
         [ItemClass.Quiver] = "4",
         [ItemClass.Focus] = "229",
         [ItemClass.Talisman] = "244",
+
+        // 药剂 / 咒符：CoE 对这两类是**类别级**的单个底材（游戏里生命药剂 9 个底子、
+        // 咒符 13 种，CoE 各只有 1 个）→ 是近似，界面按类别近似标注，别写成精确。
+        [ItemClass.LifeFlask] = "60",
+        [ItemClass.ManaFlask] = "61",
+        [ItemClass.Charms] = "241",
+
         [ItemClass.Claw] = "11",
         [ItemClass.Dagger] = "12",
         [ItemClass.OneHandSword] = "13",
@@ -396,6 +426,24 @@ public static class AffixPoolTags
         [ItemClass.Staff] = "21",
         [ItemClass.Warstaff] = "25",
         [ItemClass.Crossbow] = "228",
+    };
+
+    /// <summary>
+    /// 珠宝：CoE 只有红/绿/蓝宝石三个底材，按**基底名**取（不能按类别，类别下 9 个底子混在一起）。
+    /// 精确匹配，不做前缀匹配 —— 「時迭藍寶石 / Time-Lost Sapphire」是另一个底材，
+    /// CoE 里没有对应项，必须返回 null（按「池不可用」如实说），**不许退到一般藍寶石上**。
+    /// </summary>
+    private static readonly Dictionary<string, string> JewelBaseByName = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ["Ruby"] = "26",
+        ["紅寶石"] = "26",
+        ["红宝石"] = "26",
+        ["Emerald"] = "27",
+        ["綠寶石"] = "27",
+        ["绿宝石"] = "27",
+        ["Sapphire"] = "28",
+        ["藍寶石"] = "28",
+        ["蓝宝石"] = "28",
     };
 
     /// <summary>类别拿不到时，靠界面槽位键兜底的首饰类底材。</summary>
@@ -461,6 +509,14 @@ public static class AffixPoolTags
     public static string? ResolveBase(Item? item, string? slotKey)
     {
         var type = item?.ItemClass?.Type ?? ItemClass.Unknown;
+
+        // 珠宝：类别下混着 9 个底子，只能按基底名取（见 JewelBaseByName 的注释）。
+        if (type == ItemClass.Jewel)
+        {
+            var name = item?.Type?.Trim();
+            return name != null && JewelBaseByName.TryGetValue(name, out var jewelBase) ? jewelBase : null;
+        }
+
         if (BaseByClass.TryGetValue(type, out var fixedBase))
         {
             return fixedBase;
@@ -542,6 +598,13 @@ public static class AffixPoolTags
         int energyShield,
         ItemClass? itemClass = null)
     {
+        // 药剂 / 咒符 / 珠宝：权重表没有这三个部位的标签，配标签集 = 把搜索过滤成空列表。
+        // 显式声明「不做部位过滤」，理由与「认不出部位」分开（见 NoSlotFilterReason 的注释）。
+        if (IsNoSlotFilterCategory(itemClass))
+        {
+            return new AffixPoolTagSet([], Degraded: false, NoSlotFilterReason, NoSlotFilter: true);
+        }
+
         if (string.IsNullOrWhiteSpace(slotKey))
         {
             return new AffixPoolTagSet([], Degraded: false, "slot-unknown");

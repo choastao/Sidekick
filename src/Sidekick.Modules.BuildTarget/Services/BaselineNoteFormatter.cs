@@ -7,8 +7,10 @@ namespace Sidekick.Modules.BuildTarget.Services;
 
 /// <summary>
 /// 把基准统计拼成界面上的话：
-/// 「10 个部位中 8 个有基准（6 个来自导入的 BD，2 个手动采集）」。
+/// 「16 个部位中 8 个有基准（6 个来自导入的 BD，2 个手动采集）」。
 /// 中英语序不同，所以整句由资源键控制、这里只负责填数与拼接。
+/// ⚠ 分母取 <see cref="BaselineSummary.TotalSlots"/>（= SlotKeys.All.Length，v3.7 起 16），
+///   与界面上的部位清单同源 —— 别在这里写死数量。
 /// </summary>
 public static class BaselineNoteFormatter
 {

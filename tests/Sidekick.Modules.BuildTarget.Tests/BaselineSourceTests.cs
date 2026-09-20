@@ -210,19 +210,21 @@ public class BaselineSourceTests
         var chinese = new TestLocalizer(CultureInfo.GetCultureInfo("zh"));
         var english = new TestLocalizer(CultureInfo.InvariantCulture);
 
-        // 导入的 BD 给 6 个部位、手动补了 2 个（用户就是被「1/10」误导的）
+        // 导入的 BD 给 6 个部位、手动补了 2 个（用户就是被「1/10」误导的）。
+        // ⚠ 分母是 SlotKeys.All 的长度 —— v3.7 起是 16（多了药剂 2 + 咒符 3 + 珠宝 1），
+        //   界面上的部位清单也是这 16 个，两处必须同源。
         var summary = new BaselineSummary { WithBaseline = 8, FromBuild = 6, Manual = 2 };
-        Assert.Equal("10 个部位中 8 个有基准（6 个来自导入的 BD，2 个手动采集）。", BaselineNoteFormatter.Format(summary, chinese));
-        Assert.Equal("8 of 10 slots have a baseline (6 from the imported build, 2 captured in game).", BaselineNoteFormatter.Format(summary, english));
+        Assert.Equal("16 个部位中 8 个有基准（6 个来自导入的 BD，2 个手动采集）。", BaselineNoteFormatter.Format(summary, chinese));
+        Assert.Equal("8 of 16 slots have a baseline (6 from the imported build, 2 captured in game).", BaselineNoteFormatter.Format(summary, english));
 
         // 老数据：有基准值但没有来源标记 → 兜底「来源未知」，不猜
         var withUnknown = new BaselineSummary { WithBaseline = 9, FromBuild = 6, Manual = 2, Unknown = 1 };
-        Assert.Equal("10 个部位中 9 个有基准（6 个来自导入的 BD，2 个手动采集，1 个来源未知）。", BaselineNoteFormatter.Format(withUnknown, chinese));
-        Assert.Equal("9 of 10 slots have a baseline (6 from the imported build, 2 captured in game, 1 of unknown source).", BaselineNoteFormatter.Format(withUnknown, english));
+        Assert.Equal("16 个部位中 9 个有基准（6 个来自导入的 BD，2 个手动采集，1 个来源未知）。", BaselineNoteFormatter.Format(withUnknown, chinese));
+        Assert.Equal("9 of 16 slots have a baseline (6 from the imported build, 2 captured in game, 1 of unknown source).", BaselineNoteFormatter.Format(withUnknown, english));
 
         // 一个基准都没有
-        Assert.Equal("10 个部位还没有基准。", BaselineNoteFormatter.Format(new BaselineSummary(), chinese));
-        Assert.Equal("No baseline yet for any of the 10 slots.", BaselineNoteFormatter.Format(new BaselineSummary(), english));
+        Assert.Equal("16 个部位还没有基准。", BaselineNoteFormatter.Format(new BaselineSummary(), chinese));
+        Assert.Equal("No baseline yet for any of the 16 slots.", BaselineNoteFormatter.Format(new BaselineSummary(), english));
     }
 
     [Fact]

@@ -20,6 +20,9 @@ public enum PobCompareStatus
     /// <summary>这个部位不在 PoB 的槽位体系里。</summary>
     UnsupportedSlot,
 
+    /// <summary>珠宝：镶在天赋树上（PoB 是 <c>SocketIdURL nodeId</c>），不是穿戴槽位，暂不支持试穿。</summary>
+    SocketedItem,
+
     /// <summary>引擎没起来（没装引擎、或进程崩了/超时）。</summary>
     EngineUnavailable,
 

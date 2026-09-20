@@ -186,6 +186,9 @@
   <data name="Pob_Unsupported_Slot" xml:space="preserve">
     <value>This item's slot is not in the engine's slot list.</value>
   </data>
+  <data name="Pob_Socketed_Item" xml:space="preserve">
+    <value>Jewels are socketed into the passive tree (not a worn slot), so the engine compare does not cover them yet.</value>
+  </data>
   <data name="Pob_No_Engine" xml:space="preserve">
     <value>Engine not available: {0}</value>
   </data>
@@ -341,6 +344,9 @@
   </data>
   <data name="Search_Filter_NoSlot" xml:space="preserve">
     <value>Could not tell which slot this item is — not filtering by slot.</value>
+  </data>
+  <data name="Search_Filter_NoSlotTags" xml:space="preserve">
+    <value>Flasks, charms and jewels have no per-slot affix tags in the weight table — the slot filter does not apply to them, the whole library is listed.</value>
   </data>
   <data name="Search_Filter_Unavailable" xml:space="preserve">
     <value>Affix weight data is unavailable — not filtering by slot.</value>
@@ -521,6 +527,24 @@
   </data>
   <data name="Slot_belt" xml:space="preserve">
     <value>Belt</value>
+  </data>
+  <data name="Slot_flask1" xml:space="preserve">
+    <value>Life flask</value>
+  </data>
+  <data name="Slot_flask2" xml:space="preserve">
+    <value>Mana flask</value>
+  </data>
+  <data name="Slot_charm1" xml:space="preserve">
+    <value>Charm 1</value>
+  </data>
+  <data name="Slot_charm2" xml:space="preserve">
+    <value>Charm 2</value>
+  </data>
+  <data name="Slot_charm3" xml:space="preserve">
+    <value>Charm 3</value>
+  </data>
+  <data name="Slot_jewel" xml:space="preserve">
+    <value>Jewel</value>
   </data>
   <data name="Craft_Title" xml:space="preserve">
     <value>Crafting cost (estimate)</value>

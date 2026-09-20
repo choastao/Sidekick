@@ -134,7 +134,11 @@
 
     public int TotalInLibrary => all.Count;
 
-    /// <summary>能不能按部位过滤：要有装备上下文，标签集也要解析得出来。</summary>
+    /// <summary>
+    /// 能不能按部位过滤：要有装备上下文，标签集也要解析得出来。
+    /// ⚠ 药剂 / 咒符 / 珠宝（<see cref="AffixPoolTagSet.NoSlotFilter"/>）走「本来就不适用」这条 ——
+    /// 同样是过滤关掉，但提示语说的是「这类别不做部位过滤」，不是「认不出这件装备」。
+    /// </summary>
     private bool CanFilter => Item is not null && !PoolTags.IsEmpty && index is not null;
 
     /// <summary>这一刻是不是真的在过滤。</summary>
@@ -176,7 +180,13 @@
             // 复用 AffixWeight.cs 里那一套：槽位 + armour 伞 + 护甲子类
             PoolTags = AffixPoolTags.Resolve(Item, SlotKey);
 
-            if (PoolTags.IsEmpty)
+            if (PoolTags.NoSlotFilter)
+            {
+                // 药剂 / 咒符 / 珠宝：权重表没有这三个部位的标签 → 过滤本身不适用。
+                // 这条必须排在 IsEmpty 之前：顺序反过来会显示「认不出部位」，那是假话。
+                unavailableKey = "Search_Filter_NoSlotTags";
+            }
+            else if (PoolTags.IsEmpty)
             {
                 unavailableKey = "Search_Filter_NoSlot";
             }

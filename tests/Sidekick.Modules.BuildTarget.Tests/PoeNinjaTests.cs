@@ -142,21 +142,38 @@ public class PoeNinjaTests(ITestOutputHelper output)
         var template = Assert.IsType<BuildTargetTemplate>(result.Template);
 
         Assert.False(string.IsNullOrWhiteSpace(template.Name));
-        Assert.Equal(10, template.Slots.Count);
 
-        // 10 个跟踪部位都要有门槛（哪怕是兜底推荐词缀）。
-        foreach (var slot in SlotKeys.All)
+        // 10 个穿戴部位 + 药剂 2 + 咒符 3 = 15（珠宝是天赋树上的镶嵌孔，导入器不建它的槽位，
+        // 见 SlotKeys 的口径说明：它没有槽位名，进不了模板的部位集）。
+        Assert.Equal(15, template.Slots.Count);
+
+        // 这份跟踪清单里的每个部位都要有门槛（哪怕是兜底推荐词缀）。
+        // 珠宝不在其中：导入器只按 PoB 的槽位名建部位，SocketIdURL 没有槽位名。
+        foreach (var slot in SlotKeys.All.Where(x => x != SlotKeys.Jewel))
         {
             Assert.True(template.Slots.ContainsKey(slot), $"缺少跟踪部位 {slot}");
         }
 
+        Assert.False(template.Slots.ContainsKey(SlotKeys.Jewel));
+
         // Ring 2 是 Kalandra's Touch（物品文本里只有 "Reflects opposite Ring"），
         // 一名词缀都识别不出来 —— 导入器按既有规则走兜底分支：只建推荐词缀门槛，不写 EquippedStats。
-        // 所以这份导出码是「10 个部位都有装备，9 个有数值」，差的那一个就是它。
+        // 所以这份导出码是「15 个部位都有装备，9 个有数值」，差的那一个就是它。
         Assert.DoesNotContain(SlotKeys.Ring2, template.EquippedStats.Keys);
 
+        // 咒符 1 也是兜底：Thawing Charm 的词缀（充能 / 护盾回充）不在预设表里 → 只给推荐词缀门槛。
+        Assert.DoesNotContain(SlotKeys.Charm1, template.EquippedStats.Keys);
+
+        // ⚠ 咒符 3 曾经被判成「精魂 +20」：它的机制行是
+        //   「Possessed by Spirit Of The Owl for 20 seconds on use」，而 Spirit 预设的关键词当时只写了
+        //   "Spirit" —— 于是 20 被当成精魂写进了角色合计。关键词已收紧成 to Spirit / increased Spirit，
+        //   这条断言就是那次修复的守门员（换回 "Spirit" 会立刻红）。
+        Assert.DoesNotContain(SlotKeys.Charm3, template.EquippedStats.Keys);
+
         var withStats = SlotKeys.All.Where(x => template.EquippedStats.ContainsKey(x)).ToList();
-        Assert.Equal(9, withStats.Count);
+        Assert.True(
+            withStats.Count == 9,
+            $"有数值的部位数为 {withStats.Count}：[{string.Join(", ", withStats)}]");
 
         foreach (var slot in withStats)
         {
