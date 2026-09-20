@@ -279,7 +279,7 @@
                         {
                             <tr>
                                 <td colspan="8" class="py-2 pl-6 border-t border-stone-800">
-                                    @if (gainsBusy.Contains(row.Id))
+                                    @if (gainsBusy.IsBusy(row.Id))
                                     {
                                         <TextBase Class="text-stone-400 text-sm">@Resources["Basket_Gains_Running"]</TextBase>
                                     }
@@ -396,11 +396,13 @@
     private readonly Dictionary<string, AffixGainRanking?> gains = new();
 
     /// <summary>
-    /// 正在算的行 id 集合。**用集合而不是单个 id**：用户可以连点两行，两行会串行占引擎闸；
-    /// 若只记一个 id，先结束的那行会把状态清成「没在算」，于是**还在算的那行**会落到
-    /// 「这条算不了」的分支（审计 E：显示的是一条不成立的结论）。
+    /// 正在算的行。**按行记、并且每一轮计算带一个代次令牌**（见 <see cref="RowBusyTracker"/>）：
+    ///   · 用户可以连点两行，两行会串行占引擎闸 —— 若只记一个 id，先结束的那行会把状态清成
+    ///     「没在算」，于是**还在算的那行**会落到「这条算不了」的分支（审计 E：不成立的结论）；
+    ///   · 同一行还会在上一条没回来时被重新发起（列表重算清空后重新展开、收起再展开）——
+    ///     收尾必须交回令牌，否则老调用会抹掉新那一轮的忙碌标记（审计 3-4：同样是「这条算不了」）。
     /// </summary>
-    private readonly HashSet<string> gainsBusy = new();
+    private readonly RowBusyTracker gainsBusy = new();
 
     /// <summary>当前展开的是哪一行（同一时刻只展开一行，避免表格无限长）。</summary>
     private string? expandedId;
@@ -620,7 +622,7 @@
         var entry = Basket.Items.FirstOrDefault(x => x.Id == row.Id);
         var templateId = Store.Active?.Id;
 
-        gainsBusy.Add(row.Id);
+        var token = gainsBusy.Begin(row.Id);
         StateHasChanged();
 
         try
@@ -638,8 +640,9 @@
         }
         finally
         {
-            // 只清自己这一行（连点两行时，另一行还在算，不能把它的忙碌状态清掉）
-            gainsBusy.Remove(row.Id);
+            // 只清自己这一行、而且只在这一行还是我这一轮时：连点两行时另一行还在算；
+            // 同一行被重新发起时，老调用的收尾不许抹掉新那一轮的忙碌标记。
+            gainsBusy.End(row.Id, token);
         }
     }
 
