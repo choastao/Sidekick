@@ -171,11 +171,15 @@ public class PobPrimaryMetricTests
     }
 
     /// <summary>
-    /// 默认档（TotalDPS &gt; 0）**逐位不许变**：主指标还是 TotalDPS，差值与百分比与改动前完全一致
+    /// 默认档（TotalDPS &gt; 0）：主指标还是 TotalDPS，差值与百分比仍是 **TotalDPS 口径**的数
     /// （候选的 CombinedDPS 与基线的不同也不行 —— 那样等于拿两个口径的数相减）。
+    ///
+    /// ⚠ 名字里**不写「逐位」**：百分比那条是小数位比较（`Assert.Equal(5, …, 9)`），不是逐位比较 ——
+    ///   名字说「逐位」就比断言强（审计 R）。数值由下面这几条字面量钉住；
+    ///   另一个方向（回退档真的换了口径）由上面那几条用例负责。
     /// </summary>
     [Fact]
-    public void 默认档的差值与百分比与改动前一致()
+    public void 默认档仍走_TotalDPS_口径_差值与百分比不变()
     {
         var result = PobCompareResult.Ok(
             Stats(1_000, combinedDps: 9_000),        // 基线 TotalDPS 有数 → 主指标就是 TotalDPS
@@ -187,7 +191,7 @@ public class PobPrimaryMetricTests
         Assert.Equal(1_000, result.BaseMetricValue);
         Assert.Equal(1_050, result.CurrentMetricValue);
         Assert.Equal(50, result.DpsDelta);           // = Current.Dps − Base.Dps（老行为）
-        Assert.Equal(5, result.DpsPercent!.Value, 9); // = 50 / 1000 × 100
+        Assert.Equal(5, result.DpsPercent!.Value, 9); // = 50 / 1000 × 100（小数位比较，不是逐位）
     }
 
     /// <summary>三个字段全为 0 时「算不出来」的语义不变：差值是 0，但不可用标志为真，界面显示「—」。</summary>

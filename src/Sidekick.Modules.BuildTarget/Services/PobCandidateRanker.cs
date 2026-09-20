@@ -155,7 +155,13 @@ public class PobCandidateRanker(
     public static bool ShouldFallbackToEhp(IEnumerable<CandidateRankRow> rows) =>
         rows.Any(x => x.IsRanked && x.DpsUnavailable);
 
-    private static CandidateRankRow Row(CandidateBasketItem entry, PobCompareResult result, bool hardGateFailed)
+    /// <summary>
+    /// 把一次对比结果映射成一行（引擎指标判定与帕累托关系都在这里算好、随行带走）。
+    ///
+    /// ⚠ internal 是给单测用的：测试里手抄一份字段映射，钉住的就是测试自己那份 ——
+    ///   生产映射漏抄一个字段（判定 / 帕累托 / 主指标键）它照样全绿。
+    /// </summary>
+    internal static CandidateRankRow Row(CandidateBasketItem entry, PobCompareResult result, bool hardGateFailed)
     {
         // 引擎指标那条轴的判定与「相对当前装备」的帕累托关系都在这里算好、随行带着走 ——
         // 面板只负责显示，不再自己判一遍（免得两处各写一套判据）。

@@ -207,27 +207,38 @@ public class PobContextTests
     }
 
     [Fact]
-    public void 没确认的场景在数值上留下了标志()
+    public void 请求的场景没被引擎确认时_数值带上未确认标志()
     {
-        // 老 helper + 打王请求：数值是 BD 原样，标志位必须为真（界面据此显示「场景未生效」）
-        var unconfirmed = new PobStats(1, 2, 3) with
-        {
-            RequestedContext = PobContexts.Boss,
-            ContextConfirmed = PobCompareService.ContextConfirmedByHelper(null, PobContexts.Boss),
-        };
+        // 走**接线用的那个映射**（PobCompareService.ApplyContext），不是测试里自己拼一份 with ——
+        // 后者等于把被测逻辑抄一遍：映射少写一个字段（或把 BUILD 也标成未确认）照样全绿（审计 R）。
+        var raw = new PobStats(1, 2, 3);
 
+        // 老 helper（应答里没有 context）+ 打王请求 → 数值其实是 BD 原样，必须带上「未确认」
+        var unconfirmed = PobCompareService.ApplyContext(raw, PobContexts.Boss, effective: null)!;
+        Assert.Equal(PobContexts.Boss, unconfirmed.RequestedContext);
+        Assert.False(unconfirmed.ContextConfirmed);
         Assert.True(unconfirmed.ContextUnconfirmed);
+        Assert.Equal(1, unconfirmed.Dps);          // 映射只加标志，不动数字
 
-        // 新版 helper（回了 context）→ 标志位为假，界面照旧显示「打王」
-        var confirmed = unconfirmed with
-        {
-            ContextConfirmed = PobCompareService.ContextConfirmedByHelper(PobContexts.Boss, PobContexts.Boss),
-        };
-
+        // 新版 helper（回了 context）→ 确认，界面照旧显示「打王」
+        var confirmed = PobCompareService.ApplyContext(raw, PobContexts.Boss, PobContexts.Boss)!;
+        Assert.Equal(PobContexts.Boss, confirmed.RequestedContext);
+        Assert.True(confirmed.ContextConfirmed);
         Assert.False(confirmed.ContextUnconfirmed);
 
-        // BUILD（含手搓的 stats：RequestedContext 为 null）不算「未确认」—— 绝大多数路径都在这边
-        Assert.False(new PobStats(1, 2, 3).ContextUnconfirmed);
+        // 大小写 / 空白容错也要在**接线**上成立（判据本身的真值表在另一条用例里）
+        Assert.True(PobCompareService.ApplyContext(raw, PobContexts.Boss, " boss ")!.ContextConfirmed);
+
+        // BUILD 请求按 BD 原样算，本来就不需要 helper 确认 —— 也不许在数值上留「未确认」标志
+        var build = PobCompareService.ApplyContext(raw, PobContexts.Build, effective: null)!;
+        Assert.Null(build.RequestedContext);
+        Assert.False(build.ContextUnconfirmed);
+
+        // 手搓的 stats（没走过映射）默认就是「不需确认」—— 绝大多数路径都在这一档
+        Assert.False(raw.ContextUnconfirmed);
+
+        // 应答里没有数值（load_build 成功但形状不对）→ 仍旧 null，不许造一个空 stats 出来
+        Assert.Null(PobCompareService.ApplyContext(null, PobContexts.Boss, effective: null));
     }
 
     [Fact]

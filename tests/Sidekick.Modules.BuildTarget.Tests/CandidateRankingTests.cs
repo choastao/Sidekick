@@ -128,8 +128,8 @@ public class CandidateRankingTests
         Assert.Equal("strong", sorted.Best!.Id);
     }
 
-    private static PobStats Stats(double dps, double combinedDps = 0) =>
-        new(dps, 1, 1) { CombinedDps = combinedDps };
+    private static PobStats Stats(double dps, double combinedDps = 0, double ehp = 1) =>
+        new(dps, ehp, 1) { CombinedDps = combinedDps };
 
     // ---- 审计 S2 / codex review [P3]-3：降级判据的合同（不是标签）----
     // 触发档：批次里混一行「没算出来」的（MissingText 等，DpsUnavailable 只是默认值 false）
@@ -151,20 +151,46 @@ public class CandidateRankingTests
         Assert.False(PobCandidateRanker.ShouldFallbackToEhp(new[] { unranked, hasDamage }));
     }
 
-    private static CandidateRankRow RankedFromCompare(string id, PobCompareResult result) => new()
-    {
-        Id = id,
-        Name = id,
-        SlotKey = SlotKeys.Helmet,
-        Status = result.Status,
-        DpsDelta = result.DpsDelta,
-        MetricValue = result.MetricDelta,
-        EhpDelta = result.EhpDelta,
-        PrimaryMetricKey = result.PrimaryMetricKey,
-        DpsUnavailable = result.DpsUnavailable,
-    };
+    /// <summary>
+    /// 造一行「算出来了」的记录 —— **直接走生产映射** <see cref="PobCandidateRanker.Row"/>。
+    ///
+    /// ⚠ 这里以前是手抄一份字段映射（只有 Dps/Ehp 那几个字段），钉住的是测试自己那份：
+    ///   生产 <c>Row</c> 漏抄一个字段（判定 / 帕累托 / 主指标键）这批用例照样全绿（审计 R）。
+    /// </summary>
+    private static CandidateRankRow RankedFromCompare(string id, PobCompareResult result) =>
+        PobCandidateRanker.Row(
+            new CandidateBasketItem { Id = id, Name = id, BaseType = "测试底材", SlotKey = SlotKeys.Helmet },
+            result,
+            hardGateFailed: false);
 
-    // ---- 排序器：旧条目没有物品原文 ----
+    /// <summary>
+    /// 生产映射要把**判定与帕累托**一起带上行（手抄那版压根没抄这几个字段）——
+    /// 「行上只有两个数」是旧形状，正是 S2/R2 那类误判的温床。
+    /// </summary>
+    [Fact]
+    public void 生产映射_把判定与帕累托一起带上行()
+    {
+        var result = PobCompareResult.Ok(
+            Stats(1_000, ehp: 10_000),
+            Stats(1_100, ehp: 10_000),
+            unmappedAffixes: 2,
+            engineUnsupported: ["+30% increased Attack Speed"]);
+
+        var row = RankedFromCompare("a", result);
+
+        Assert.Equal(PobCompareStatus.Success, row.Status);
+        Assert.Equal("测试底材", row.BaseType);
+        Assert.Equal(SlotKeys.Helmet, row.SlotKey);
+        Assert.Equal(PobPrimaryMetric.TotalDps, row.PrimaryMetricKey);   // 行上的口径键来自生产
+        Assert.Equal(100, row.MetricValue);                              // 100 = 1100 − 1000
+        Assert.Equal(2, row.UnmappedAffixes);
+        Assert.Single(row.EngineUnsupportedLines);
+
+        // 判定与帕累托：都不是默认值，且与生产纯函数同源 —— Row 若漏抄，这里会落到 Unresolved / Unknown
+        Assert.NotEqual(ItemVerdict.Unresolved, row.Verdict);
+        Assert.False(string.IsNullOrEmpty(row.VerdictReasonKey));
+        Assert.Equal(Pareto.Compare(result.DpsPercent, result.EhpPercent), row.Pareto);
+    }
 
     [Fact]
     public async Task Candidates_without_item_text_are_reported_not_dropped()

@@ -467,13 +467,7 @@ public class PobCompareService(
         // ⚠ 场景「有没有真正生效」必须随数值一起带出去（老 helper 没回 context 时数值就是 BD 原样）：
         //   只写一条 log 等于界面上继续照着设置里的标签说「打王」——那是假话（见 S1）。
         //   BUILD 请求按 BD 原样算，本来就不需要 helper 确认（effective 缺失即「按 BD 自己的配置」）。
-        var stats = ReadStats(response) is { } read
-            ? read with
-            {
-                RequestedContext = context == PobContexts.Build ? null : context,
-                ContextConfirmed = ContextConfirmedByHelper(effective, context),
-            }
-            : null;
+        var stats = ApplyContext(ReadStats(response), context, effective);
 
         baselineCache.Store(template.Id, generation, context, stats);
         return (stats, null);
@@ -485,6 +479,22 @@ public class PobCompareService(
     /// internal 是为了让单测直接喂一段假应答验形状。
     /// </summary>
     internal static string? ReadContext(PobEngineResponse? response) => response?.GetString("context");
+
+    /// <summary>
+    /// 把「请求的场景」与「引擎实际生效的场景」落到数值上（`RequestedContext` + `ContextConfirmed`）。
+    ///
+    /// ⚠ 抽成纯函数是为了**让单测能钉住接线本身**：<see cref="EnsureBaselineAsync"/> 要真引擎，
+    ///   单测原先只能在测试里自己再拼一遍 `with` —— 等于把被测逻辑抄一份，映射少写一个字段照样全绿。
+    ///   数值为 null（load_build 成功但应答里没有数值）时返回 null —— 不许造一个空 stats 出来。
+    /// </summary>
+    internal static PobStats? ApplyContext(PobStats? stats, string context, string? effective) =>
+        stats is null
+            ? null
+            : stats with
+            {
+                RequestedContext = context == PobContexts.Build ? null : context,
+                ContextConfirmed = ContextConfirmedByHelper(effective, context),
+            };
 
     /// <summary>
     /// 「引擎有没有确认它把**请求的那个场景**用上了」——S1 的判据，抽成纯函数以便单测钉住。
