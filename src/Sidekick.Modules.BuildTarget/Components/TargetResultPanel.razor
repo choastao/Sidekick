@@ -44,6 +44,9 @@
 
                 @if (slot.Checks.Count > 0)
                 {
+                    @* ⚠ 两条轴要说清是哪一条（审计 A6）：这一条是**按你自己勾的门槛**判的，
+                       与试穿面板里那条「按引擎算出来的 DPS / EHP 判」不是一回事。 *@
+                    <TextBase Class="text-stone-500 text-xs mt-3">@Resources["Threshold_Axis_Label"]</TextBase>
                     <table class="w-full text-sm mt-3 border-collapse">
                         <thead>
                         <tr class="text-stone-400 text-left">

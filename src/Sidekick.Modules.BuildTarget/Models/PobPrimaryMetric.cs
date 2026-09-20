@@ -56,6 +56,31 @@ public static class PobPrimaryMetric
     }
 
     /// <summary>
+    /// 按**同一个 key**从一份 stats 里取数 —— <see cref="Select"/> 的对偶：
+    /// 先按基线选出 key，再用这个 key 在基线 / 候选**两侧各取一次**，同口径相减。
+    ///
+    /// 「换成用这个函数取数」是必须的：只把 key 换掉而差值仍用 <c>stats.Dps</c> 算，
+    /// 面板上就会写着「综合 DPS」而数字其实是 <c>TotalDPS</c> 的（回退档下两列都是 0）——
+    /// 标签与数字对不上，比报错坏得多。**只有这一个 switch**，别在别处再写一套。
+    ///
+    /// 认不出的键（含空串 / null，= <see cref="Select"/> 说「一个数都没有」）一律回 0：
+    /// 调用方按 <see cref="Select"/> 的 <c>Resolved</c> / <c>DpsUnavailable</c> 判「有没有数」，
+    /// 不许去比这个 0（那正是本类要消灭的那种含糊）。
+    /// </summary>
+    public static double Value(PobStats stats, string? key)
+    {
+        ArgumentNullException.ThrowIfNull(stats);
+
+        return key switch
+        {
+            TotalDps => stats.Dps,
+            CombinedDps => stats.CombinedDps,
+            FullDps => stats.FullDps,
+            _ => 0,
+        };
+    }
+
+    /// <summary>
     /// 指标的界面名（<c>Pob_Primary_Metric</c> 的 {0}）。
     /// 认不出的键（含空串）回空串 —— 界面据此不显示那一行，而不是显示一个空括号。
     /// </summary>

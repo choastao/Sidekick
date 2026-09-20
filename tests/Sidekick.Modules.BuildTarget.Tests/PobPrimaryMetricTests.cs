@@ -70,6 +70,42 @@ public class PobPrimaryMetricTests
         Assert.Equal(string.Empty, PobPrimaryMetric.DisplayName("SomethingElse"));
     }
 
+    /// <summary>
+    /// 按 key 取值是**唯一那套 switch**（B1 的接线就靠它）：三个键各取各的字段，
+    /// 认不出的键回 0（调用方按 Resolved / DpsUnavailable 判有没有数，不许去比这个 0）。
+    /// </summary>
+    [Fact]
+    public void 按_key_取值各取各的字段()
+    {
+        var stats = Stats(dps: 11, combinedDps: 22, fullDps: 33);
+
+        Assert.Equal(11, PobPrimaryMetric.Value(stats, PobPrimaryMetric.TotalDps));
+        Assert.Equal(22, PobPrimaryMetric.Value(stats, PobPrimaryMetric.CombinedDps));
+        Assert.Equal(33, PobPrimaryMetric.Value(stats, PobPrimaryMetric.FullDps));
+
+        Assert.Equal(0, PobPrimaryMetric.Value(stats, ""));
+        Assert.Equal(0, PobPrimaryMetric.Value(stats, null));
+        Assert.Equal(0, PobPrimaryMetric.Value(stats, "SomethingElse"));
+    }
+
+    /// <summary>
+    /// <see cref="PobPrimaryMetric.Select"/> 与 <see cref="PobPrimaryMetric.Value"/> 必须对同一份 stats 说同一件事：
+    /// 选出来的那个 key 取出来的数**就是** Select 回的那个 Value。两处若各写一套 switch，这个等式先破。
+    /// </summary>
+    [Theory]
+    [InlineData(100, 0, 0)]
+    [InlineData(0, 200, 0)]
+    [InlineData(0, 0, 300)]
+    [InlineData(100, 200, 300)]
+    public void Select_与_Value_是同一个口径(double dps, double combined, double full)
+    {
+        var stats = Stats(dps, combined, full);
+        var (key, value, resolved) = PobPrimaryMetric.Select(stats);
+
+        Assert.True(resolved);
+        Assert.Equal(value, PobPrimaryMetric.Value(stats, key));
+    }
+
     [Fact]
     public void 对比结果按基线选指标()
     {
@@ -82,6 +118,90 @@ public class PobPrimaryMetricTests
 
         Assert.Equal(PobPrimaryMetric.CombinedDps, result.PrimaryMetricKey);
         Assert.False(result.DpsUnavailable);
+    }
+
+    // ---- B1 回归（这一组是「标签换了、数字没换」那个洞的钉子）----
+    //
+    // 病根：差值写的是 `Current.Dps - Base.Dps`（也就是 TotalDPS），而标签写的是回退链选出来的那个指标。
+    // 回退档（TotalDPS = 0、CombinedDPS 有数）下面板显示 0 / 0 / +0，同一区块却写着「本次用的伤害指标：综合 DPS」，
+    // 判定还会落到「引擎算不出伤害」—— 与上一行自相矛盾。原来的单测只断言了 Key / DpsUnavailable，照不到数字。
+
+    [Fact]
+    public void 回退档下差值与百分比用的是所选主指标的数字()
+    {
+        var result = PobCompareResult.Ok(
+            Stats(0, combinedDps: 100),        // TotalDPS = 0 → 回退到 CombinedDPS
+            Stats(0, combinedDps: 120),
+            unmappedAffixes: 0);
+
+        Assert.Equal(PobPrimaryMetric.CombinedDps, result.PrimaryMetricKey);
+        Assert.False(result.DpsUnavailable);
+
+        // 这三个数就是本批要修的：改之前是 0 / 0 / null
+        Assert.Equal(100, result.BaseMetricValue);
+        Assert.Equal(120, result.CurrentMetricValue);
+        Assert.Equal(20, result.DpsDelta);
+        Assert.Equal(20, result.DpsPercent!.Value, 9);
+    }
+
+    [Fact]
+    public void 回退档下候选更低时出差值()
+    {
+        var result = PobCompareResult.Ok(Stats(0, combinedDps: 100), Stats(0, combinedDps: 80), unmappedAffixes: 0);
+
+        Assert.Equal(PobPrimaryMetric.CombinedDps, result.PrimaryMetricKey);
+        Assert.Equal(-20, result.DpsDelta);
+        Assert.Equal(-20, result.DpsPercent!.Value, 9);
+    }
+
+    [Fact]
+    public void 回退档下回退到_FullDPS_时也是同一套数字()
+    {
+        // CombinedDPS 也没有 → 再退一档到 FullDPS，取值必须跟着那个 key 走
+        var result = PobCompareResult.Ok(
+            Stats(0, combinedDps: 0, fullDps: 4_000),
+            Stats(0, combinedDps: 0, fullDps: 4_500),
+            unmappedAffixes: 0);
+
+        Assert.Equal(PobPrimaryMetric.FullDps, result.PrimaryMetricKey);
+        Assert.Equal(4_000, result.BaseMetricValue);
+        Assert.Equal(4_500, result.CurrentMetricValue);
+        Assert.Equal(500, result.DpsDelta);
+        Assert.Equal(12.5, result.DpsPercent!.Value, 9);
+    }
+
+    /// <summary>
+    /// 默认档（TotalDPS &gt; 0）**逐位不许变**：主指标还是 TotalDPS，差值与百分比与改动前完全一致
+    /// （候选的 CombinedDPS 与基线的不同也不行 —— 那样等于拿两个口径的数相减）。
+    /// </summary>
+    [Fact]
+    public void 默认档的差值与百分比与改动前一致()
+    {
+        var result = PobCompareResult.Ok(
+            Stats(1_000, combinedDps: 9_000),        // 基线 TotalDPS 有数 → 主指标就是 TotalDPS
+            Stats(1_050, combinedDps: 900),          // 候选的 Combined 更低，**不许**参与
+            unmappedAffixes: 0);
+
+        Assert.Equal(PobPrimaryMetric.TotalDps, result.PrimaryMetricKey);
+        Assert.False(result.DpsUnavailable);
+        Assert.Equal(1_000, result.BaseMetricValue);
+        Assert.Equal(1_050, result.CurrentMetricValue);
+        Assert.Equal(50, result.DpsDelta);           // = Current.Dps − Base.Dps（老行为）
+        Assert.Equal(5, result.DpsPercent!.Value, 9); // = 50 / 1000 × 100
+    }
+
+    /// <summary>三个字段全为 0 时「算不出来」的语义不变：差值是 0，但不可用标志为真，界面显示「—」。</summary>
+    [Fact]
+    public void 一个指标都选不到时差值仍是_0_但标成不可用()
+    {
+        var result = PobCompareResult.Ok(Stats(0, 0, 0), Stats(0, 0, 0), unmappedAffixes: 0);
+
+        Assert.Equal(string.Empty, result.PrimaryMetricKey);
+        Assert.True(result.DpsUnavailable);
+        Assert.Equal(0, result.BaseMetricValue);
+        Assert.Equal(0, result.CurrentMetricValue);
+        Assert.Equal(0, result.DpsDelta);
+        Assert.Null(result.DpsPercent);
     }
 
     [Fact]

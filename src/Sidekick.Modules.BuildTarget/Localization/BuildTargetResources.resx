@@ -1134,4 +1134,16 @@
   <data name="Pareto_Unknown" xml:space="preserve">
     <value>cannot tell - one axis has no number from the engine</value>
   </data>
+  <data name="Pob_Context_Unconfirmed" xml:space="preserve">
+    <value>the engine did not confirm this context - the numbers are the build's own config, so do not read them as the selected context</value>
+  </data>
+  <data name="Pob_Resist_Guard_Off" xml:space="preserve">
+    <value>the engine did not report the resistance fields - the resistance-cap guardrail is not active for this comparison</value>
+  </data>
+  <data name="Engine_Axis_Label" xml:space="preserve">
+    <value>Judged by the engine's DPS / EHP (a different axis from the threshold check above).</value>
+  </data>
+  <data name="Threshold_Axis_Label" xml:space="preserve">
+    <value>Judged by your own thresholds (not by the engine's DPS / EHP):</value>
+  </data>
 </root>

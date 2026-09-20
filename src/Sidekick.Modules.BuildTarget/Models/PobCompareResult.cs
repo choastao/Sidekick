@@ -43,6 +43,46 @@ public sealed record PobStats(double Dps, double Ehp, double Life)
 
     /// <summary>电抗溢出；<c>null</c> = 不知道（见 <see cref="FireResistOver"/>）。</summary>
     public double? LightningResistOver { get; init; }
+
+    /// <summary>
+    /// 这份数值是**按哪个评估场景**算的（<c>BUILD</c> / <c>MAP</c> / <c>BOSS</c>）；<c>null</c> = 按 BD 原样。
+    ///
+    /// 为什么数值对象要带场景：helper 没回 <c>context</c> 时（老 helper）请求的 MAP / BOSS 覆盖
+    /// **压根没生效**，数值是按 BD 自己的配置算的。界面照旧写「评估场景：打王」就是假话 ——
+    /// 语义与 <see cref="FireResist"/> 那条一样：**缺失不等于默认值**。
+    /// </summary>
+    public string? RequestedContext { get; init; }
+
+    /// <summary>
+    /// 引擎**确认**了 <see cref="RequestedContext"/> 已经生效（helper 回了 <c>context</c>）。
+    ///
+    /// <c>false</c> + <see cref="RequestedContext"/> 非 null = **请求了那个场景，但引擎没确认** ——
+    /// 数值很可能是 BD 原样。界面必须如实说「场景未生效 / 未确认」，而不是照抄设置里的标签。
+    ///
+    /// ⚠ 默认 <c>true</c>（可按 BD 原样算的 <c>BUILD</c> 请求 + 单测里手搓的 stats），
+    ///   只有真的「请求了非 BUILD 场景却没拿到确认」才会被置成 false。
+    /// </summary>
+    public bool ContextConfirmed { get; init; } = true;
+
+    /// <summary>
+    /// 抗性守门（<see cref="ResistanceGuardrail"/>）要看的**七个字段全都有数**。
+    ///
+    /// <c>false</c> = 老 helper 没报全 → 守门对整个不生效，界面要出提示（不阻塞计算）。
+    /// 缺哪几项由 <see cref="PobStats"/> 里那几个可空属性自己说；这里只回「全不全」。
+    /// </summary>
+    public bool ResistanceDataComplete =>
+        FireResist != null && ColdResist != null && LightningResist != null && ChaosResist != null
+        && FireResistOver != null && ColdResistOver != null && LightningResistOver != null;
+
+    /// <summary>
+    /// 请求了非 <c>BUILD</c> 的场景（刷图 / 打王）但引擎**没确认**它生效 ——
+    /// 这份数值很可能是按 BD 原样算的。界面必须说「场景未生效」，不许照抄设置里的标签。
+    /// （值语义上等价于「<see cref="RequestedContext"/> 非 null 且 <see cref="ContextConfirmed"/> 为 false」。）
+    /// </summary>
+    public bool ContextUnconfirmed => RequestedContext != null && !ContextConfirmed;
+
+    /// <summary>抗性守门要看的七个字段**没报全** → 守门对缺的那些项不生效，界面要出提示（见 <see cref="ResistanceDataComplete"/>）。</summary>
+    public bool ResistanceDataIncomplete => !ResistanceDataComplete;
 }
 
 public enum PobCompareStatus
@@ -120,6 +160,26 @@ public sealed class PobCompareResult
     public bool DpsUnavailable { get; init; }
 
     /// <summary>
+    /// 基线那一侧**所选主指标**的数值（= <see cref="PobPrimaryMetric.Value"/>(<see cref="Base"/>, <see cref="PrimaryMetricKey"/>)）。
+    ///
+    /// ⚠ **不是** <c>Base.Dps</c>：回退到 <c>CombinedDPS</c> / <c>FullDPS</c> 时 <c>Base.Dps</c> 是 0，
+    /// 拿它当「原来多少」就等于把「引擎给不出 TotalDPS」说成「原来一点伤害都没有」。
+    /// </summary>
+    public double BaseMetricValue { get; init; }
+
+    /// <summary>候选那一侧**同一个主指标**的数值（同 <see cref="BaseMetricValue"/>，两侧必须同 key）。</summary>
+    public double CurrentMetricValue { get; init; }
+
+    /// <summary>
+    /// **所选主指标**的增减（<see cref="CurrentMetricValue"/> − <see cref="BaseMetricValue"/>），
+    /// 即备选篮排序真正要用的那个数（= 基准那一份 <see cref="DpsDelta"/>，但语义说出来而不靠巧合）。
+    ///
+    /// 排序拿**差值**而不是绝对值：绝对 DPS 高的候选不一定是一件更好的装备
+    /// （见 <c>PobAffixGainService</c> 的「拿掉这条词缀能差多少」口径）。
+    /// </summary>
+    public double MetricDelta => CurrentMetricValue - BaseMetricValue;
+
+    /// <summary>
     /// **我们的转换层**没认出、因而压根没发出去的词缀条数（> 0 时这几条没参与计算）。
     /// ⚠ 与「引擎不支持」是两件事（见 <see cref="EngineUnsupportedLines"/>）：这一条是**我们**的缺口
     /// （词缀压根没发出去），说成「引擎不支持」就是甩锅给引擎 —— 旧文案犯过这个错，界面不许再出现。
@@ -141,12 +201,25 @@ public sealed class PobCompareResult
 
     public bool HasDelta => Status == PobCompareStatus.Success && Base != null && Current != null;
 
-    public double DpsDelta => HasDelta ? Current!.Dps - Base!.Dps : 0;
+    /// <summary>
+    /// **所选主指标**的差值（<see cref="CurrentMetricValue"/> − <see cref="BaseMetricValue"/>）。
+    ///
+    /// ⚠ 名字是历史遗留（界面与既有测试都在用，不改），但**它不再恒等于 <c>TotalDPS</c> 的差**：
+    /// 引擎给不出 <c>TotalDPS</c> 时，用 <see cref="PrimaryMetricKey"/> 那个指标的两侧数值相减
+    /// （见 <see cref="PobPrimaryMetric"/>）。属性名不许改，但读它的人必须知道这一点。
+    /// </summary>
+    public double DpsDelta => HasDelta ? CurrentMetricValue - BaseMetricValue : 0;
 
     public double EhpDelta => HasDelta ? Current!.Ehp - Base!.Ehp : 0;
 
-    /// <summary>相对变化（%）。基线为 0 时返回 null —— 不编一个除不出来的百分比。</summary>
-    public double? DpsPercent => HasDelta && Base!.Dps > 0 ? DpsDelta / Base!.Dps * 100 : null;
+    /// <summary>
+    /// 相对变化（%），基数是**所选主指标**的基线值（<see cref="BaseMetricValue"/>，**不是** <c>Base.Dps</c>）。
+    /// 基线为 0（= 这个指标也算不出来）时返回 null —— 不编一个除不出来的百分比。
+    ///
+    /// ⚠ 名字同样是历史遗留：它说的是「<see cref="PrimaryMetricKey"/> 那个指标涨了几个百分点」，
+    /// 默认档（<c>TotalDPS</c>）下与改动前逐位一致。
+    /// </summary>
+    public double? DpsPercent => HasDelta && BaseMetricValue > 0 ? DpsDelta / BaseMetricValue * 100 : null;
 
     public double? EhpPercent => HasDelta && Base!.Ehp > 0 ? EhpDelta / Base!.Ehp * 100 : null;
 
@@ -170,6 +243,10 @@ public sealed class PobCompareResult
             EngineUnsupportedLines = engineUnsupported ?? [],
             PrimaryMetricKey = metric.Key,
             DpsUnavailable = !metric.Resolved,
+            // ⚠ 两边都用**同一个 key**取数（基线选出来的那个），同口径相减 ——
+            //   一侧用 TotalDPS、一侧用 CombinedDPS 会让「涨了多少」变成两个口径的数相减。
+            BaseMetricValue = PobPrimaryMetric.Value(baseline, metric.Key),
+            CurrentMetricValue = PobPrimaryMetric.Value(current, metric.Key),
         };
     }
 

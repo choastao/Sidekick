@@ -199,6 +199,9 @@
                 @* ④ 可比性 / 陈旧：数字照留，但换了模板 / 场景（或引擎重启过）之后它们不再对应当前前提 ——
                    这时候**不给名次**（把两套前提的行排成一条榜 = 拿两个口径的数比大小），
                    只打标记并指路「重新排序」（上面那颗按钮）。 *@
+                @* ⚠ 审计 A5：前提是**逐行**盖的（PobCandidateRanker），所以这里两条判据都能真的走到 ——
+                   「一批算到一半场景变了 / 引擎换代」时前半批与后半批的前提不同，
+                   AreComparable 就会判成不可比（老代码给整批盖同一个前提，这条永远是 true）。 *@
                 @if (RankingStale)
                 {
                     <TextBase Class="text-amber-400 text-xs mt-1">@Resources["Basket_Stale_Reason"]</TextBase>
@@ -567,6 +570,10 @@
             // ⚠ await 之后必须复核前提（审计第二轮 3-1）：这批引擎调用在飞行途中，用户可能已经切了「目标BD」，
             //   而 OnChanged 那时已经清过表；把旧前提的结果写回去会让表里同时出现两套前提的数字，
             //   而且因为 rankedTemplateId 已被更新，之后再也不会被自动清掉（只能手动重排）。
+            // ⚠ 这里只挡「换了目标BD」：那会让**整批**变成另一个 BD 的数字，写回去就是两套前提混排。
+            //   场景 / 引擎代际 / 主指标换了**不在这里挡**：行前提里逐行盖着（见 PobCandidateRanker），
+            //   由 RankingStale / RankingComparable 打标记、摘名次（数字照留）—— 那是审计 ④ 要的行为，
+            //   在这里直接丢掉整批反而把用户正想看的东西删了。
             if (template.Id != Store.Active?.Id)
             {
                 return;
@@ -685,6 +692,7 @@
         Options.PobContext,
         Compare.BaselineMetricKey(Store.Active),
         Compare.EngineGeneration);
+
 
     /// <summary>这次排名里的行是不是**在同一个前提下**算出来的（不同前提不给「最优 / 名次」）。</summary>
     private bool RankingComparable

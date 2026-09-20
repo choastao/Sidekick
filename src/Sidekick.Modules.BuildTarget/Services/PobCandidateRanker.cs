@@ -52,7 +52,23 @@ public class PobCandidateRanker(
             var slotKey = SlotKeys.ResolveFor(item).FirstOrDefault() ?? entry.SlotKey;
             var result = await compare.CompareAsync(template, item, slotKey, cancellationToken);
 
-            rows.Add(Row(entry, result, HardGateFailed(template, item, slotKey)));
+            var row = Row(entry, result, HardGateFailed(template, item, slotKey));
+
+            // 前提**逐行盖**（不是整批一个）：一批算到一半用户切了场景 / 引擎被杀重启 /
+            // 基线换了个回退档，后面的行与前面的行就不是同一个前提算出来的。
+            // 主指标取**基线缓存里那份**（这批数字真正用的口径）；缓存拿不到（引擎中途重启过）
+            // 就退回这一行自己带回的那份 —— 不许猜一个值出来。
+            // ⚠ 必须在**这一行的 await 之后**读：基线是在那次调用里载入的，之前读只会拿到 null。
+            if (row.IsRanked)
+            {
+                row.Premise = new BasketPremise(
+                    template?.Id,
+                    compare.Context,
+                    compare.BaselineMetricKey(template) ?? row.PrimaryMetricKey,
+                    compare.EngineGeneration);
+            }
+
+            rows.Add(row);
 
             if (result.Status == PobCompareStatus.EngineUnavailable)
             {
@@ -70,30 +86,15 @@ public class PobCandidateRanker(
             }
         }
 
-        // 主指标算不出来时，按 DPS 排名等于按一列 0 排名（名次只剩并列规则）→ 自动改用 EHP。
-        // 与逐条词缀收益（PobAffixGainService）用**同一个判据**，别在两处各写一套。
-        var effectiveMetric = PobAffixGainService.EffectiveMetric(rows.Any(x => x.DpsUnavailable), metric);
-
-        // 前提：这一批数字是在哪个模板 / 场景 / 主指标 / 引擎代际下算出来的。
-        // 界面拿它判「前提已变」（见 BasketComparability）：换了模板 / 场景之后这些数字不再对应当前前提，
-        // 数字照留但**不给名次**。主指标优先从基线缓存取（那是这批数字真正用的口径），
-        // 缓存拿不到（引擎中途重启过）就退回行里带回的那份 —— 不许猜一个值出来。
-        // ⚠ 一个名次都没有时**不去碰 compare**：这一批压根没算过，没有前提可记
-        //   （也让「箱子里的旧条目没原文」这条路径完全不依赖引擎）。
-        var rankedRows = rows.Where(x => x.IsRanked).ToList();
-        if (rankedRows.Count > 0)
-        {
-            var premise = new BasketPremise(
-                template?.Id,
-                compare.Context,
-                compare.BaselineMetricKey(template) ?? rankedRows[0].PrimaryMetricKey,
-                compare.EngineGeneration);
-
-            foreach (var row in rankedRows)
-            {
-                row.Premise = premise;
-            }
-        }
+        // ⚠ 判据是 **DpsUnavailable**（= 三个伤害字段全算不出来），与逐条词缀收益（PobAffixGainService）
+        //   用**同一个判据**，别在两处各写一套。
+        //
+        //   **不再是** `Any(...)`：回退档（基线 TotalDPS = 0、CombinedDPS 有数）里每一行的 MetricValue
+        //   都是那个指标的数，照 DPS 排是实话 —— 只有「一个数都没有」的行才该让整批改按 EHP 排。
+        //   一批里的行确实可能是混的（比如基线缓存换代、某几行重算过），那时按「都不可用」才降级。
+        var effectiveMetric = PobAffixGainService.EffectiveMetric(
+            rows.Count > 0 && rows.All(x => x.DpsUnavailable),
+            metric);
 
         logger.LogInformation(
             "[BuildTarget] Candidate ranking done: {Ranked}/{Total} ranked by {Metric}{Fallback}",
@@ -157,6 +158,10 @@ public class PobCandidateRanker(
             SlotKey = entry.SlotKey,
             Status = result.Status,
             DpsDelta = result.DpsDelta,
+            // 排序用的数值：**所选主指标的增减**（候选侧 − 基线侧，同一个 key）。
+            // 回退到 Combined / Full 时它才是那列的真值 —— 用 TotalDPS 算会得到一列 0，
+            // 而表头／图例写着「按综合 DPS 排」（见审计 B1）。排序要的是**差值**不是绝对值。
+            MetricValue = result.MetricDelta,
             EhpDelta = result.EhpDelta,
             DpsPercent = result.DpsPercent,
             EhpPercent = result.EhpPercent,

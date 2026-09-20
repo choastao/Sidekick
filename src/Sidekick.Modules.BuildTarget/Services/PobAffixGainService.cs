@@ -72,8 +72,14 @@ public class PobAffixGainService(
 
         var referenceStats = reference.Stats!;
 
-        // ⚠ 引擎算不出伤害时（DpsUnavailable）**按 EHP 排名**：否则排的是「一列 0」，
-        //   名次完全由并列规则（另一个指标）决定 —— 表上却写着「按 DPS 排序」，是假话。
+        // 这次逐条收益用的是哪个伤害指标：**基线试穿**选出来的那个（见 PobPrimaryMetric）。
+        // 两侧都按同一个 key 取数 —— 回退到 Combined / Full 时逐条的差值也不再是一列 0。
+        var metricKey = reference.PrimaryMetricKey;
+        var referenceMetricValue = PobPrimaryMetric.Value(referenceStats, metricKey);
+
+        // ⚠ **只有三个字段全算不出来**（DpsUnavailable）时才没有伤害数可用 → 按 EHP 排名。
+        //   回退档（TotalDPS 为 0、CombinedDPS 有数）**不算**不可用：那时逐条的 dpsDelta 就是
+        //   所选主指标的差值（上面已经换过口径），照 DPS 排名是实话。
         //   这里只换排序指标，逐条的 EHP 收益本来就都算着（见下面 Row 的 ehpDelta）。
         metric = EffectiveMetric(reference.DpsUnavailable, metric);
 
@@ -140,7 +146,11 @@ public class PobAffixGainService(
                 continue;
             }
 
-            var dpsDelta = referenceStats.Dps - measured.Stats!.Dps;
+            // ⚠ 逐条收益的差值也要用**所选主指标**（同一套 PobPrimaryMetric.Value）：
+            //   回退到 Combined / Full 时拿 TotalDPS 相减会得到一列 0，而表头/图例写的是另一个指标 ——
+            //   与「算不出来」显示成 0 是同一种错（见审计 B1）。
+            var dpsDelta = PobPrimaryMetric.Value(referenceStats, metricKey)
+                           - PobPrimaryMetric.Value(measured.Stats!, metricKey);
             var ehpDelta = referenceStats.Ehp - measured.Stats.Ehp;
 
             rows.Add(Row(
@@ -149,7 +159,7 @@ public class PobAffixGainService(
                 dpsDelta: dpsDelta,
                 ehpDelta: ehpDelta,
                 unsupportedByEngine: EngineUnsupported(affix.Text),
-                dpsPercent: referenceStats.Dps > 0 ? dpsDelta / referenceStats.Dps * 100 : null,
+                dpsPercent: referenceMetricValue > 0 ? dpsDelta / referenceMetricValue * 100 : null,
                 ehpPercent: referenceStats.Ehp > 0 ? ehpDelta / referenceStats.Ehp * 100 : null));
         }
 
@@ -168,7 +178,10 @@ public class PobAffixGainService(
     }
 
     /// <summary>
-    /// 这批实验实际按哪个指标排名：DPS 算不出来时一律改按 EHP。
+    /// 这批实验实际按哪个指标排名：**三个伤害字段全算不出来**（<c>DpsUnavailable</c>）时改按 EHP
+    /// （否则排的是一列 0，表上却写着「按 DPS 排序」）。
+    /// ⚠ 判据是 <c>DpsUnavailable</c>（= <see cref="PobPrimaryMetric.Select"/> 一个数都没选到），
+    ///   **不是**「主指标不是 TotalDPS」：回退档下 dpsDelta 是那个指标的差值，按它排是实话。
     /// 抽成纯函数是为了能单测钉住（真跑一遍引擎在单测里做不到）。
     /// </summary>
     internal static CandidateRankMetric EffectiveMetric(bool dpsUnavailable, CandidateRankMetric requested) =>

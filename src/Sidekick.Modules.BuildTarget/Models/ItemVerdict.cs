@@ -52,7 +52,11 @@ public enum ItemVerdict
 /// <param name="EhpPercent">EHP 的相对变化（%）；<c>null</c> = 算不出（基线为 0 之类）。</param>
 /// <param name="HardGateFailed">用户自己勾的硬性门槛没过（**不是**从 BD 导入的参考值）。</param>
 /// <param name="ResistanceDeficitWorsened">见 <see cref="ResistanceGuardrail.Worsened"/>。</param>
-/// <param name="MetricsPartial">true = 只有 EHP 有数（DPS 算不出来）。</param>
+/// <param name="MetricsPartial">
+/// true = **只有一维有数**（现在的调用方只在这一维是 EHP 时置位：DPS 算不出来）。
+/// 判定里真的读了它（见 <see cref="ItemVerdictDecider.Decide"/> 第 ⑨ 条）——
+/// 原来它写进去没人读，留着会被后来人当成一个不生效的开关，所以本轮把它接上了线。
+/// </param>
 public sealed record ItemVerdictInput(
     double? DpsPercent,
     double? EhpPercent,
@@ -122,7 +126,8 @@ public static class ItemVerdictDecider
     public const string ReasonDefenseDown = "Verdict_Reason_DefenseDown";
 
     /// <summary>
-    /// 判定（顺序即优先级，**照这个顺序写，不要自创**）：
+    /// 判定（**顺序即优先级**，照这个顺序写、不要自创；列表序号是档位标号，
+    /// ⑦ 那一档在代码里是三个分支 7a / 7b / 7c，下面按**代码顺序**逐条列出）：
     /// <list type="number">
     /// <item><see cref="ItemVerdictInput.HardGateFailed"/> → Tradeoff（<see cref="ReasonHardGate"/>）</item>
     /// <item>两维都 null → Unresolved（<see cref="ReasonNoMetrics"/>）</item>
@@ -131,9 +136,13 @@ public static class ItemVerdictDecider
     /// <item>off ≥ +1 且 def &gt; -1：def ≥ +1 时攻防双升（都 ≥ +5 是 StrongUpgrade，否则 ClearUpgrade，
     ///       <see cref="ReasonBothUp"/>）；否则 OffenseUpgrade（<see cref="ReasonOffense"/>）</item>
     /// <item>def ≥ +1 且 off &gt; -1 → DefenseUpgrade（<see cref="ReasonDefense"/>）</item>
-    /// <item>off ≤ -1 且 def ≤ -1 → 双降（都 ≤ -5 是 StrongDowngrade，否则 Downgrade，<see cref="ReasonBothDown"/>）</item>
-    /// <item>其余（一升一降）→ Tradeoff（<see cref="ReasonMixed"/>）</item>
-    /// <item>只有一维有数（DPS 不可用 / 只有 EHP）→ 按那一维定：
+    /// <item><b>7a</b>：off ≤ -1 且 def ≤ -1 → 双降（都 ≤ -5 是 StrongDowngrade，否则 Downgrade，<see cref="ReasonBothDown"/>）</item>
+    /// <item><b>7b</b>：off ≤ -1 且 **def 在 ±1% 内**（防御没动）→ Downgrade（<see cref="ReasonOffenseDown"/>）——
+    ///       这是「下降」，**不是**「一升一降」。⚠ 判据是「另一维在容差内」，不是「另一维 &gt; -1%」：
+    ///       否则 (进攻 +3%、防御 -1%) 这种真·一升一降会被误判成「只有防御降」。</item>
+    /// <item><b>7c</b>：def ≤ -1 且 **off 在 ±1% 内** → Downgrade（<see cref="ReasonDefenseDown"/>）—— 7b 的镜像</item>
+    /// <item><b>8</b>：其余（两维都有数且**确实**一升一降）→ Tradeoff（<see cref="ReasonMixed"/>）</item>
+    /// <item><b>9</b>：只有一维有数（DPS 不可用 / 只有 EHP）→ 按那一维定：
     ///       ≥ +1 → DefenseUpgrade，≤ -1 → Downgrade，其余 NoChange（<see cref="ReasonOnlyEhp"/>）</item>
     /// </list>
     /// </summary>
@@ -221,7 +230,26 @@ public static class ItemVerdictDecider
             return (ItemVerdict.Tradeoff, ReasonMixed);
         }
 
-        // ⑨ 只剩一维有数（另一维引擎给不出来）。
+        // ⑨ 「只有一维有数」这条在输入里被**点明**了（MetricsPartial）—— 按有数的那一维定结论。
+        // ⚠ MetricsPartial 在这里**真的被读了**（以前写进去没人读，等于一个不生效的开关）：
+        //   它把「只有一维有数」这件事在语义上点明，判据本身仍然是「另一维是 null」——
+        //   所以「两维都有数」时它就算被误置位也不会改变结论（下面这条 else-if 会先被跳过）。
+        if (input.MetricsPartial && defense is { } partialEhp)
+        {
+            if (partialEhp >= SmallPercent)
+            {
+                return (ItemVerdict.DefenseUpgrade, ReasonOnlyEhp);
+            }
+
+            if (partialEhp <= -SmallPercent)
+            {
+                return (ItemVerdict.Downgrade, ReasonOnlyEhp);
+            }
+
+            return (ItemVerdict.NoChange, ReasonOnlyEhp);
+        }
+
+        // ⑨（兜底形态）只剩一维有数，但输入没点明 MetricsPartial —— 按同一套判据走，别在这里另造结论。
         if (defense is { } onlyEhp)
         {
             // DpsUnavailable = 只有 EHP 有数（规格里写明的形态）。

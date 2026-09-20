@@ -103,6 +103,47 @@ public class CandidateRankingTests
         Assert.False(failed.IsRanked);
     }
 
+    /// <summary>
+    /// B1 回归（排序那一段）：回退档下两行**只有 CombinedDPS 不同**，名次必须按 CombinedDPS 排，
+    /// 而不是按一列 0（DpsDelta 也会是真差值 —— 两者都得对，谁也不能还是一列 0）。
+    /// </summary>
+    [Fact]
+    public void 回退档下名次按所选主指标排_不是按一列_0()
+    {
+        var weak = RankedFromCompare("weak", PobCompareResult.Ok(
+            Stats(0, combinedDps: 100), Stats(0, combinedDps: 110), unmappedAffixes: 0));
+
+        var strong = RankedFromCompare("strong", PobCompareResult.Ok(
+            Stats(0, combinedDps: 100), Stats(0, combinedDps: 160), unmappedAffixes: 0));
+
+        // 这两行的 TotalDPS 两侧都是 0 —— 老代码里它们的排序值会是一对 0（名次只剩输入顺序）。
+        Assert.Equal(10, weak.MetricValue);
+        Assert.Equal(60, strong.MetricValue);
+        Assert.Equal(10, weak.DpsDelta);
+        Assert.Equal(60, strong.DpsDelta);
+
+        var sorted = CandidateRanking.Sort([weak, strong], CandidateRankMetric.Dps);
+
+        Assert.Equal(["strong", "weak"], sorted.Rows.Select(x => x.Id));
+        Assert.Equal("strong", sorted.Best!.Id);
+    }
+
+    private static PobStats Stats(double dps, double combinedDps = 0) =>
+        new(dps, 1, 1) { CombinedDps = combinedDps };
+
+    private static CandidateRankRow RankedFromCompare(string id, PobCompareResult result) => new()
+    {
+        Id = id,
+        Name = id,
+        SlotKey = SlotKeys.Helmet,
+        Status = result.Status,
+        DpsDelta = result.DpsDelta,
+        MetricValue = result.MetricDelta,
+        EhpDelta = result.EhpDelta,
+        PrimaryMetricKey = result.PrimaryMetricKey,
+        DpsUnavailable = result.DpsUnavailable,
+    };
+
     // ---- 排序器：旧条目没有物品原文 ----
 
     [Fact]
@@ -139,6 +180,8 @@ public class CandidateRankingTests
         SlotKey = SlotKeys.Helmet,
         Status = PobCompareStatus.Success,
         DpsDelta = dps,
+        // 排序用的是 MetricValue（所选主指标的增减）；默认档下它就等于 DpsDelta。
+        MetricValue = dps,
         EhpDelta = ehp,
     };
 

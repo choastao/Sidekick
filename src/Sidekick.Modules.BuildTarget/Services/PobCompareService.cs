@@ -455,12 +455,26 @@ public class PobCompareService(
 
         if (effective == null && context != PobContexts.Build)
         {
+            // ⚠ 这一档**不再只是日志**：数值会被标上「请求的场景未经引擎确认」（见上面 stats 的 with），
+            //   界面据此显示「场景未生效」，而不是照抄设置里的「打王」——与「回了别的场景」那条硬失败
+            //   态度一致：引擎没确认，界面就不许替它确认。（老 helper 把功能整个弄坏的代价我们不要，
+            //   但代价应当是「如实说没确认」，不是「假装确认过了」。）
             logger.LogWarning(
                 "[BuildTarget] the engine helper did not report the evaluation context it applied (requested {Context}) — it is probably an older copy, so the numbers are the build's own config",
                 context);
         }
 
-        var stats = ReadStats(response);
+        // ⚠ 场景「有没有真正生效」必须随数值一起带出去（老 helper 没回 context 时数值就是 BD 原样）：
+        //   只写一条 log 等于界面上继续照着设置里的标签说「打王」——那是假话（见 S1）。
+        //   BUILD 请求按 BD 原样算，本来就不需要 helper 确认（effective 缺失即「按 BD 自己的配置」）。
+        var stats = ReadStats(response) is { } read
+            ? read with
+            {
+                RequestedContext = context == PobContexts.Build ? null : context,
+                ContextConfirmed = ContextConfirmedByHelper(effective, context),
+            }
+            : null;
+
         baselineCache.Store(template.Id, generation, context, stats);
         return (stats, null);
     }
@@ -471,6 +485,24 @@ public class PobCompareService(
     /// internal 是为了让单测直接喂一段假应答验形状。
     /// </summary>
     internal static string? ReadContext(PobEngineResponse? response) => response?.GetString("context");
+
+    /// <summary>
+    /// 「引擎有没有确认它把**请求的那个场景**用上了」——S1 的判据，抽成纯函数以便单测钉住。
+    ///
+    /// 三种形状（与 <see cref="EnsureBaselineAsync"/> 里的核对顺序一一对应）：
+    ///   1. 请求 <c>BUILD</c> → **不需要确认**：BUILD 就是「按 BD 自己的配置算」，引擎回到的
+    ///      就是这个语义，helper 有没有这个字段都成立；
+    ///   2. helper 回了 <c>context</c> 且与请求一致（大小写 / 首尾空白容错）→ 确认了；
+    ///   3. **老 helper 压根没回这个字段**（<paramref name="effective"/> 为 null）→ **没确认**：
+    ///      请求的刷图 / 打王覆盖很可能压根没生效，数值是按 BD 原样算的。
+    ///
+    /// ⚠ 「回了别的场景」不走这里：那一档是硬失败（连数值都不给），见调用点。
+    /// 这里只回答「这份数值该不该被当成请求场景的数据」。
+    /// </summary>
+    internal static bool ContextConfirmedByHelper(string? effective, string? requested) =>
+        PobContexts.Normalize(requested) == PobContexts.Build
+        || (effective != null
+            && string.Equals(PobContexts.Normalize(effective), PobContexts.Normalize(requested), StringComparison.OrdinalIgnoreCase));
 
     /// <summary>
     /// 从 helper 的应答里读数值。**形状是嵌套的**：<c>{"stats":{"dps":…,"ehp":…,"life":…}}</c> ——

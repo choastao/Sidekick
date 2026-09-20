@@ -12,6 +12,19 @@
                所以切换后是「下次载入生效」。副标题里带一个名字，用户不用去设置页猜现在按哪个算的。 *@
             <TextBase Class="text-stone-500 text-xs">@ContextText()</TextBase>
 
+            @* ⚠ S1：helper 没回 context（老 helper）时，上面那行只是「请求了打王」，
+               数值其实是 BD 原样 —— 照旧写「评估场景：打王」就是假话。
+               与「回了别的场景」那条硬失败态度一致：引擎没确认，界面就不许替它确认。 *@
+            @if (ContextUnconfirmed())
+            {
+                <TextBase Class="text-amber-400 text-xs">@Resources["Pob_Context_Unconfirmed"]</TextBase>
+            }
+            @if (ResistanceGuardOff())
+            {
+                @* 同一形状：七个抗性字段没报全 = 守门静默失效，界面上要看得见（不阻塞计算）。 *@
+                <TextBase Class="text-amber-400 text-xs">@Resources["Pob_Resist_Guard_Off"]</TextBase>
+            }
+
             @if (loading)
             {
                 <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
@@ -40,8 +53,10 @@
                         }
                         else
                         {
-                            <td class="py-1 text-right text-stone-400">@Num(result.Base!.Dps)</td>
-                            <td class="py-1 text-right">@Num(result.Current!.Dps)</td>
+                            @* 前三格显示的是**所选主指标**的绝对值（回退到 Combined / Full 时不是 TotalDPS）。
+                               表头挂上指标名，免得用户拿两个不同口径的绝对值去对照（见审计 B1）。 *@
+                            <td class="py-1 text-right text-stone-400">@Num(result.BaseMetricValue)@MetricSuffix(result)</td>
+                            <td class="py-1 text-right">@Num(result.CurrentMetricValue)</td>
                             <td class="py-1 text-right @DeltaClass(result.DpsDelta)">@Signed(result.DpsDelta)@Pct(result.DpsPercent)</td>
                         }
                     </tr>
@@ -54,10 +69,12 @@
                     </tbody>
                 </table>
 
-                @* ③ 引擎指标判定（与下面「按你的门槛判」那条轴是两回事，各有各的意思）。
+                @* ③ 引擎指标判定（与**上面**「目标BD」区块里那条门槛轴是两回事，各有各的意思；
+                   门槛那条轴在 TargetResultPanel 里，**不在本文件**）。
                    判定顺序与判据见 ItemVerdictDecider；理由用 ReasonKey 对应的文案原样带出来 ——
                    Unresolved（算不了）时也要把**为什么**写出来，不能只丢一个「算不了」。 *@
                 <div class="mt-2">
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Engine_Axis_Label"]</TextBase>
                     <TextBase Class="@($"text-sm {EngineVerdictOf(result).Class}")">@EngineVerdictOf(result).Label</TextBase>
                     <TextBase Class="text-stone-500 text-xs">@EngineVerdictOf(result).Reason</TextBase>
                 </div>
@@ -396,6 +413,31 @@
         CultureInfo.CurrentCulture,
         Resources["Pob_Context"].Value,
         Resources[PobContexts.ResourceKey(Options.PobContext)].Value);
+
+    /// <summary>
+    /// 引擎**没确认**这次请求的场景生效（老 helper 不回 <c>context</c>）→ 上面那行「评估场景：打王」
+    /// 说的只是**请求**，不是实际生效的值。判据在数值那一侧（<see cref="PobStats.ContextUnconfirmed"/>），
+    /// 因为这个标志是**载入那一刻**的应答决定的（见 PobCompareService.EnsureBaselineAsync）。
+    ///
+    /// 没算出数字（<c>Base</c> 为空）时不显示：那时连「数值是哪个场景的」都无从谈起，
+    /// 面板已经在说「算不出来」了。
+    /// </summary>
+    private bool ContextUnconfirmed() => result?.Base?.ContextUnconfirmed == true;
+
+    /// <summary>
+    /// 抗性守门这次**对所有元素项**都不生效（七个字段没报全，见 <see cref="PobStats.ResistanceDataIncomplete"/>）。
+    /// 不阻塞计算 —— 只是如实说「这道保护没有生效」，而不是让用户以为「检查过了，没问题」。
+    /// </summary>
+    private bool ResistanceGuardOff() => result?.Base?.ResistanceDataIncomplete == true;
+
+    /// <summary>
+    /// 「前 / 后」两格里那个绝对值是**哪个指标**的（回退档下不是 TotalDPS）。
+    /// 默认档（TotalDPS）不显示后缀 —— 那是绝大多数情况，不必多一个字。
+    /// </summary>
+    private string MetricSuffix(PobCompareResult value) =>
+        string.IsNullOrEmpty(value.PrimaryMetricKey) || value.PrimaryMetricKey == PobPrimaryMetric.TotalDps
+            ? string.Empty
+            : $" · {PobPrimaryMetric.DisplayName(value.PrimaryMetricKey)}";
 
     /// <summary>
     /// 引擎指标判定（相对当前装备）。输入的两个百分比都来自这一次试穿对比；

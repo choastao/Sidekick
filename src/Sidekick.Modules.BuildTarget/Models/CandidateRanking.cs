@@ -27,6 +27,17 @@ public sealed class CandidateRankRow
 
     public double DpsDelta { get; init; }
 
+    /// <summary>
+    /// 这一行的**所选主指标**增减（候选侧 − 基线侧，同一个 <see cref="PrimaryMetricKey"/>，
+    /// 见 <see cref="PobCompareResult.MetricDelta"/>）。排序用的就是这个数（**差值**，不是绝对 DPS）。
+    ///
+    /// ⚠ 排序用的是**这个**，不是 <see cref="DpsDelta"/>：
+    /// 回退档（基线 <c>TotalDPS = 0</c>、<c>CombinedDPS</c> 有数）里两者**数值相等**，
+    /// 但 DpsDelta 是「差值」那个属性的历史名字，MetricValue 才是排序口径 ——
+    /// 分开写是为了让「名次来自哪一列」在类型上就说清楚，而不是靠两个数碰巧一样。
+    /// </summary>
+    public double MetricValue { get; init; }
+
     public double EhpDelta { get; init; }
 
     public double? DpsPercent { get; init; }
@@ -66,8 +77,10 @@ public sealed class CandidateRankRow
     /// 这一行是**在什么前提下**算出来的（模板 + 场景 + 主指标 + 引擎代际）。
     /// 只有算出来的行才有值；界面拿它判「前提已变」（见 <see cref="BasketComparability"/>）。
     ///
-    /// ⚠ 可写：一行是先造出来、前提（主指标要等这一批算完才知道）后补的
-    /// （见 <c>PobCandidateRanker</c>）。除此之外不许改。
+    /// ⚠ 可写：一行是先造出来、前提后补的（基线是在那一行的 await 里才载入的，见 <c>PobCandidateRanker</c>）。
+    /// 除此之外不许改。
+    /// ⚠ **逐行盖**，不是整批一个：一批算到一半换了场景 / 引擎重启 → 前后两半的前提不同，
+    ///   <see cref="BasketComparability.AreComparable"/> 正是拿它判「这批能不能给名次」。
     /// </summary>
     public BasketPremise? Premise { get; set; }
 
@@ -76,7 +89,7 @@ public sealed class CandidateRankRow
 
     /// <summary>该行在给定指标下的排序值。</summary>
     public double Value(CandidateRankMetric metric) =>
-        metric == CandidateRankMetric.Ehp ? EhpDelta : DpsDelta;
+        metric == CandidateRankMetric.Ehp ? EhpDelta : MetricValue;
 }
 
 /// <summary>

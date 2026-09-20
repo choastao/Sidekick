@@ -33,8 +33,9 @@ public enum ParetoStatus
 /// 引擎重算有浮点噪声，拿 ±0.0001% 判「更好」是噪声当信号。
 ///
 /// 某一维为 <c>null</c>（引擎算不出那个数）= **无从判断支配关系**，
-/// 落到 <see cref="ParetoStatus.Tradeoff"/>（= ExileLens 的「谁都不支配」那一档）：
-/// 不许拿缺数的那一维去凑「两维都不差」。
+/// 落到 <see cref="ParetoStatus.Unknown"/>（文案是「判不了」）—— **不是** <see cref="ParetoStatus.Tradeoff"/>：
+/// Tradeoff 说的是「一维更好一维更差」，那是拿缺数当结论；Unknown 才是如实说「判不了」。
+/// （类注释原先写的是 Tradeoff，与代码相反，本批按代码改正。）
 /// </summary>
 public static class Pareto
 {
