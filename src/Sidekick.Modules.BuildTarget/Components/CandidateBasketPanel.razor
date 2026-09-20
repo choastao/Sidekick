@@ -662,6 +662,12 @@
             CultureInfo.CurrentCulture,
             Resources["Pob_No_Engine"].Value,
             row.Error ?? "-"),
+        // 引擎原样带回的报错要说出来（审计第三轮 🟡-2）：只写「没有名次」会把原因吞掉，
+        // 而同一件候选在 C2b/C2c 那两张表里是会显示「引擎出错：{msg}」的 —— 三处口径要一致。
+        PobCompareStatus.Failed => string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Pob_Failed"].Value,
+            row.Error ?? "-"),
         _ => Resources["Basket_Rank_Not_Ranked"].Value,
     };
 

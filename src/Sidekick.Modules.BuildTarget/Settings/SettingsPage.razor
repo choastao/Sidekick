@@ -553,20 +553,13 @@
                 return;
             }
 
-            // 用 Store 现有的建模板入口，再把导入内容整套覆盖上去
+            // 用 Store 现有的建模板入口，再把导入内容整套搬上去。
+            // ⚠ 逐字段拷贝必须走 ImportedTemplateMapper（可被测试直接调用）：
+            //   这段手抄字段的代码已经漏过三次（EquippedSource / ImportedTargetsOptional / PobXml），
+            //   最近一次漏 PobXml 让引擎那条链对所有经界面导入的模板全不可达（第三轮审计阻断项）。
+            //   测试测的是 importer 层，测不到写在 .razor 里的拷贝 —— 所以它不能再待在 .razor 里。
             var created = Store.Create(result.Template.Name);
-            created.Name = result.Template.Name;
-            created.Character = result.Template.Character;
-            created.Slots = result.Template.Slots;
-            created.Equipped = result.Template.Equipped;
-            created.EquippedStats = result.Template.EquippedStats;
-            created.EquippedNames = result.Template.EquippedNames;
-            // 漏这一行会让导入的基准全部显示成「来源未知」，与「导入 BD 自带基准」的说法矛盾。
-            // 审计（2026-09-19）发现：测试测的是 importer 层，测不到这段逐字段拷贝。
-            created.EquippedSource = result.Template.EquippedSource;
-            created.ImportedFrom = result.Template.ImportedFrom;
-            // 同上面那行一样：漏拷这面旗子，新模板会被当成「手建模板」，将来再跑迁移就够不着它。
-            created.ImportedTargetsOptional = result.Template.ImportedTargetsOptional;
+            ImportedTemplateMapper.Apply(created, result.Template);
             Store.Save(created);
 
             active = created;

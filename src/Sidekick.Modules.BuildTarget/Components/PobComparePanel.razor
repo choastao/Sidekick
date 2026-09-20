@@ -189,6 +189,11 @@
             // ⚠ 必须连 key 一起清（审计 C）：否则「开着算过 → 关掉 → 再打开」之后，
             //   同一件物品会被 key 短路，面板永远只剩空框，直到换物品或换模板。
             lastKey = null;
+
+            // 同时在飞的调用回来后会因为前提不符而丢弃（下面的 key 复核），
+            // 所以转圈标记必须由这里来收 —— 不收就永远停在「正在试穿…」。
+            loading = false;
+            gainsLoading = false;
             return;
         }
 
@@ -210,7 +215,17 @@
         try
         {
             var started = Environment.TickCount64;
-            result = await Compare.CompareAsync(template, Item, slotKey);
+            var measured = await Compare.CompareAsync(template, Item, slotKey);
+
+            // ⚠ await 之后必须复核前提（审计第三轮 🟡-1，与备选篮 3-1 同一类毛病）：
+            //   在算的窗口期内换模板 / 换物品 / 关开关时，lastKey 已经被下一轮改掉，
+            //   这里照写就会让面板长期显示**上一个前提**的数字（界面说假话）。
+            if (key != lastKey)
+            {
+                return;
+            }
+
+            result = measured;
             elapsedMs = Environment.TickCount64 - started;
 
             // 逐条词缀的收益要有个参照系（原物数值），所以只在对比算出来之后才跑。
@@ -222,17 +237,31 @@
 
                 try
                 {
-                    gains = await Gains.RankAsync(template, Item, slotKey);
+                    var ranked = await Gains.RankAsync(template, Item, slotKey);
+                    if (key != lastKey)
+                    {
+                        return;
+                    }
+
+                    gains = ranked;
                 }
                 finally
                 {
-                    gainsLoading = false;
+                    // 老的调用回来时不许把新一轮的转圈标记清掉（只能在前提还是自己时清）。
+                    if (key == lastKey)
+                    {
+                        gainsLoading = false;
+                    }
                 }
             }
         }
         finally
         {
-            loading = false;
+            // 同上：前提已经变了就交给新一轮去收，别把它的转圈标记提前清掉。
+            if (key == lastKey)
+            {
+                loading = false;
+            }
         }
     }
 
