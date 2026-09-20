@@ -28,6 +28,13 @@ public class PobItemTextTests
         ["explicit.stat_life"] = "# to maximum Life",
         ["implicit.stat_es"] = "# to maximum Energy Shield",
         ["explicit.stat_armour_pct"] = "#% increased Armour (Local)",
+        // 同族的干净模板：真实数据里 `increased Attack Speed` 就有这一对（crafted.stat_210067635 带注解、
+        // crafted.stat_681332047 干净），而 zh 数据里**第一个**可查到的是带注解的那条。
+        ["crafted.stat_210067635"] = "#% increased Attack Speed (Local)",
+        ["crafted.stat_681332047"] = "#% increased Attack Speed",
+        // 格挡只有注解版（真实数据里 5 条候选全是 `(Local)`）→ 走「剥掉注解」的兜底分支
+        ["explicit.stat_2481353198"] = "#% increased Block chance (Local)",
+        ["explicit.stat_3484657501"] = "# to Armour (Local)",
     };
 
     private static Item Helmet()
@@ -49,6 +56,11 @@ public class PobItemTextTests
 
     private static Stat Stat(StatCategory category, string text, double[] values, string? tradeId, string definitionText)
     {
+        return Stat(category, text, values, tradeId == null ? null : [tradeId], definitionText);
+    }
+
+    private static Stat Stat(StatCategory category, string text, double[] values, string[]? tradeIds, string definitionText)
+    {
         return new Stat(category, text)
         {
             Definitions =
@@ -56,7 +68,7 @@ public class PobItemTextTests
                 new StatDefinition
                 {
                     Text = definitionText,
-                    TradeIds = tradeId == null ? null : [tradeId],
+                    TradeIds = tradeIds?.ToList(),
                 },
             ],
             Values = [.. values],
@@ -124,8 +136,59 @@ public class PobItemTextTests
 
         var lines = PobItemText.Build(item, InvariantStats).Text.Split('\n').Select(x => x.Trim()).ToList();
 
-        Assert.Contains("60% increased Armour (Local)", lines);
+        Assert.Contains("60% increased Armour", lines);
         Assert.DoesNotContain(lines, x => x.StartsWith('+') && x.Contains("increased Armour"));
+    }
+
+    /// <summary>
+    /// **尾部注解不许出现在送进引擎的文本里 —— 并且优先取同族里那条干净的模板。**
+    ///
+    /// 实测（`pob2-engine/tao-annotation2-test.py`）：带 `(Local)` 的行喂给 PoB = **整行消失**
+    /// （`+60 to maximum Life (Local)` 与基线逐位相同，而干净的 `+60 to maximum Life` 让 EHP 涨 256）。
+    /// 而真实数据里「增加攻击速度」的第一个可查到模板恰好是带注解的那条 →
+    /// 不处理就是又一次「Skipped = 0 但数字算少一块」的假成功，这次还发生在**攻速**上。
+    /// </summary>
+    [Fact]
+    public void Annotated_template_is_skipped_when_a_clean_one_exists()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(
+            StatCategory.Explicit,
+            "30% 增加攻擊速度",
+            [30],
+            ["crafted.stat_210067635", "crafted.stat_681332047"],
+            "#% 增加攻擊速度"));
+
+        var result = PobItemText.Build(item, InvariantStats);
+        var lines = result.Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        Assert.Contains("30% increased Attack Speed", lines);
+        Assert.DoesNotContain(lines, x => x.Contains("(Local)"));
+        // 走的是「有干净模板可选」这条路，不该记成「剥掉注解」
+        Assert.Equal(0, result.AnnotationStripped);
+        Assert.Equal(1, result.MappedStats);
+    }
+
+    /// <summary>
+    /// 兜底分支：整族候选**全带注解**时（实测格挡就是：5 条候选清一色 `(Local)`）剥掉注解再发。
+    /// 剥掉注解仍比「让 PoB 整行忽略」好；剥掉之后 `+` 补号规则照旧生效（顺序不能反）。
+    /// </summary>
+    [Fact]
+    public void Trailing_annotation_is_stripped_when_every_candidate_has_one()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "30% 增加格擋率", [30], ["explicit.stat_2481353198"], "#% 增加格擋率"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+40 護甲值", [40], ["explicit.stat_3484657501"], "+# 護甲值"));
+
+        var result = PobItemText.Build(item, InvariantStats);
+        var lines = result.Text.Split('\n').Select(x => x.Trim()).ToList();
+
+        Assert.Contains("30% increased Block chance", lines);
+        Assert.Contains("+40 to Armour", lines);   // 剥注解 + 补 `+`，两步都要在
+        Assert.DoesNotContain(lines, x => x.Contains("(Local)"));
+        Assert.Equal(2, result.AnnotationStripped);
+        Assert.Equal(2, result.MappedStats);
+        Assert.Equal(0, result.Skipped);
     }
 
     /// <summary>

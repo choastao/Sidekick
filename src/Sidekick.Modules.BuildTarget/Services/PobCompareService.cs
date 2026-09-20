@@ -165,14 +165,15 @@ public class PobCompareService(
 
             stopwatch.Stop();
             logger.LogInformation(
-                "[BuildTarget] PoB compare {Slot}: dps {BaseDps:0} → {Dps:0}, ehp {BaseEhp:0} → {Ehp:0} ({Elapsed:0} ms, unmapped {Unmapped})",
+                "[BuildTarget] PoB compare {Slot}: dps {BaseDps:0} → {Dps:0}, ehp {BaseEhp:0} → {Ehp:0} ({Elapsed:0} ms, unmapped {Unmapped}, annotation-stripped {Annotated})",
                 pobSlot,
                 baseline.Dps,
                 current.Dps,
                 baseline.Ehp,
                 current.Ehp,
                 stopwatch.ElapsedMilliseconds,
-                text.Skipped);
+                text.Skipped,
+                text.AnnotationStripped);
 
             return PobCompareResult.Ok(baseline, current, text.Skipped);
         }

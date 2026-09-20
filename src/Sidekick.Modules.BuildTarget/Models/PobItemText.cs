@@ -24,7 +24,7 @@ public static class PobItemText
     /// <summary>伪属性与未识别的文本行不是装备上的真词缀，给 PoB 只会添乱。</summary>
     private static readonly StatCategory[] NonAffixCategories = [StatCategory.Pseudo, StatCategory.Undefined];
 
-    public sealed record BuildResult(string Text, int TotalStats, int MappedStats, bool BaseIdentified)
+    public sealed record BuildResult(string Text, int TotalStats, int MappedStats, bool BaseIdentified, int AnnotationStripped = 0)
     {
         public int Skipped => TotalStats - MappedStats;
     }
@@ -77,6 +77,7 @@ public static class PobItemText
         // ---- 词缀：隐式在前（PoB 用 "Implicits: N" 声明条数），显式在后 ----
         var totalStats = 0;
         var mapped = 0;
+        var annotationStripped = 0;
         var implicitLines = new List<string>();
         var explicitLines = new List<string>();
 
@@ -114,6 +115,11 @@ public static class PobItemText
             line = ApplySign(line, match.RequiresPlus);
 
             mapped++;
+            if (match.AnnotationStripped)
+            {
+                annotationStripped++;
+            }
+
             if (stat.Category == StatCategory.Implicit)
             {
                 implicitLines.Add(line);
@@ -132,20 +138,27 @@ public static class PobItemText
         lines.AddRange(implicitLines);
         lines.AddRange(explicitLines);
 
-        return new BuildResult(string.Join('\n', lines) + "\n", totalStats, mapped, baseIdentified);
+        return new BuildResult(string.Join('\n', lines) + "\n", totalStats, mapped, baseIdentified, annotationStripped);
     }
 
     /// <summary>
     /// 一条 stat 可能匹配到多个定义，取第一个能在英文表里查到的模板。
     /// 查不到就是「引擎不认识这条词缀」—— 交给调用方如实报出来。
     ///
-    /// 顺带把**命中的那条定义**的平添符号带出来：英文 trade-stats 的模板里没有行首 `+`
+    /// 顺带把**命中的那条定义的平添符号**带出来：英文 trade-stats 的模板里没有行首 `+`
     /// （它只是文本模板），而游戏/PoB 的定义文本是 `+# to maximum Life` —— 见 <see cref="ApplySign"/>。
+    ///
+    /// **带尾部注解的模板排在后面**（见 <see cref="StripAnnotation"/>）：同一个 stat 的多个 tradeId
+    /// 里通常同时存在 `#% increased Attack Speed (Local)` 和干净的 `#% increased Attack Speed`，
+    /// 而前者会让 PoB 整行忽略 —— 优先取干净的那条才是正确形状（也就是游戏英文客户端复制出来
+    /// 的样子）。只有在**全都带注解**时才退回「剥掉注解」（剥掉仍比被整行忽略好）。
     /// </summary>
-    private static (string Template, bool RequiresPlus)? FindTemplate(
+    private static Match? FindTemplate(
         Stat stat,
         IReadOnlyDictionary<string, string> invariantStatText)
     {
+        Match? annotatedFallback = null;
+
         foreach (var definition in stat.Definitions)
         {
             if (definition.TradeIds == null)
@@ -155,15 +168,61 @@ public static class PobItemText
 
             foreach (var id in definition.TradeIds)
             {
-                if (invariantStatText.TryGetValue(id, out var template) && !string.IsNullOrWhiteSpace(template))
+                if (!invariantStatText.TryGetValue(id, out var template) || string.IsNullOrWhiteSpace(template))
                 {
-                    return (template, RequiresPlusSign(definition.Text));
+                    continue;
                 }
+
+                var requiresPlus = RequiresPlusSign(definition.Text);
+                var stripped = StripAnnotation(template);
+
+                if (stripped == null)
+                {
+                    return new Match(template, requiresPlus, false);
+                }
+
+                annotatedFallback ??= new Match(stripped, requiresPlus, true);
             }
+        }
+
+        return annotatedFallback;
+    }
+
+    /// <summary>命中模板的形状：模板文本、要不要补 `+`、以及是否剥掉了尾部注解。</summary>
+    private readonly record struct Match(string Template, bool RequiresPlus, bool AnnotationStripped);
+
+    /// <summary>
+    /// trade-stats 里官方交易站的**展示注解**（`(Local)` 40 条 / `(Jewel)` 4 条 / `(Global)` 2 条）——
+    /// **不是给装备文本用的语法**。
+    ///
+    /// ⚠ 实测（`pob2-engine/tao-annotation2-test.py`，别删这段结论）：带注解的行喂给 PoB 等于**整行消失**
+    /// （同一件头盔、同一套 BD，只改追加的那一行）：
+    ///   · 对照 `+60 to maximum Life`            → EHP 23554 → 23810（生效，证明探测链没坏）
+    ///   · `+60 to maximum Life (Local)`         → 23554（**与基线逐位相同 = 被忽略**）
+    ///   · 对照 `+60 to maximum Energy Shield`   → 24292（生效）
+    ///   · `+60 to maximum Energy Shield (Local)`→ 23554（被忽略）
+    /// 而「攻速 / 护甲% / 闪避% / 格挡% / 命中 / 最大能量护盾」这一族在 zh 数据里的
+    /// **第一个可查到模板恰好就是带注解的那条**（护甲% 等 8 族另有干净模板，格挡只有注解版）→
+    /// 不处理就是又一次「Skipped = 0 但数字算少一块」的假成功。
+    /// </summary>
+    private static string? StripAnnotation(string template)
+    {
+        foreach (var annotation in TrailingAnnotations)
+        {
+            if (!template.EndsWith(annotation, StringComparison.Ordinal))
+            {
+                continue;
+            }
+
+            var stripped = template[..^annotation.Length].TrimEnd();
+            return stripped.Length > 0 ? stripped : null;
         }
 
         return null;
     }
+
+    /// <summary>官方交易站往展示文本尾部加的注解（见 <see cref="StripAnnotation"/>）。</summary>
+    private static readonly string[] TrailingAnnotations = ["(Local)", "(Jewel)", "(Global)"];
 
     /// <summary>定义文本以 <c>+</c> 开头 = 这条是「平添」型词缀（`+# to maximum Life`）。</summary>
     private static bool RequiresPlusSign(string? definitionText) =>
