@@ -126,6 +126,24 @@
   <data name="Page_Description" xml:space="preserve">
     <value>先写好你的BD要什么样的装备，之后在游戏里复制的每一件装备都会拿它来对照判断。</value>
   </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>功能开关</value>
+  </data>
+  <data name="Options_Help" xml:space="preserve">
+    <value>这一节默认全部关着：打开哪个功能，才会去读它对应的数据文件。</value>
+  </data>
+  <data name="Option_CraftCost" xml:space="preserve">
+    <value>洗练成本与成功率</value>
+  </data>
+  <data name="Option_CraftCost_Help" xml:space="preserve">
+    <value>需要 affix-pool-coe.json（约 0.75 MB）与 affix-types.json；关着的时候这块整体不显示，这两个文件也不会被读取。</value>
+  </data>
+  <data name="Option_PobEngine" xml:space="preserve">
+    <value>PoB2 引擎（试穿对比 DPS / EHP）</value>
+  </data>
+  <data name="Option_PobEngine_Help" xml:space="preserve">
+    <value>将来会按需启动一个独立的本地引擎进程，需要一份 PoB 的 BD 文件作基准。功能还没做 —— 这个开关先占位。</value>
+  </data>
   <data name="Template" xml:space="preserve">
     <value>模板</value>
   </data>

@@ -126,6 +126,24 @@
   <data name="Page_Description" xml:space="preserve">
     <value>Describe what a good item looks like for your build. After that, every item you copy in game is judged against it.</value>
   </data>
+  <data name="Options_Title" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="Options_Help" xml:space="preserve">
+    <value>Everything in this section is off by default — a feature only loads its data file when you switch it on.</value>
+  </data>
+  <data name="Option_CraftCost" xml:space="preserve">
+    <value>Crafting cost &amp; success chance</value>
+  </data>
+  <data name="Option_CraftCost_Help" xml:space="preserve">
+    <value>Needs affix-pool-coe.json (~0.75 MB) and affix-types.json; while it is off this panel stays hidden and those files are never read.</value>
+  </data>
+  <data name="Option_PobEngine" xml:space="preserve">
+    <value>PoB2 engine (equip &amp; compare DPS / EHP)</value>
+  </data>
+  <data name="Option_PobEngine_Help" xml:space="preserve">
+    <value>Would start a separate local engine process and needs a PoB build file as the baseline. Not implemented yet — this switch is a placeholder.</value>
+  </data>
   <data name="Template" xml:space="preserve">
     <value>Template</value>
   </data>

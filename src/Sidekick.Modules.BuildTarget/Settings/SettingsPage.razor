@@ -11,6 +11,27 @@
         </FormFieldset>
 
         @* ---------- 模板管理 ---------- *@
+        @* ---------- 功能开关（默认关：不用的部分不读数据文件） ---------- *@
+        <FormFieldset Legend="@Resources["Options_Title"]">
+            <TextBase Class="text-stone-400 text-sm">@Resources["Options_Help"]</TextBase>
+
+            <div class="flex items-start gap-3 mt-3">
+                <FormCheckbox Value="@Options.CraftCost" ValueChanged="SetCraftCost"/>
+                <div>
+                    <div class="text-base">@Resources["Option_CraftCost"]</div>
+                    <div class="text-stone-500 text-xs">@Resources["Option_CraftCost_Help"]</div>
+                </div>
+            </div>
+
+            <div class="flex items-start gap-3 mt-3">
+                <FormCheckbox Value="@Options.PobEngine" ValueChanged="SetPobEngine"/>
+                <div>
+                    <div class="text-base">@Resources["Option_PobEngine"]</div>
+                    <div class="text-stone-500 text-xs">@Resources["Option_PobEngine_Help"]</div>
+                </div>
+            </div>
+        </FormFieldset>
+
         <FormFieldset Legend="@Resources["Template"]">
             @if (Store.Templates.Count == 0)
             {
@@ -245,6 +266,7 @@
 @inject IStringLocalizer<BuildTargetResources> Resources
 @inject BuildTargetStore Store
 @inject PobBuildImporter Importer
+@inject BuildTargetOptionsStore Options
 @inject ItemParser ItemParser
 
 @code {
@@ -559,6 +581,10 @@
             importing = false;
         }
     }
+
+    private void SetCraftCost(bool value) => Options.SetCraftCost(value);
+
+    private void SetPobEngine(bool value) => Options.SetPobEngine(value);
 
     private void SaveActive()
     {

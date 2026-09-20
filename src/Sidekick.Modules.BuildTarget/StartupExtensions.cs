@@ -23,6 +23,7 @@ public static class StartupExtensions
         services.AddSingleton<AffixTypeService>();
         services.AddSingleton<AffixWeightService>();
         services.AddSingleton<AffixPoolCoEService>();
+        services.AddSingleton<BuildTargetOptionsStore>();
         services.AddSingleton<AffixPoolStatFilter>();
 
         // 备选篮：内存态 + candidate-basket.json

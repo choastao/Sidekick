@@ -2,8 +2,8 @@
 @using Sidekick.Game.Parser.Items
 @implements IDisposable
 
-@* 改造 / 洗装成本估算：只在当前装备已有快照（有基准）时出现。 *@
-@if (Slot != null)
+@* 改造 / 洗装成本估算：只在「开关打开」且当前装备已有快照（有基准）时出现。 *@
+@if (Options.CraftCost && Slot != null)
 {
     <div class="mt-4">
         <FormFieldset Legend="@Resources["Craft_Title"]">
@@ -306,6 +306,7 @@
 @inject CurrencyPriceService Prices
 @inject AffixTypeService AffixTypes
 @inject AffixPoolCoEService AffixCoe
+@inject BuildTargetOptionsStore Options
 
 @code {
 
@@ -403,6 +404,14 @@
         OptionalNeeds = [];
         PoolTags = new AffixPoolTagSet([], Degraded: false);
         BaseId = null;
+
+        // 开关关着：连数据文件都不去读（RefreshRows 会取通货价格、BuildChance 会取 0.75 MB 的词缀池）。
+        // 组件仍挂在这一页上，所以必须在这里早退，不能只靠 markup 里那层 if。
+        if (!Options.CraftCost)
+        {
+            return;
+        }
+
         RefreshRows();
 
         BuildTargetResult? result;
