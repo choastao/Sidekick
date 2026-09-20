@@ -90,6 +90,16 @@ public static class PobItemText
                 continue;
             }
 
+            // ⚠ 模板里的 # 是数值占位符，**必须全部填上**。填不满说明这条词缀的数值结构与
+            //   英文模板对不上；带 # 的行喂给 PoB 会在 Modules/ItemTools.lua 的 formatValue 里
+            //   对 nil 做算术，抛错的是**整个物品**——一条坏词缀就能让整次试穿失败
+            //   （本次实测：+60 最大生命那条模板 # 多于解析出的数值，整件头盔算不出来）。
+            //   所以当「引擎不认识这条」丢掉，Skipped 计数会如实反映出来。
+            if (line.Contains('#'))
+            {
+                continue;
+            }
+
             mapped++;
             if (stat.Category == StatCategory.Implicit)
             {

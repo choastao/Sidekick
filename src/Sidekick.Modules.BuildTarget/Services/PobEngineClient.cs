@@ -71,6 +71,28 @@ public sealed class PobEngineClient : IDisposable
     }
 
     /// <summary>
+    /// 引擎的 src 目录（<c>HeadlessWrapper.lua</c> 所在处）——helper 的**工作目录**。
+    /// 认两种布局：<c>&lt;dir&gt;/pob/src</c>（README 推荐）与 <c>&lt;dir&gt;/src</c>（有人把 clone 内容摊平放）。
+    /// 都找不到返回 null，由调用方报「布局不对」，不要瞎猜一个。
+    /// </summary>
+    private static string? ResolveWorkingDirectory(string directory)
+    {
+        foreach (var candidate in new[]
+                 {
+                     Path.Combine(directory, "pob", "src"),
+                     Path.Combine(directory, "src"),
+                 })
+        {
+            if (File.Exists(Path.Combine(candidate, "HeadlessWrapper.lua")))
+            {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    /// <summary>
     /// 确保 helper 在跑。已经活着就直接返回 true；否则启动 + ping 一次确认它真的就绪。
     /// **不抛异常**：失败原因写进 <see cref="LastError"/>，由界面决定怎么显示。
     /// </summary>
@@ -99,11 +121,23 @@ public sealed class PobEngineClient : IDisposable
 
         try
         {
+            // ⚠ 工作目录必须是引擎的 src 目录：HeadlessWrapper.lua 第一行就
+            //   dofile("_SimpleGraphic.def.lua")，是相对路径。设错的话 helper 会立刻退出，
+            //   主程序看到的是 "engine closed the connection"（本次实测踩到）。
+            var workingDirectory = ResolveWorkingDirectory(directory);
+            if (workingDirectory == null)
+            {
+                LastError = $"engine layout looks wrong: no {Path.Combine("pob", "src")}\\HeadlessWrapper.lua under {directory}";
+                logger.LogWarning("[BuildTarget] {Error}", LastError);
+                return false;
+            }
+
             var info = new ProcessStartInfo
             {
                 FileName = Path.Combine(directory, LuaJitExecutable),
-                Arguments = '"' + HelperScriptName + '"',
-                WorkingDirectory = directory,          // 引擎按相对路径找 Data/，工作目录必须是它
+                // 脚本用绝对路径传：它的工作目录不是它自己所在的目录
+                Arguments = '"' + Path.Combine(directory, HelperScriptName) + '"',
+                WorkingDirectory = workingDirectory,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -118,11 +152,35 @@ public sealed class PobEngineClient : IDisposable
             // stderr 必须有人读：管道缓冲满了会把引擎自己卡死。
             process.ErrorDataReceived += (_, e) =>
             {
-                if (!string.IsNullOrWhiteSpace(e.Data))
+                if (string.IsNullOrWhiteSpace(e.Data))
+                {
+                    return;
+                }
+
+                // 引擎正常启动会往 stderr 刷一堆 "Loading .../missing node ..." 噪音，
+                // 那些压到 Debug；其它行（Lua 报错、dll 缺失）一律 Warning ——
+                // 「helper 一启动就退出」时这一行往往是唯一的线索。
+                if (e.Data.StartsWith("Loading", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("missing node", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("Processing", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("Uniques", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("Rares", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("Startup", StringComparison.Ordinal) ||
+                    e.Data.StartsWith("Unicode", StringComparison.Ordinal))
                 {
                     logger.LogDebug("[BuildTarget] pob-engine: {Line}", e.Data);
                 }
+                else
+                {
+                    logger.LogWarning("[BuildTarget] pob-engine: {Line}", e.Data);
+                }
             };
+
+            logger.LogInformation(
+                "[BuildTarget] Starting PoB helper: {File} {Args} (cwd {Cwd})",
+                info.FileName,
+                info.Arguments,
+                info.WorkingDirectory);
 
             if (!process.Start())
             {
@@ -204,10 +262,42 @@ public sealed class PobEngineClient : IDisposable
             using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             linked.CancelAfter(timeout);
 
-            string? line;
             try
             {
-                line = await target.StandardOutput.ReadLineAsync(linked.Token);
+                // ⚠ 引擎启动时会往 **stdout** 打一堆日志（"Loading main script..."、"missing node ..."），
+                //   所以不能「读一行就当应答」。只认以 { 开头、能解出来、且 id 对得上的那一行，
+                //   其余当噪音跳过（有超时兜底，不会死循环）。
+                while (true)
+                {
+                    var line = await target.StandardOutput.ReadLineAsync(linked.Token);
+                    if (line == null)
+                    {
+                        LastError = "engine closed the connection";
+                        logger.LogWarning("[BuildTarget] PoB engine closed stdout on {Method}", method);
+                        return null;
+                    }
+
+                    var trimmed = line.Trim();
+                    if (trimmed.Length == 0 || !trimmed.StartsWith('{'))
+                    {
+                        logger.LogDebug("[BuildTarget] pob-engine stdout: {Line}", trimmed);
+                        continue;
+                    }
+
+                    var response = PobEngineProtocol.Decode(trimmed);
+                    if (response == null || response.Id != request.Id)
+                    {
+                        logger.LogDebug("[BuildTarget] pob-engine skipped non-matching line: {Line}", trimmed);
+                        continue;
+                    }
+
+                    if (!response.Ok)
+                    {
+                        LastError = response.Error;
+                    }
+
+                    return response;
+                }
             }
             catch (OperationCanceledException)
             {
@@ -217,31 +307,6 @@ public sealed class PobEngineClient : IDisposable
                 StopProcess();
                 return null;
             }
-
-            var response = PobEngineProtocol.Decode(line);
-            if (response == null)
-            {
-                LastError = line == null
-                    ? "engine closed the connection"
-                    : "engine wrote a non-protocol line";
-                logger.LogWarning("[BuildTarget] PoB engine sent an unparseable line on {Method}", method);
-                return null;
-            }
-
-            if (response.Id != request.Id)
-            {
-                // 串行化前提下不该发生；真发生了说明协议错位，宁可报错也别把别人的数字当自己的。
-                LastError = $"engine response id mismatch ({response.Id} != {request.Id})";
-                logger.LogWarning("[BuildTarget] PoB engine response id mismatch");
-                return null;
-            }
-
-            if (!response.Ok)
-            {
-                LastError = response.Error;
-            }
-
-            return response;
         }
         catch (Exception ex)
         {

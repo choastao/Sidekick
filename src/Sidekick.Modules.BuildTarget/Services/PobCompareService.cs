@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 using Microsoft.Extensions.Logging;
 using Sidekick.Game.Parser.Items;
 using Sidekick.Modules.BuildTarget.Models;
@@ -177,8 +178,25 @@ public class PobCompareService(
         return loadedBaseStats;
     }
 
-    private static PobStats? ReadStats(PobEngineResponse response) =>
-        response.GetDouble("dps") is { } dps && response.GetDouble("ehp") is { } ehp
-            ? new PobStats(dps, ehp, response.GetDouble("life") ?? 0)
+    /// <summary>
+    /// 从 helper 的应答里读数值。**形状是嵌套的**：<c>{"stats":{"dps":…,"ehp":…,"life":…}}</c> ——
+    /// 一开始按顶层读，结果 load_build 明明成功却拿到 null、界面显示「引擎出错：-」（本次实测踩到）。
+    /// </summary>
+    private static PobStats? ReadStats(PobEngineResponse response)
+    {
+        var stats = response.GetObject("stats");
+        if (stats == null)
+        {
+            return null;
+        }
+
+        double? Number(string key) =>
+            stats.TryGetValue(key, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number)
+                ? number
+                : null;
+
+        return Number("dps") is { } dps && Number("ehp") is { } ehp
+            ? new PobStats(dps, ehp, Number("life") ?? 0)
             : null;
+    }
 }

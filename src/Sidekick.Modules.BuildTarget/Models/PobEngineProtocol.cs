@@ -57,6 +57,17 @@ public sealed class PobEngineResponse
         return value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var number) ? number : null;
     }
 
+    /// <summary>取一个嵌套对象结果（helper 把数值放在 result.stats 里，不是顶层）。</summary>
+    public Dictionary<string, JsonElement>? GetObject(string key)
+    {
+        if (Result != null && Result.TryGetValue(key, out var value) && value.ValueKind == JsonValueKind.Object)
+        {
+            return value.Deserialize<Dictionary<string, JsonElement>>();
+        }
+
+        return null;
+    }
+
     public bool? GetBool(string key) =>
         Result != null && Result.TryGetValue(key, out var value) && (value.ValueKind == JsonValueKind.True || value.ValueKind == JsonValueKind.False)
             ? value.GetBoolean()
