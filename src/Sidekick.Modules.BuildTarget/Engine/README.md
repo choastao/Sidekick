@@ -14,8 +14,10 @@
 | `tao-engine-test.py` | 联调脚本：起 helper、载入 BD、试穿三件（原物 / 加词缀的 / 错槽对照）并打印耗时与数字 |
 | `PROBE-REPORT.md` | 探测报告：实测耗时、踩过的坑、PoB 槽位名权威列表 |
 
-**引擎本体（几十 MB 的 Lua 数据 + LuaJIT）不放进本仓库、默认也不进分发包** ——
-用户对体积敏感（主包已 ~96 MB）。引擎作为**可选组件**安装到：
+**引擎本体不放进本仓库**（体积原因），但**从 v3.8 起随分发包一起发**：
+打包时由 `poe2-work/build-package.py` 把精简后的引擎复制到 `<包>/TAO/pob2/`
+（469 MB → **68.7 MB**：去掉无头计算用不到的贴图/音频，**各赛季的树数据一个不删** —— 砍树会让别的赛季的
+BD 静默算错），并在包里附 MIT 声明 + `第三方声明.txt`。开发/自装时引擎放在：
 
 ```
 %APPDATA%\sidekick\pob2\
@@ -65,9 +67,17 @@ python tao-engine-test.py     # 需要 build.xml（一份 PoB 导出的 BD）在
 2. **`package.path` 要补 `<引擎>\pob\runtime\lua\?.lua`**：dkjson / xml / base64 / sha1 在那儿。
    少了它报 `module 'dkjson' not found`。`tao-engine-server.lua` 已自动处理这一条。
 
+## 开关（设置 → 目标BD → 功能开关 → 「PoB2 引擎」）
+
+默认**关**：关着时所有引擎调用一律早退（`Disabled`），进程不起、数据也不读。
+**热开关**：拨开不用重启，第一次真要用时才冷启动（约 1.5 s + 载入 Data 的时间）；
+**拨关会真的把 helper 杀掉并释放内存**（实测工作集 ~283 MB），再拨开重新冷启动。
+实现：`PobEngineClient.OnOptionsChanged`（拨关 → `Stop()`）与 `ShouldStopForOptions`
+（那条「只有关才停、打开绝不停」的纯函数，被单测钉住）。停进程走线程池、且与启动序列互斥。
+
 ## 许可
 
 PoB2 的 `LICENSE.md` 正文是 **MIT**（Copyright (c) 2016 David Gowor），**允许随包分发**，
-条件是在包内保留版权声明。我们只在用户自己安装引擎时使用它；
-真要随包分发时必须补一份第三方声明（`ReleaseNotes` / `说明.md` 里提一句）。
+条件是在包内保留版权声明。**这一条现在已在执行**：随包的引擎带 `PathOfBuilding-PoE2-LICENSE.md`，
+包根另有 `第三方声明.txt`（两者都由 `build-package.py` 放进包）。
 ⚠ GitHub API 对它的 `license` 字段返回 `NOASSERTION`（文件名与头部格式导致），**别据此判定许可不明**。

@@ -157,7 +157,7 @@ public class PobCompareService(
         catch (Exception ex)
         {
             logger.LogError(ex, "[BuildTarget] PoB measure failed");
-            return PobMeasure.Not(PobCompareStatus.Failed, ex.Message);
+            return EngineFailure(ex.Message);
         }
         finally
         {
@@ -241,7 +241,7 @@ public class PobCompareService(
         var baseline = await EnsureBaselineAsync(template, cancellationToken);
         if (baseline == null)
         {
-            return (PobCompareStatus.Failed, null, null, engine.LastError);
+            return EngineFailure(null, engine.LastError);
         }
 
         var response = await EquipAsync(pobSlot, itemText, cancellationToken);
@@ -257,7 +257,7 @@ public class PobCompareService(
             baseline = await EnsureBaselineAsync(template, cancellationToken);
             if (baseline == null)
             {
-                return (PobCompareStatus.Failed, null, null, engine.LastError);
+                return EngineFailure(null, engine.LastError);
             }
 
             response = await EquipAsync(pobSlot, itemText, cancellationToken);
@@ -282,17 +282,37 @@ public class PobCompareService(
                 "[BuildTarget] PoB equip failed: {Error}. Item text:\n{Text}",
                 response.Error ?? engine.LastError,
                 itemText);
-            return (PobCompareStatus.Failed, baseline, null, response?.Error ?? engine.LastError);
+            return EngineFailure(baseline, response?.Error ?? engine.LastError);
         }
 
         var current = ReadStats(response);
         if (current == null)
         {
-            return (PobCompareStatus.Failed, baseline, null, "engine returned no stats");
+            return EngineFailure(baseline, "engine returned no stats");
         }
 
         return (PobCompareStatus.Success, baseline, current, null);
     }
+
+    /// <summary>
+    /// 引擎侧的失败，状态要**按「此刻开关是不是开着」判**（第六轮审计「应该修-1」）：
+    /// 拨关那一刻在飞的请求会以 `engine closed the connection` 这类错误收尾，
+    /// 原样报成「引擎出错：…」就等于把**用户亲手做的事**说成引擎故障 ——
+    /// 与本项目「非引擎原因不许说成引擎出错」的既有口径冲突（第二轮 3-3 修过同族）。
+    /// 开关关着 → 归成 `Disabled`，界面上的现成文案正好是「先去设置里打开这个开关」。
+    /// </summary>
+    private (PobCompareStatus Status, PobStats? Baseline, PobStats? Current, string? Error) EngineFailure(
+        PobStats? baseline,
+        string? error) =>
+        options.PobEngine
+            ? (PobCompareStatus.Failed, baseline, null, error)
+            : (PobCompareStatus.Disabled, baseline, null, null);
+
+    /// <summary>同上，给 <see cref="MeasureTextAsync"/> 用的形态。</summary>
+    private PobMeasure EngineFailure(string? error) =>
+        options.PobEngine
+            ? PobMeasure.Not(PobCompareStatus.Failed, error)
+            : PobMeasure.Not(PobCompareStatus.Disabled);
 
     /// <summary>试穿一件物品到某个 PoB 槽位（单次 ~15 ms，超时给 15 s 是上限兜底）。</summary>
     private Task<PobEngineResponse?> EquipAsync(string pobSlot, string itemText, CancellationToken cancellationToken) =>

@@ -29,6 +29,14 @@ public sealed class PobEngineClient : IDisposable
     private readonly BuildTargetOptionsStore options;
     private readonly SemaphoreSlim gate = new(1, 1);
 
+    /// <summary>
+    /// 启动序列与 <see cref="Stop"/> 的互斥闸（第六轮审计「应该修-2」）：
+    /// 在这之前，`process` 字段由「闸内的启动」和「闸外的停」两条路径无锁共享，
+    /// 存在「字段已赋、进程还没 Start」时被 Dispose 的毫秒级窗口 —— 那会留下一个
+    /// 没有任何引用指向的 luajit（正是本版要消灭的「假关」）。
+    /// </summary>
+    private readonly SemaphoreSlim lifecycleGate = new(1, 1);
+
     private Process? process;
     private int nextId;
     private bool disposed;
@@ -49,7 +57,8 @@ public sealed class PobEngineClient : IDisposable
 
     /// <summary>
     /// 开关拨动后的反应。**打开时什么都不做**（引擎在第一次真要用时才懒启动，见 EnsureStartedAsync）；
-    /// 关掉时才停进程。方向被 <c>EngineSwitchTests</c> 钉住 —— 反过来（开着就把引擎杀掉）是最坏的错法。
+    /// 关掉时才停进程。方向被 <c>BuildTargetOptionsTests.Only_switching_off_stops_the_engine</c> 钉住
+    /// —— 反过来（开着就把引擎杀掉）是最坏的错法。
     /// </summary>
     private void OnOptionsChanged()
     {
@@ -68,19 +77,37 @@ public sealed class PobEngineClient : IDisposable
     internal static bool ShouldStopForOptions(bool engineEnabled, bool running) => !engineEnabled && running;
 
     /// <summary>
-    /// 停掉 helper，释放它占的内存。没在跑时是空操作。
+    /// 停掉 helper，释放它占的内存。**没在跑时是空操作**（判据是 <see cref="IsRunning"/>，不是字段是否为空 ——
+    /// 已退出但对象还活着的进程不该再报「Stopping…」，见第六轮审计建议-2）。
     /// 停掉之后**下次要用会重新冷启动**（约 1.5 秒 + 载入 Data 的时间），
     /// 且 <see cref="Generation"/> 会 +1，任何「引擎里载入过哪份 BD」的缓存随之失效（自愈）。
     /// </summary>
     public void Stop()
     {
-        if (process == null)
+        // ⚠ 按**此刻**的开关判断，而不是事件发生那一刻的判断：这条 Stop 可能是「关 → 开」之后
+        //   才被线程池排到的陈旧请求（第六轮审计「应该修-2」第三点），不复核就会把刚冷启动起来的
+        //   新引擎杀掉，用户看到的是「刚打开就没反应」。
+        if (options.PobEngine || !IsRunning)
         {
             return;
         }
 
-        logger.LogInformation("[BuildTarget] Stopping PoB engine helper (generation {Generation})", Generation);
-        StopProcess();
+        // 与 EnsureStartedAsync 的启动序列互斥：见 lifecycleGate 的说明。
+        lifecycleGate.Wait();
+        try
+        {
+            if (!IsRunning)
+            {
+                return;   // 等锁期间它自己退了/被别的 Stop 收了
+            }
+
+            logger.LogInformation("[BuildTarget] Stopping PoB engine helper (generation {Generation})", Generation);
+            StopProcess();
+        }
+        finally
+        {
+            lifecycleGate.Release();
+        }
     }
 
     /// <summary>helper 是否活着。引擎没配好 / 已崩溃都是 false。</summary>
@@ -202,12 +229,14 @@ public sealed class PobEngineClient : IDisposable
                 CreateNoWindow = true,
             };
 
-            process = new Process { StartInfo = info };
-            process.EnableRaisingEvents = true;
-            process.Exited += (_, _) => logger.LogWarning("[BuildTarget] PoB engine helper exited (code {Code})", SafeExitCode());
+            // ⚠ 先建**局部**对象、Start 成功后再挂到字段上（第六轮审计「应该修-2」）：
+            //   否则 Stop 可能在「字段已非空、进程还没 Start」的瞬间把它 Dispose 掉。
+            var started = new Process { StartInfo = info };
+            started.EnableRaisingEvents = true;
+            started.Exited += (_, _) => logger.LogWarning("[BuildTarget] PoB engine helper exited (code {Code})", SafeExitCode());
 
             // stderr 必须有人读：管道缓冲满了会把引擎自己卡死。
-            process.ErrorDataReceived += (_, e) =>
+            started.ErrorDataReceived += (_, e) =>
             {
                 if (string.IsNullOrWhiteSpace(e.Data))
                 {
@@ -239,13 +268,26 @@ public sealed class PobEngineClient : IDisposable
                 info.Arguments,
                 info.WorkingDirectory);
 
-            if (!process.Start())
+            if (!started.Start())
             {
                 LastError = "failed to start luajit";
+                started.Dispose();
                 return false;
             }
 
-            process.BeginErrorReadLine();
+            started.BeginErrorReadLine();
+
+            // 挂字段这一步与 Stop 互斥：Stop 要么在挂之前跑（那时它看到的是 null，什么都不做，本轮的
+            // 启动不受影响），要么在挂之后跑（那时它杀的就是这个真进程）—— 不会两头都落空。
+            await lifecycleGate.WaitAsync(cancellationToken);
+            try
+            {
+                process = started;
+            }
+            finally
+            {
+                lifecycleGate.Release();
+            }
 
             // 引擎加载 Data/ 可能要十几秒（首次尤其慢），所以 ping 给足时间。
             var pong = await SendCoreAsync(PobEngineProtocol.MethodPing, null, TimeSpan.FromSeconds(60), cancellationToken);
