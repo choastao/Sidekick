@@ -6,7 +6,7 @@ using Xunit;
 namespace Sidekick.Modules.BuildTarget.Tests;
 
 /// <summary>
-/// 「引擎自己不认识的词缀」这条透传链的解析端（helper → 主程序）。
+/// 「引擎自己不支持的词缀」这条透传链的解析端（helper → 主程序）。
 ///
 /// 为什么要它：这类词缀进算式时是 0，而界面上的 0 会被用户读成「这条词缀没贡献」——
 /// 结论直接反了（「火抗在这件装备上不值钱」）。helper 侧从 PoB 的 `modLine.extra` 读出来透传
@@ -18,7 +18,7 @@ public class EngineUnsupportedTests
         PobEngineProtocol.Decode(line) ?? throw new InvalidOperationException("decode 返回 null");
 
     [Fact]
-    public void 读出引擎不认识的词缀行()
+    public void 读出引擎不支持的词缀行()
     {
         var response = Decode("""
             {"id":1,"ok":true,"result":{"stats":{"dps":1,"ehp":2,"life":3},

@@ -16,7 +16,8 @@ namespace Sidekick.Modules.BuildTarget.Services;
 /// 三条纪律（都对应实测踩过的坑）：
 ///   1. **不是所有物品都能算**：基底取不到英文时 PoB 会直接抛 Lua 错（实测 Item.lua:1867），
 ///      所以转换层报 <c>BaseIdentified=false</c> 时我们直接返回状态，不把报错丢给用户。
-///   2. **引擎不认识的词缀条数要带出来**：PoB 只算它支持的修饰词，漏掉的会让结论偏乐观。
+///   2. **两类缺失都要带出来、而且要分成两个数**：我们没认出的（转换层缺口）与引擎不支持的
+///      （PoB 只算它支持的修饰词）—— 它们都没参与计算，界面不许替用户断言方向。
 ///   3. **请求串行**：helper 是单通道 stdio，同时发两条会把响应错位（客户端也有一层闸，这里是语义层的）。
 ///
 /// 除「一整件装备的对比」外，本服务还对外提供 <see cref="MeasureTextAsync"/>：
@@ -319,7 +320,7 @@ public class PobCompareService(
             : PobMeasure.Not(PobCompareStatus.Disabled);
 
     /// <summary>
-    /// 读 helper 回来的「引擎自己不认识的词缀行」（`result.unsupported.lines`）。
+    /// 读 helper 回来的「引擎自己不支持的词缀行」（`result.unsupported.lines`）。
     /// 字段缺失 / 形状不对一律当**空**（engine 老版本没有这一项时行为不变），
     /// 但**不许**把「读不出来」当成「没有盲区」以外的解释 —— 所以宁可空，也不编数字。
     /// internal 是为了让单测直接喂一段假应答验形状。
@@ -435,7 +436,7 @@ public sealed class PobMeasure
 
     public string? Error { get; init; }
 
-    /// <summary>引擎自己不认识的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
+    /// <summary>引擎自己不支持的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
     public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
 
     public bool Ok => Stats != null;

@@ -34,7 +34,7 @@ public sealed class AffixGainRow
     public string? Error { get; init; }
 
     /// <summary>
-    /// 这条词缀**引擎不认识**（PoB 解析不了它）——它的收益是 0，但那是引擎的盲区，
+    /// 这条词缀**引擎不支持**（PoB 标成 "Not supported in PoB yet"，整行不生效）——它的收益是 0，但那是引擎的盲区，
     /// **不是「这条词缀没贡献」**。界面上必须分开说（对照 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。
     /// </summary>
     public bool UnsupportedByEngine { get; init; }

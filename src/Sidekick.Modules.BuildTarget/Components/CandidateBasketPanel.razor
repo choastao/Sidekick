@@ -639,7 +639,7 @@
         return index < 0 ? "—" : (index + 1).ToString(CultureInfo.InvariantCulture);
     }
 
-    /// <summary>行尾备注：算出来的只说「引擎不认识的词缀 N 条」（结论偏乐观），没算出来的说原因。</summary>
+    /// <summary>行尾备注：算出来的把两个数分开说（我们没认出的 / 引擎不支持的），没算出来的说原因。</summary>
     private string RankNote(CandidateRankRow row)
     {
         if (!row.IsRanked)

@@ -29,7 +29,7 @@ public class PobItemTextService(
 
     /// <summary>
     /// 把物品转成 PoB 认得的英文文本。取不到英文模板表时返回 null（调用方按「引擎算不了」处理），
-    /// **不要**用空表兜底 —— 空表会让每条词缀都变成"引擎不认识"，结论偏乐观。
+    /// **不要**用空表兜底 —— 空表会让每条词缀都变成「我们没认出」，数字少算一块、缺口却显示 0 条。
     /// </summary>
     public async Task<PobItemText.BuildResult?> BuildAsync(Item? item)
     {

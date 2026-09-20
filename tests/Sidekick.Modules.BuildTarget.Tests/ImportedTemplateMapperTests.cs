@@ -19,7 +19,7 @@ namespace Sidekick.Modules.BuildTarget.Tests;
 /// 以后给 <see cref="BuildTargetTemplate"/> 加字段而忘了在 mapper 里抄一行，第一个测试就会红。
 ///
 /// 第四轮审计（§3.2）指出这个守卫自己有三处盲区，都在这里补上了：
-///   ① 样本值与默认值相同的字段会漏判 → <c>Apply_样本值必须与默认值不同</c>；
+///   ① 样本值与默认值相同的字段会漏判 → <c>样本值必须与默认值不同</c>；
 ///   ② 只读属性会被 CanWrite 静默排除 → <c>模板不应当有只读属性</c>；
 ///   ③ 清单意外为空时主断言会空过 → <c>Assert.NotEmpty</c>。
 /// </summary>
@@ -46,6 +46,9 @@ public class ImportedTemplateMapperTests
     public void 守卫清单本身不为空()
     {
         Assert.NotEmpty(CopiedProperties);
+        // 10 = 当前应该搬运的字段数（清单与排除项见 <see cref="ImportedTemplateMapper"/> 的文档注释：
+        // 只排除 Id 与 UpdatedAt）。**给模板加字段时这条会红** —— 那时先想清楚它该不该被搬，
+        // 再决定是改 mapper 还是改这里的数字，别直接把数字改大了事。
         Assert.Equal(10, CopiedProperties.Length);
     }
 

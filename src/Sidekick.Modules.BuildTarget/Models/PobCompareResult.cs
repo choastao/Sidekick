@@ -61,14 +61,15 @@ public sealed class PobCompareResult
     public PobStats? Current { get; init; }
 
     /// <summary>
-    /// **我们的转换层**没认出、因而压根没发出去的词缀条数（> 0 时结论偏乐观）。
-    /// ⚠ 与「引擎不认识」是两件事（见 <see cref="EngineUnsupportedLines"/>）：这一条是**我们**的缺口，
-    /// 不要再说成「引擎不支持」（旧文案就是这么写的，属于说假话）。
+    /// **我们的转换层**没认出、因而压根没发出去的词缀条数（> 0 时这几条没参与计算）。
+    /// ⚠ 与「引擎不支持」是两件事（见 <see cref="EngineUnsupportedLines"/>）：这一条是**我们**的缺口
+    /// （词缀压根没发出去），说成「引擎不支持」就是甩锅给引擎 —— 旧文案犯过这个错，界面不许再出现。
     /// </summary>
     public int UnmappedAffixes { get; init; }
 
     /// <summary>
-    /// **引擎自己不认识**的词缀行原文（PoB 解析不了，helper 从 <c>modLine.extra</c> 读出来透传）。
+    /// **引擎自己不支持**的词缀行原文（PoB 自己标成 "Not supported in PoB yet"，
+    /// 这类行会被它跳过、不参与计算；helper 从 <c>modLine.extra</c> 读出来透传）。
     ///
     /// 为什么要逐条说出来：这类词缀进算式时是 0，而界面上的「0」会被读成「这条词缀没贡献」——
     /// 于是用户会得出「火抗在这件装备上不值钱」这种**反结论**。引擎的盲区必须标成盲区。

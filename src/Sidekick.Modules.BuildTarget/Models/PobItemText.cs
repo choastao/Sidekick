@@ -15,7 +15,7 @@ namespace Sidekick.Modules.BuildTarget.Models;
 ///                 再用解析出来的数值按顺序填回去。
 ///
 /// ⚠ **不认识的词缀绝不静默丢弃**：<see cref="BuildResult.Skipped"/> 会如实报出条数，
-/// 调用方要么提示用户「有 N 条词缀引擎不认识、结论偏乐观」，要么干脆不显示结论。
+/// 调用方要么提示用户「有 N 条词缀我们没认出来、没参与计算」，要么干脆不显示结论。
 /// 同样地，基底名取不到英文时不猜 —— <see cref="BuildResult.BaseIdentified"/> 为 false，
 /// 调用方按「这件物品算不了」处理（否则 PoB 会把它当成空物品，试穿结果 = 没有变化，属于假结论）。
 /// </summary>
@@ -121,7 +121,7 @@ public static class PobItemText
             //   英文模板对不上；带 # 的行喂给 PoB 会在 Modules/ItemTools.lua 的 formatValue 里
             //   对 nil 做算术，抛错的是**整个物品**——一条坏词缀就能让整次试穿失败
             //   （本次实测：+60 最大生命那条模板 # 多于解析出的数值，整件头盔算不出来）。
-            //   所以当「引擎不认识这条」丢掉，Skipped 计数会如实反映出来。
+            //   所以当「这条我们转换不了」丢掉，Skipped 计数会如实反映出来。
             if (line.Contains('#'))
             {
                 continue;
@@ -250,7 +250,7 @@ public static class PobItemText
 
     /// <summary>
     /// 一条 stat 可能匹配到多个定义，取第一个能在英文表里查到的模板。
-    /// 查不到就是「引擎不认识这条词缀」—— 交给调用方如实报出来。
+    /// 查不到就是「我们没认出这条词缀」（= 压根没发出去）—— 交给调用方如实报出来。
     ///
     /// 顺带把**命中的那条定义的平添符号**带出来：英文 trade-stats 的模板里没有行首 `+`
     /// （它只是文本模板），而游戏/PoB 的定义文本是 `+# to maximum Life` —— 见 <see cref="ApplySign"/>。
@@ -342,7 +342,7 @@ public static class PobItemText
     /// 同一件头盔追加 `60 to maximum Life` 与不追加，DPS/EHP 逐位相同（引擎直接当它不存在）；
     /// 追加 `+60 to maximum Life` 才会生效（EHP 23554 → 23810）。
     /// 而英文 trade-stats.json 的模板就是 `# to maximum Life`（`+` 在定义正则里、是捕获组外的字面量），
-    /// 于是「引擎不认识的词缀条数」显示 0、数字却算少了一块 —— 假成功，比报错更坏。
+    /// 于是「我们没认出的词缀条数」显示 0、数字却算少了一块 —— 假成功，比报错更坏。
     /// 数据侧对照：en `stats.json` 里 1008 条定义文本以 `+` 开头（zh 287 条，如 `+#最大生命`）。
     /// 模板自带符号的（trade-stats 里有 285 处）不重复补。
     /// </summary>

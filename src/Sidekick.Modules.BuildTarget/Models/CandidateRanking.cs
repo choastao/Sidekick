@@ -33,10 +33,10 @@ public sealed class CandidateRankRow
 
     public double? EhpPercent { get; init; }
 
-    /// <summary>引擎不认识的词缀条数（>0 时结论偏乐观）。</summary>
+    /// <summary>**我们转换层**没认出的词缀条数（>0 时这几条没参与计算）。</summary>
     public int UnmappedAffixes { get; init; }
 
-    /// <summary>引擎自己不认识的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
+    /// <summary>引擎自己不支持的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
     public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
 
     public string? Error { get; init; }

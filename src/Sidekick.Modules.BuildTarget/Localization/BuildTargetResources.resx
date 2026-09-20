@@ -973,7 +973,7 @@
     <value>This cap only applies to resistances that have no Build Target value.</value>
   </data>
   <data name="Pob_Engine_Unsupported" xml:space="preserve">
-    <value>⚠ the engine does not support {0} affix(es) (PoB labels them &quot;Not supported in PoB yet&quot;) - they are left out of the calculation, so a 0 below is the engine's doing, not proof the affix does nothing:</value>
+    <value>⚠ the engine does not support {0} affix(es) (PoB labels them &quot;Not supported in PoB yet&quot;) - they are left out of the calculation, so a 0 below is the engine's doing, not proof the affix does nothing</value>
   </data>
   <data name="Affix_Engine_Unsupported" xml:space="preserve">
     <value>(not supported by engine)</value>

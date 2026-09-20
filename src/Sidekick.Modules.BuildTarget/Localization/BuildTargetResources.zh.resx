@@ -973,7 +973,7 @@
     <value>上面这个上限只在「目标BD 里没设该抗性目标」时生效。</value>
   </data>
   <data name="Pob_Engine_Unsupported" xml:space="preserve">
-    <value>⚠ 引擎不支持这 {0} 条词缀（PoB 自己的标记是「Not supported in PoB yet」）—— 它们没被算进去，收益显示 0 是引擎的锅，不代表这条词缀没贡献：</value>
+    <value>⚠ 引擎不支持这 {0} 条词缀（PoB 自己的标记是「Not supported in PoB yet」）—— 它们没被算进去，收益显示 0 是引擎的锅，不代表这条词缀没贡献</value>
   </data>
   <data name="Affix_Engine_Unsupported" xml:space="preserve">
     <value>（引擎不支持）</value>

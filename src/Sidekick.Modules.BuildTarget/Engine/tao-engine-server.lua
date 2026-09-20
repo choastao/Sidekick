@@ -135,7 +135,7 @@ handlers.equip = function(params)
         error("engine returned no output for slot " .. slot)
     end
 
-    -- 「引擎不认识这条词缀」：PoB 解析不出 modList 的行会把**整行原文**写进 modLine.extra
+    -- 「引擎不支持这条词缀」：PoB 解析不出 modList 的行会把**整行原文**写进 modLine.extra
     -- （Classes/Item.lua:1360-1364），ItemTools.lua:350 就是拿 extra 标 UNSUPPORTED 的。
     -- 透传给主程序 = 消灭界面上「收益 0 是这条词缀没贡献，还是引擎压根没算它」的歧义。
     local unsupported = {}
