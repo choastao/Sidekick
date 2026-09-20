@@ -204,6 +204,7 @@
                         <th class="font-normal py-1 w-16">@Resources["Basket_Col_Slot"]</th>
                         <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
                         <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
+                        <th class="font-normal py-1 w-24"></th>
                         <th class="font-normal py-1"></th>
                     </tr>
                     </thead>
@@ -230,10 +231,77 @@
                                 <td class="py-1 text-right text-stone-600">—</td>
                                 <td class="py-1 text-right text-stone-600">—</td>
                             }
+                            <td class="py-1 whitespace-nowrap">
+                                @* C2c：按需算这一件候选的逐条词缀收益（点开才跑引擎，不白烧）。 *@
+                                @if (row.IsRanked || gains.ContainsKey(row.Id))
+                                {
+                                    <ButtonLink OnClick="@(() => ToggleGainsAsync(row))">@Resources["Basket_Gains_Button"]</ButtonLink>
+                                }
+                            </td>
                             <td class="py-1 text-xs text-amber-400">
                                 @RankNote(row)
                             </td>
                         </tr>
+
+                        @if (expandedId == row.Id)
+                        {
+                            <tr>
+                                <td colspan="7" class="py-2 pl-6 border-t border-stone-800">
+                                    @if (gainsBusyId == row.Id)
+                                    {
+                                        <TextBase Class="text-stone-400 text-sm">@Resources["Basket_Gains_Running"]</TextBase>
+                                    }
+                                    else if (gains.TryGetValue(row.Id, out var gain) && gain is { Top.Count: > 0 })
+                                    {
+                                        <table class="w-full text-sm border-collapse">
+                                            <thead>
+                                            <tr class="text-stone-500 text-xs text-left">
+                                                <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
+                                                <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
+                                                <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @foreach (var affix in gain.Top)
+                                            {
+                                                <tr class="border-t border-stone-800">
+                                                    <td class="py-1">
+                                                        @affix.Text
+                                                        @if (affix.Implicit)
+                                                        {
+                                                            <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
+                                                        }
+                                                    </td>
+                                                    <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
+                                                    <td class="py-1 text-right @DeltaClass(affix.EhpDelta)">@Signed(affix.EhpDelta)@Percent(affix.EhpPercent)</td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </table>
+
+                                        @if (gain.NotRanked.Count > 0)
+                                        {
+                                            <TextBase Class="text-amber-400 text-xs mt-1">
+                                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, gain.NotRanked.Count)
+                                            </TextBase>
+                                        }
+
+                                        @* 口径与「不可相加」两句与悬浮窗那份完全一致（别造第二套说法）。 *@
+                                        <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Affix_Gain_Help"]</TextBase>
+                                        @if (gain.ElapsedMs > 0)
+                                        {
+                                            <TextBase Class="text-stone-600 text-xs">
+                                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, gain.Rows.Count, gain.ElapsedMs)
+                                            </TextBase>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <TextBase Class="text-stone-500 text-sm">@Resources["Basket_Gains_None"]</TextBase>
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
                     </tbody>
                 </table>
@@ -251,6 +319,7 @@
 @inject ItemParser ItemParser
 @inject ISettingsService SettingsService
 @inject PobCandidateRanker Ranker
+@inject PobAffixGainService Gains
 @inject BuildTargetOptionsStore Options
 
 @code {
@@ -261,6 +330,18 @@
     private CandidateRanking? ranking;
 
     private bool rankBusy;
+
+    /// <summary>
+    /// C2c：按行 id 缓存的「逐条词缀收益」。**字典里有键**表示算过（值可能是 null = 这条算不了），
+    /// 这样重复点开不会白跑一遍引擎；null 也缓存，否则「算不了」的行每点一次都要再试一次。
+    /// </summary>
+    private readonly Dictionary<string, AffixGainRanking?> gains = new();
+
+    /// <summary>正在算哪一行（null = 没有在算）。</summary>
+    private string? gainsBusyId;
+
+    /// <summary>当前展开的是哪一行（同一时刻只展开一行，避免表格无限长）。</summary>
+    private string? expandedId;
 
     private BasketContribution Total { get; set; } = new();
 
@@ -395,6 +476,7 @@
 
         rankBusy = true;
         ranking = null;
+        ResetGains();   // 列表要重算了，之前按行缓存的逐条收益不再对应当前这批行
         StateHasChanged();
 
         try
@@ -416,6 +498,76 @@
         }
 
         ranking = CandidateRanking.Sort(ranking.Rows, metric);
+    }
+
+    // ---- C2c：把 C2b 的「逐条词缀收益」按需接进篮子的排序结果 ----
+
+    /// <summary>
+    /// 点开 / 收起某一行的词缀收益。**只有点开才跑引擎**（一件候选 = 原物 1 次 + 每条词缀 1 次试穿，
+    /// 每件约百来毫秒）—— 篮子里可能十几件候选，全部预跑会白烧掉几千次试穿里的大部分。
+    /// </summary>
+    private async Task ToggleGainsAsync(CandidateRankRow row)
+    {
+        if (expandedId == row.Id)
+        {
+            expandedId = null;
+            return;
+        }
+
+        expandedId = row.Id;
+
+        if (gains.ContainsKey(row.Id))
+        {
+            return;   // 算过了（哪怕是「算不了」，也缓存）→ 不再跑一遍引擎
+        }
+
+        var entry = Basket.Items.FirstOrDefault(x => x.Id == row.Id);
+
+        gainsBusyId = row.Id;
+        StateHasChanged();
+
+        try
+        {
+            gains[row.Id] = await LoadGainsAsync(entry);
+        }
+        finally
+        {
+            gainsBusyId = null;
+        }
+    }
+
+    /// <summary>
+    /// 用**这一件候选自己的原文**去算逐条词缀收益（与 C2a 排序同一套口径：部位以物品自己解析出来的为准，
+    /// 篮子里的 SlotKey 只当兜底）。算不了就返回 null，界面如实说「这条算不了」，不给 0。
+    /// </summary>
+    private async Task<AffixGainRanking?> LoadGainsAsync(CandidateBasketItem? entry)
+    {
+        var template = Store.Active;
+        if (entry == null || template == null || string.IsNullOrWhiteSpace(entry.Text))
+        {
+            return null;
+        }
+
+        Item item;
+        try
+        {
+            item = ItemParser.ParseItem(entry.Text);
+        }
+        catch
+        {
+            return null;
+        }
+
+        var slotKey = SlotKeys.ResolveFor(item).FirstOrDefault() ?? entry.SlotKey;
+        return await Gains.RankAsync(template, item, slotKey);
+    }
+
+    /// <summary>篮子的组成变了（增删 / 勾选 / 换模板）→ 之前算好的逐条收益不再对应当前列表，丢掉。</summary>
+    private void ResetGains()
+    {
+        gains.Clear();
+        expandedId = null;
+        gainsBusyId = null;
     }
 
     private string Rank(CandidateRankRow row)

@@ -192,6 +192,15 @@
   <data name="Affix_Gain_Elapsed" xml:space="preserve">
     <value>逐条试穿 {0} 次，共 {1} 毫秒</value>
   </data>
+  <data name="Basket_Gains_Button" xml:space="preserve">
+    <value>词缀收益</value>
+  </data>
+  <data name="Basket_Gains_Running" xml:space="preserve">
+    <value>正在逐条试穿…</value>
+  </data>
+  <data name="Basket_Gains_None" xml:space="preserve">
+    <value>这条算不了（没有物品原文 / 部位不支持 / 模板没有 BD 源码 / 引擎不可用）。</value>
+  </data>
   <data name="Pob_Disabled" xml:space="preserve">
     <value>先在 设置 → 目标BD → 功能开关 里打开「PoB2 引擎」。</value>
   </data>
