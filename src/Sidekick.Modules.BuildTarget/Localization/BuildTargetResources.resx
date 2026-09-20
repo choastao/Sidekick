@@ -1038,4 +1038,100 @@
   <data name="Options_PobContext_Help" xml:space="preserve">
     <value>Takes effect the next time the build is loaded (the engine computes the build when it loads it). The override is applied to the in-memory copy only — your BD file is never modified.</value>
   </data>
+  <data name="Pob_Verdict_Label" xml:space="preserve">
+    <value>Engine verdict: {0}</value>
+  </data>
+  <data name="EngineVerdict_Unresolved" xml:space="preserve">
+    <value>Not enough signal</value>
+  </data>
+  <data name="EngineVerdict_NoChange" xml:space="preserve">
+    <value>No meaningful change</value>
+  </data>
+  <data name="EngineVerdict_Sidegrade" xml:space="preserve">
+    <value>Sidegrade</value>
+  </data>
+  <data name="EngineVerdict_OffenseUpgrade" xml:space="preserve">
+    <value>Offense upgrade</value>
+  </data>
+  <data name="EngineVerdict_DefenseUpgrade" xml:space="preserve">
+    <value>Defense upgrade</value>
+  </data>
+  <data name="EngineVerdict_ClearUpgrade" xml:space="preserve">
+    <value>Clear upgrade</value>
+  </data>
+  <data name="EngineVerdict_StrongUpgrade" xml:space="preserve">
+    <value>Strong upgrade</value>
+  </data>
+  <data name="EngineVerdict_Tradeoff" xml:space="preserve">
+    <value>Trade-off</value>
+  </data>
+  <data name="EngineVerdict_Downgrade" xml:space="preserve">
+    <value>Downgrade</value>
+  </data>
+  <data name="EngineVerdict_StrongDowngrade" xml:space="preserve">
+    <value>Strong downgrade</value>
+  </data>
+  <data name="Verdict_Reason_HardGate" xml:space="preserve">
+    <value>one of your required thresholds is not met</value>
+  </data>
+  <data name="Verdict_Reason_NoMetrics" xml:space="preserve">
+    <value>the engine produced no usable metric for this build</value>
+  </data>
+  <data name="Verdict_Reason_ResCap" xml:space="preserve">
+    <value>a resistance that was at its cap got worse</value>
+  </data>
+  <data name="Verdict_Reason_NoChange" xml:space="preserve">
+    <value>both metrics are within ±1%</value>
+  </data>
+  <data name="Verdict_Reason_BothUp" xml:space="preserve">
+    <value>offense and defense both improve</value>
+  </data>
+  <data name="Verdict_Reason_Offense" xml:space="preserve">
+    <value>offense improves without defense loss</value>
+  </data>
+  <data name="Verdict_Reason_Defense" xml:space="preserve">
+    <value>defense improves without offense loss</value>
+  </data>
+  <data name="Verdict_Reason_BothDown" xml:space="preserve">
+    <value>offense and defense both worsen</value>
+  </data>
+  <data name="Verdict_Reason_Mixed" xml:space="preserve">
+    <value>one metric up, one down</value>
+  </data>
+  <data name="Verdict_Reason_OnlyEhp" xml:space="preserve">
+    <value>only EHP is available (the engine could not produce a damage number)</value>
+  </data>
+  <data name="Verdict_Reason_OnlyDps" xml:space="preserve">
+    <value>only DPS is available (the engine could not produce an EHP number)</value>
+  </data>
+  <data name="Pareto_Label" xml:space="preserve">
+    <value>vs current gear: {0}</value>
+  </data>
+  <data name="Pareto_Dominates" xml:space="preserve">
+    <value>better or equal on both axes</value>
+  </data>
+  <data name="Pareto_Tradeoff" xml:space="preserve">
+    <value>better on one axis, worse on the other</value>
+  </data>
+  <data name="Pareto_Dominated" xml:space="preserve">
+    <value>worse or equal on both axes</value>
+  </data>
+  <data name="Pareto_Equal" xml:space="preserve">
+    <value>same on both axes</value>
+  </data>
+  <data name="Basket_Stale_Reason" xml:space="preserve">
+    <value>premise changed (build / context / metric) - these numbers no longer apply; press Re-rank</value>
+  </data>
+  <data name="Basket_Not_Comparable" xml:space="preserve">
+    <value>rows were computed under different premises - no single winner is shown</value>
+  </data>
+  <data name="Verdict_Reason_OffenseDown" xml:space="preserve">
+    <value>offense drops and defence holds</value>
+  </data>
+  <data name="Verdict_Reason_DefenseDown" xml:space="preserve">
+    <value>defence drops and offense holds</value>
+  </data>
+  <data name="Pareto_Unknown" xml:space="preserve">
+    <value>cannot tell - one axis has no number from the engine</value>
+  </data>
 </root>

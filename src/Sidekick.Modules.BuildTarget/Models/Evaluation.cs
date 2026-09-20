@@ -99,6 +99,16 @@ public class SlotEvaluation
     /// 这种情况下要明确告诉用户「这就是你现在穿的」，不能给「不建议装备」之类的换装建议。
     /// </summary>
     public bool IsCurrentItem { get; set; }
+
+    /// <summary>
+    /// 用户自己勾的硬性门槛没过（某条 <see cref="ModCheck.Required"/> 且未达标）。
+    /// 从 BD 导入的门槛一律是参考值（Required=false），所以命中的一定是用户显式勾的。
+    ///
+    /// 这条是判断用的**数据**，不是判定本身：门槛 + 加法词缀那条轴仍旧由
+    /// <c>VerdictDecider</c> 说了算（本任务没动它）；引擎指标那条轴
+    /// （<see cref="ItemVerdictDecider"/>）把「硬门槛没过」当成优先级最高的一条。
+    /// </summary>
+    public bool HardGateFailed => Checks.Any(x => x.Required && !x.Pass);
 }
 
 /// <summary>一次完整评估的输出。</summary>

@@ -13,6 +13,36 @@ public sealed record PobStats(double Dps, double Ehp, double Life)
     /// PoB 的 <c>FullDPS</c>（全部技能合计）。同 <see cref="CombinedDps"/>，只在回退链里用。
     /// </summary>
     public double FullDps { get; init; }
+
+    /// <summary>
+    /// **有效**火抗（引擎 <c>mainOutput</c> 的口径）。<c>null</c> = helper 没报这个字段（老 helper）。
+    ///
+    /// ⚠ 可空是刻意的：**缺失 ≠ 0**。0 会让「抗性上限守门」（<see cref="ResistanceGuardrail"/>）
+    /// 把「不知道」当成「这项抗性本来就是 0」——那是两种完全不同的结论。
+    /// </summary>
+    public double? FireResist { get; init; }
+
+    /// <summary>有效冰抗；<c>null</c> = 不知道（见 <see cref="FireResist"/>）。</summary>
+    public double? ColdResist { get; init; }
+
+    /// <summary>有效电抗；<c>null</c> = 不知道（见 <see cref="FireResist"/>）。</summary>
+    public double? LightningResist { get; init; }
+
+    /// <summary>有效混沌抗；<c>null</c> = 不知道（见 <see cref="FireResist"/>）。守门不用它（混沌抗上限另算）。</summary>
+    public double? ChaosResist { get; init; }
+
+    /// <summary>
+    /// 火抗**溢出**上限的数值（&gt; 0 = 已经顶到上限之上）；<c>null</c> = 不知道。
+    /// 口径：helper 用引擎的 <c>FireResistTotal - FireResist</c> 算出来（引擎里各元素的溢出字段名不统一，
+    /// 火/电有 Over、冰没有、混沌叫 OverCap，所以统一走 Total - Resist）。
+    /// </summary>
+    public double? FireResistOver { get; init; }
+
+    /// <summary>冰抗溢出；<c>null</c> = 不知道（见 <see cref="FireResistOver"/>）。</summary>
+    public double? ColdResistOver { get; init; }
+
+    /// <summary>电抗溢出；<c>null</c> = 不知道（见 <see cref="FireResistOver"/>）。</summary>
+    public double? LightningResistOver { get; init; }
 }
 
 public enum PobCompareStatus

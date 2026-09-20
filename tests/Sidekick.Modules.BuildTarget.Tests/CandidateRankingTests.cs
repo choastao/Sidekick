@@ -113,6 +113,7 @@ public class CandidateRankingTests
         var ranker = new PobCandidateRanker(
             compare: null!,
             itemParser: null!,
+            evaluator: null!,
             NullLogger<PobCandidateRanker>.Instance);
 
         var candidates = new List<CandidateBasketItem>

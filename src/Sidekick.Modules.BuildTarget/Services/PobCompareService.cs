@@ -59,6 +59,32 @@ public class PobCompareService(
     public static string? MapSlot(string? slotKey) =>
         slotKey != null && PobSlotNames.TryGetValue(slotKey, out var name) ? name : null;
 
+    /// <summary>
+    /// 当前评估场景（<see cref="BuildTargetOptionsStore.PobContext"/> 的现值）。
+    /// 备选篮的「前提」要照抄这一份 —— 场景是试穿数值的一条前提（见 <see cref="BasketPremise"/>）。
+    /// </summary>
+    public string Context => options.PobContext;
+
+    /// <summary>
+    /// 引擎进程的代际号（引擎每重启一次 +1，见 <see cref="PobEngineClient.Generation"/>）。
+    /// 代际号既是基线缓存的键的一部分，也是备选篮「前提」的一部分：
+    /// 引擎重启过 = 那批数字不是同一代算出来的。
+    /// </summary>
+    public int EngineGeneration => engine.Generation;
+
+    /// <summary>
+    /// 模板 + 当前场景的**基线缓存里那份数值**用的伤害指标键；没载入过（或换了模板 / 场景）时为 null。
+    ///
+    /// 备选篮的「前提」里要带主指标（<c>TotalDPS</c> / <c>CombinedDPS</c> / <c>FullDPS</c>）：
+    /// 回退到 Combined / Full 时，绝对值与默认口径**不是一回事**（见 <see cref="PobPrimaryMetric"/>）。
+    /// 缓存里没有对应基线就是「不知道」→ 返回 null；调用方拿它与记录的那一份比，
+    /// 不一致就按「前提变了」处理（不许猜一个值出来）。
+    /// </summary>
+    public string? BaselineMetricKey(BuildTargetTemplate? template) =>
+        template != null && baselineCache.IsValid(template.Id, engine.Generation, options.PobContext)
+            ? PobPrimaryMetric.Select(baselineCache.Stats!).Key
+            : null;
+
     public async Task<PobCompareResult> CompareAsync(
         BuildTargetTemplate? template,
         Item? item,
@@ -474,6 +500,16 @@ public class PobCompareService(
                 // 与 life 一样容错 —— 缺字段绝不能让整份 stats 变成 null。
                 CombinedDps = Number("combinedDps") ?? 0,
                 FullDps = Number("fullDps") ?? 0,
+                // 抗性上限守门要用的七项。⚠ 与上面两个**不一样**：缺字段给的是 **null（不知道）**，
+                // 不是 0 —— 0 会被守门读成「这项抗性就是 0 / 没有溢出」，那是编出来的事实。
+                // 老 helper 不报这几个键时，守门就当「不知道」（见 ResistanceGuardrail.Worsened）。
+                FireResist = Number("fireResist"),
+                ColdResist = Number("coldResist"),
+                LightningResist = Number("lightningResist"),
+                ChaosResist = Number("chaosResist"),
+                FireResistOver = Number("fireResistOver"),
+                ColdResistOver = Number("coldResistOver"),
+                LightningResistOver = Number("lightningResistOver"),
             }
             : null;
     }

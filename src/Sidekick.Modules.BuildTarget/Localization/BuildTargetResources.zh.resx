@@ -1038,4 +1038,100 @@
   <data name="Options_PobContext_Help" xml:space="preserve">
     <value>切换后「下次载入生效」（BD 是载入那一刻算的）；改的是内存里的临时配置，不动你的 BD 文件。</value>
   </data>
+  <data name="Pob_Verdict_Label" xml:space="preserve">
+    <value>引擎判定：{0}</value>
+  </data>
+  <data name="EngineVerdict_Unresolved" xml:space="preserve">
+    <value>信息不足，判不了</value>
+  </data>
+  <data name="EngineVerdict_NoChange" xml:space="preserve">
+    <value>基本没变化</value>
+  </data>
+  <data name="EngineVerdict_Sidegrade" xml:space="preserve">
+    <value>互有来回（幅度都很小）</value>
+  </data>
+  <data name="EngineVerdict_OffenseUpgrade" xml:space="preserve">
+    <value>进攻提升（防御不降）</value>
+  </data>
+  <data name="EngineVerdict_DefenseUpgrade" xml:space="preserve">
+    <value>防御提升（进攻不降）</value>
+  </data>
+  <data name="EngineVerdict_ClearUpgrade" xml:space="preserve">
+    <value>明确提升（攻防双升）</value>
+  </data>
+  <data name="EngineVerdict_StrongUpgrade" xml:space="preserve">
+    <value>大幅提升（攻防双升且幅度大）</value>
+  </data>
+  <data name="EngineVerdict_Tradeoff" xml:space="preserve">
+    <value>有得有失</value>
+  </data>
+  <data name="EngineVerdict_Downgrade" xml:space="preserve">
+    <value>下降</value>
+  </data>
+  <data name="EngineVerdict_StrongDowngrade" xml:space="preserve">
+    <value>大幅下降</value>
+  </data>
+  <data name="Verdict_Reason_HardGate" xml:space="preserve">
+    <value>你自己勾的硬性门槛没达标</value>
+  </data>
+  <data name="Verdict_Reason_NoMetrics" xml:space="preserve">
+    <value>引擎给不出可用指标</value>
+  </data>
+  <data name="Verdict_Reason_ResCap" xml:space="preserve">
+    <value>已经顶到上限的抗性被拉低了</value>
+  </data>
+  <data name="Verdict_Reason_NoChange" xml:space="preserve">
+    <value>两个指标都在 ±1% 以内</value>
+  </data>
+  <data name="Verdict_Reason_BothUp" xml:space="preserve">
+    <value>攻防同时提升</value>
+  </data>
+  <data name="Verdict_Reason_Offense" xml:space="preserve">
+    <value>进攻提升、防御没降</value>
+  </data>
+  <data name="Verdict_Reason_Defense" xml:space="preserve">
+    <value>防御提升、进攻没降</value>
+  </data>
+  <data name="Verdict_Reason_BothDown" xml:space="preserve">
+    <value>攻防同时下降</value>
+  </data>
+  <data name="Verdict_Reason_Mixed" xml:space="preserve">
+    <value>一个升一个降</value>
+  </data>
+  <data name="Verdict_Reason_OnlyEhp" xml:space="preserve">
+    <value>只有 EHP 有数（引擎算不出伤害）</value>
+  </data>
+  <data name="Verdict_Reason_OnlyDps" xml:space="preserve">
+    <value>只有 DPS 有数（引擎算不出 EHP）</value>
+  </data>
+  <data name="Pareto_Label" xml:space="preserve">
+    <value>相对当前装备：{0}</value>
+  </data>
+  <data name="Pareto_Dominates" xml:space="preserve">
+    <value>两维都不差、至少一维更好</value>
+  </data>
+  <data name="Pareto_Tradeoff" xml:space="preserve">
+    <value>一维更好、一维更差</value>
+  </data>
+  <data name="Pareto_Dominated" xml:space="preserve">
+    <value>两维都不优</value>
+  </data>
+  <data name="Pareto_Equal" xml:space="preserve">
+    <value>两维都一样</value>
+  </data>
+  <data name="Basket_Stale_Reason" xml:space="preserve">
+    <value>前提已变（模板 / 场景 / 指标）——这些数字已经不对应当前前提，点「重新排序」</value>
+  </data>
+  <data name="Basket_Not_Comparable" xml:space="preserve">
+    <value>这些行不是在同一前提下算出来的，所以不给「最优」</value>
+  </data>
+  <data name="Verdict_Reason_OffenseDown" xml:space="preserve">
+    <value>进攻下降、防御没动</value>
+  </data>
+  <data name="Verdict_Reason_DefenseDown" xml:space="preserve">
+    <value>防御下降、进攻没动</value>
+  </data>
+  <data name="Pareto_Unknown" xml:space="preserve">
+    <value>判不了——有一维引擎没给出数字</value>
+  </data>
 </root>

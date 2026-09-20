@@ -54,6 +54,14 @@
                     </tbody>
                 </table>
 
+                @* ③ 引擎指标判定（与下面「按你的门槛判」那条轴是两回事，各有各的意思）。
+                   判定顺序与判据见 ItemVerdictDecider；理由用 ReasonKey 对应的文案原样带出来 ——
+                   Unresolved（算不了）时也要把**为什么**写出来，不能只丢一个「算不了」。 *@
+                <div class="mt-2">
+                    <TextBase Class="@($"text-sm {EngineVerdictOf(result).Class}")">@EngineVerdictOf(result).Label</TextBase>
+                    <TextBase Class="text-stone-500 text-xs">@EngineVerdictOf(result).Reason</TextBase>
+                </div>
+
                 @if (result.DpsUnavailable)
                 {
                     <TextBase Class="text-amber-400 text-xs mt-2">@Resources["Pob_Dps_Unavailable"]</TextBase>
@@ -198,6 +206,7 @@
 @inject PobAffixGainService Gains
 @inject BuildTargetStore Store
 @inject BuildTargetOptionsStore Options
+@inject BuildTargetEvaluator Evaluator
 
 @code {
 
@@ -213,6 +222,13 @@
     private bool gainsLoading;
 
     private string? lastKey;
+
+    /// <summary>
+    /// 这件装备有没有踩到用户自己勾的硬性门槛（引擎指标判定的第 ① 条）。
+    /// 复用非引擎那条轴的评估器拿数据，**不重写一套门槛匹配**。
+    /// 评估失败就当没踩到 —— 宁可少给一个理由，也不编一个结论。
+    /// </summary>
+    private bool hardGateFailed;
 
     protected override void OnInitialized()
     {
@@ -276,6 +292,9 @@
         //   （@switch 那个分支移出渲染树、组件销毁），都会顺手收掉这一圈。
         gainsLoading = false;
         StateHasChanged();
+
+        // 硬性门槛是**非引擎那条轴**的事，跟引擎算不算得出无关：在起跑处算一次，随结果一起给判定用。
+        hardGateFailed = EvaluateHardGate(template, slotKey);
 
         try
         {
@@ -377,6 +396,64 @@
         CultureInfo.CurrentCulture,
         Resources["Pob_Context"].Value,
         Resources[PobContexts.ResourceKey(Options.PobContext)].Value);
+
+    /// <summary>
+    /// 引擎指标判定（相对当前装备）。输入的两个百分比都来自这一次试穿对比；
+    /// 硬性门槛与抗性守门分别由 <see cref="BuildTargetEvaluator"/> 与
+    /// <see cref="ResistanceGuardrail"/> 提供 —— 判定本身只有 <see cref="ItemVerdictDecider"/> 一处。
+    /// </summary>
+    private EngineVerdictView EngineVerdictOf(PobCompareResult value)
+    {
+        var (verdict, reasonKey) = ItemVerdictDecider.Decide(ItemVerdictInput.From(value, hardGateFailed));
+
+        return new EngineVerdictView(
+            EngineVerdictClass(verdict),
+            string.Format(
+                CultureInfo.CurrentCulture,
+                Resources["Pob_Verdict_Label"].Value,
+                Resources["EngineVerdict_" + verdict].Value),
+            // 理由**一定要显示**（尤其是 Unresolved：只丢一个「算不了」等于把原因藏起来）。
+            Resources[reasonKey].Value);
+    }
+
+    /// <summary>判定那一行要显示的三段：配色 class / 「引擎判定：…」/ 理由小字。</summary>
+    private sealed record EngineVerdictView(string Class, string Label, string Reason);
+
+    /// <summary>判定的配色：<c>Unresolved</c> 特意用灰色（「算不了」不是结论，是缺信息）。</summary>
+    private static string EngineVerdictClass(ItemVerdict verdict) => verdict switch
+    {
+        ItemVerdict.Unresolved => "text-stone-500",
+        ItemVerdict.NoChange or ItemVerdict.Sidegrade => "text-stone-400",
+        ItemVerdict.ClearUpgrade or ItemVerdict.StrongUpgrade
+            or ItemVerdict.OffenseUpgrade or ItemVerdict.DefenseUpgrade => "text-green-400",
+        ItemVerdict.Tradeoff => "text-amber-400",
+        _ => "text-red-400",
+    };
+
+    /// <summary>
+    /// 这件装备有没有踩到用户自己勾的硬性门槛。取不到（没模板 / 解析不了 / 不在槽位体系里）一律 false：
+    /// 门槛这一条是「用户显式要求」才成立的，没证据就不许判它没过。
+    /// </summary>
+    private bool EvaluateHardGate(BuildTargetTemplate? template, string? slotKey)
+    {
+        if (template == null)
+        {
+            return false;
+        }
+
+        try
+        {
+            var evaluation = Evaluator.Evaluate(template, Item);
+            var slot = evaluation.Slots.FirstOrDefault(x => x.SlotKey == slotKey)
+                       ?? evaluation.Slots.FirstOrDefault();
+
+            return slot?.HardGateFailed == true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
 
     private string StatusText(PobCompareResult value) => value.Status switch
     {

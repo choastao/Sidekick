@@ -89,6 +89,23 @@ local function statsFrom(output)
         coldDotEhp = output.ColdDotEHP,
         lightningDotEhp = output.LightningDotEHP,
         chaosDotEhp = output.ChaosDotEHP,
+        -- 有效抗性 + 上限溢出（C3 的「抗性上限守门」用）。
+        -- ⚠ 引擎取不到的那一项**不发这个键**：Lua 表里的 nil 值等于键不存在，
+        --   JSON 里就没有这一项，主程序按「不知道」处理。**不许发 0 冒充** ——
+        --   0 会被读成「这项抗性就是 0 / 没有溢出」，那是编出来的事实。
+        fireResist = output.FireResist,
+        coldResist = output.ColdResist,
+        lightningResist = output.LightningResist,
+        chaosResist = output.ChaosResist,
+        -- 「溢出」统一用 **Total - Resist** 算，别照抄引擎那套不统一的字段名：
+        --   火/电是 FireResistOver / LightningResistOver、**冰压根没有**、混沌才叫 ChaosResistOverCap。
+        --   Total = 未截断总量（真机实测：混沌 75 有效 / Total 77 → 溢出 2；火 76 / 76 → 溢出 0）。
+        fireResistOver = (output.FireResistTotal ~= nil and output.FireResist ~= nil)
+            and (output.FireResistTotal - output.FireResist) or nil,
+        coldResistOver = (output.ColdResistTotal ~= nil and output.ColdResist ~= nil)
+            and (output.ColdResistTotal - output.ColdResist) or nil,
+        lightningResistOver = (output.LightningResistTotal ~= nil and output.LightningResist ~= nil)
+            and (output.LightningResistTotal - output.LightningResist) or nil,
     }
 end
 

@@ -196,6 +196,18 @@
                     <TextBase Class="text-stone-400 text-xs">@MetricText(ranking.Metric)</TextBase>
                 </div>
 
+                @* ④ 可比性 / 陈旧：数字照留，但换了模板 / 场景（或引擎重启过）之后它们不再对应当前前提 ——
+                   这时候**不给名次**（把两套前提的行排成一条榜 = 拿两个口径的数比大小），
+                   只打标记并指路「重新排序」（上面那颗按钮）。 *@
+                @if (RankingStale)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-1">@Resources["Basket_Stale_Reason"]</TextBase>
+                }
+                else if (!RankingComparable)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-1">@Resources["Basket_Not_Comparable"]</TextBase>
+                }
+
                 <table class="w-full text-sm border-collapse mt-2">
                     <thead>
                     <tr class="text-stone-500 text-xs text-left">
@@ -204,6 +216,7 @@
                         <th class="font-normal py-1 w-16">@Resources["Basket_Col_Slot"]</th>
                         <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
                         <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
+                        <th class="font-normal py-1 w-44"></th>
                         <th class="font-normal py-1 w-24"></th>
                         <th class="font-normal py-1"></th>
                     </tr>
@@ -240,6 +253,15 @@
                                 <td class="py-1 text-right text-stone-600">—</td>
                                 <td class="py-1 text-right text-stone-600">—</td>
                             }
+                            @* ③ 引擎指标判定 + 帕累托（相对当前装备）。两条都只对「算出来的行」有意义：
+                               没算出来的行没有数值，挂标签等于编结论。判定本身在 PobCandidateRanker 里算好（单一处判据）。 *@
+                            <td class="py-1 whitespace-nowrap text-xs">
+                                @if (row.IsRanked)
+                                {
+                                    <span class="@EngineVerdictClass(row.Verdict)" title="@EngineVerdictReason(row)">@EngineVerdictText(row)</span>
+                                    <span class="text-stone-500 ml-2">@ParetoText(row)</span>
+                                }
+                            </td>
                             <td class="py-1 whitespace-nowrap">
                                 @* C2c：按需算这一件候选的逐条词缀收益（点开才跑引擎，不白烧）。 *@
                                 @if (row.IsRanked || gains.ContainsKey(row.Id))
@@ -255,7 +277,7 @@
                         @if (expandedId == row.Id)
                         {
                             <tr>
-                                <td colspan="7" class="py-2 pl-6 border-t border-stone-800">
+                                <td colspan="8" class="py-2 pl-6 border-t border-stone-800">
                                     @if (gainsBusy.Contains(row.Id))
                                     {
                                         <TextBase Class="text-stone-400 text-sm">@Resources["Basket_Gains_Running"]</TextBase>
@@ -355,6 +377,7 @@
 @inject PobCandidateRanker Ranker
 @inject PobAffixGainService Gains
 @inject BuildTargetOptionsStore Options
+@inject PobCompareService Compare
 
 @code {
 
@@ -428,7 +451,11 @@
             if (activeId != rankedTemplateId)
             {
                 rankedTemplateId = activeId;
-                ranking = null;
+
+                // ⚠ 从此处起**不再清空排名**（任务 ④）：旧数字照留，由「前提比对」
+                //   （RankingStale / RankingComparable）判成「前提已变」、打标记并摘掉名次。
+                //   用户可能正想拿旧数字对照着看，直接清掉等于替他把信息删了。
+                //   只有逐条词缀收益必须清 —— 它是按行缓存、并与那一行的模板绑定的。
                 ResetGains();
             }
 
@@ -645,9 +672,73 @@
         gainsBusy.Clear();
     }
 
+    /// <summary>
+    /// 当前前提：模板 / 场景 / 主指标 / 引擎代际（见 <see cref="BasketPremise"/>）。
+    ///
+    /// 主指标取**基线缓存里那份**（这批数字真正用的口径）；缓存里没有对应基线
+    /// （没载入过 / 换了模板或场景 / 引擎重启过）时是 null → 与结果里那份一比就不一致 → 判陈旧。
+    /// ⚠ 主指标是引擎按基线算出来的**后果**，不是用户选项：把「不知道」与「记录的值」当成不同，
+    ///   正好等价于「前提变了，得重排」这个结论。
+    /// </summary>
+    private BasketPremise CurrentPremise() => new(
+        Store.Active?.Id,
+        Options.PobContext,
+        Compare.BaselineMetricKey(Store.Active),
+        Compare.EngineGeneration);
+
+    /// <summary>这次排名里的行是不是**在同一个前提下**算出来的（不同前提不给「最优 / 名次」）。</summary>
+    private bool RankingComparable
+    {
+        get
+        {
+            if (ranking is not { } value)
+            {
+                return true;
+            }
+
+            var premises = new List<BasketPremise>();
+            foreach (var row in value.Ranked)
+            {
+                // 算出来的行必须**带着前提**才谈得上「可比」；缺了（理论上不会）就当不可比。
+                if (row.Premise is not { } premise)
+                {
+                    return false;
+                }
+
+                premises.Add(premise);
+            }
+
+            return BasketComparability.AreComparable(premises);
+        }
+    }
+
+    /// <summary>这批数字的前提与**当前**前提不一致 = 陈旧（数字照留，但要打标记并摘掉名次）。</summary>
+    private bool RankingStale
+    {
+        get
+        {
+            if (ranking is not { } value)
+            {
+                return false;
+            }
+
+            var current = CurrentPremise();
+            foreach (var row in value.Ranked)
+            {
+                if (row.Premise is { } premise && BasketComparability.IsStale(premise, current))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     private string Rank(CandidateRankRow row)
     {
-        if (!row.IsRanked || ranking == null)
+        // 前提变了 / 不可比 → **不给名次**（给个名次就是在说「这两行能比大小」）。
+        if (!row.IsRanked || ranking == null || RankingStale || !RankingComparable)
         {
             return "—";
         }
@@ -655,6 +746,32 @@
         var index = ranking.Ranked.ToList().IndexOf(row);
         return index < 0 ? "—" : (index + 1).ToString(CultureInfo.InvariantCulture);
     }
+
+    /// <summary>引擎判定的小标签（文案与悬浮窗那份是同一套键，别在这里另造一套说法）。</summary>
+    private string EngineVerdictText(CandidateRankRow row) => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources["Pob_Verdict_Label"].Value,
+        Resources["EngineVerdict_" + row.Verdict].Value);
+
+    private string EngineVerdictReason(CandidateRankRow row) =>
+        string.IsNullOrEmpty(row.VerdictReasonKey) ? string.Empty : Resources[row.VerdictReasonKey].Value;
+
+    /// <summary>判定的配色（与悬浮窗那一处同一套口径：<c>Unresolved</c> 用灰色 —— 缺信息不是结论）。</summary>
+    private static string EngineVerdictClass(ItemVerdict verdict) => verdict switch
+    {
+        ItemVerdict.Unresolved => "text-stone-500",
+        ItemVerdict.NoChange or ItemVerdict.Sidegrade => "text-stone-400",
+        ItemVerdict.ClearUpgrade or ItemVerdict.StrongUpgrade
+            or ItemVerdict.OffenseUpgrade or ItemVerdict.DefenseUpgrade => "text-green-400",
+        ItemVerdict.Tradeoff => "text-amber-400",
+        _ => "text-red-400",
+    };
+
+    /// <summary>相对当前装备的帕累托小标签。</summary>
+    private string ParetoText(CandidateRankRow row) => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources["Pareto_Label"].Value,
+        Resources["Pareto_" + row.Pareto].Value);
 
     /// <summary>行尾备注：算出来的把两个数分开说（我们没认出的 / 引擎不支持的），没算出来的说原因。</summary>
     private string RankNote(CandidateRankRow row)

@@ -50,6 +50,27 @@ public sealed class CandidateRankRow
 
     public string? Error { get; init; }
 
+    /// <summary>
+    /// **引擎指标那条轴**的判定（相对当前装备，见 <see cref="ItemVerdictDecider"/>）。
+    /// 没算出来的行是 <see cref="ItemVerdict.Unresolved"/> —— 界面不给它们挂标签。
+    /// </summary>
+    public ItemVerdict Verdict { get; init; } = ItemVerdict.Unresolved;
+
+    /// <summary><see cref="Verdict"/> 对应的理由键（资源名，见 <see cref="ItemVerdictDecider"/>）。</summary>
+    public string VerdictReasonKey { get; init; } = "";
+
+    /// <summary>相对**当前装备**的帕累托关系（见 <see cref="Pareto.Compare"/>）。</summary>
+    public ParetoStatus Pareto { get; init; } = ParetoStatus.Unknown;
+
+    /// <summary>
+    /// 这一行是**在什么前提下**算出来的（模板 + 场景 + 主指标 + 引擎代际）。
+    /// 只有算出来的行才有值；界面拿它判「前提已变」（见 <see cref="BasketComparability"/>）。
+    ///
+    /// ⚠ 可写：一行是先造出来、前提（主指标要等这一批算完才知道）后补的
+    /// （见 <c>PobCandidateRanker</c>）。除此之外不许改。
+    /// </summary>
+    public BasketPremise? Premise { get; set; }
+
     /// <summary>算出来了（有差值），参与排序。</summary>
     public bool IsRanked => Status == PobCompareStatus.Success;
 
