@@ -37,6 +37,12 @@
           Condition="Exists('affix-types.json')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- PoB2 helper 脚本随程序发布（只有脚本，引擎本体几十 MB 不塞进包，见 Engine/README.md）。
+         落到 <输出>\Engine\，用户把引擎装在 %APPDATA%\sidekick\pob2\ 或程序目录 pob2\ 下即可。 -->
+    <None Include="Engine\tao-engine-server.lua"
+          Condition="Exists('Engine\tao-engine-server.lua')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
