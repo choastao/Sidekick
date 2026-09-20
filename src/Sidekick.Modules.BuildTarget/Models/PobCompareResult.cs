@@ -67,11 +67,16 @@ public sealed record PobStats(double Dps, double Ehp, double Life)
     /// <summary>
     /// 抗性守门（<see cref="ResistanceGuardrail"/>）要看的**七个字段全都有数**。
     ///
-    /// <c>false</c> = 老 helper 没报全 → 守门对整个不生效，界面要出提示（不阻塞计算）。
+    /// <c>false</c> = 老 helper 没报全 → 界面要出提示（不阻塞计算），说明**守门对缺的那些项不生效**。
     /// 缺哪几项由 <see cref="PobStats"/> 里那几个可空属性自己说；这里只回「全不全」。
+    ///
+    /// ⚠ **判据必须跟消费者对齐**：<see cref="ResistanceGuardrail"/> 只读六项 ——
+    /// 火 / 冰 / 电 的 <c>Resist</c> 与 <c>ResistOver</c>；**混沌抗它压根不碰**（上限另算，见 <see cref="PobStats.ChaosResist"/> 的注释）。
+    /// 所以这里**不把 <c>ChaosResist</c> 算进判据**：否则一个只缺混沌抗（引擎侧字段名最不统一的那一项）的 helper
+    /// 会让界面说「守门没有生效」，而事实是火/冰/电三项都在守 —— 把「逐元素」说成了全局开关。
     /// </summary>
     public bool ResistanceDataComplete =>
-        FireResist != null && ColdResist != null && LightningResist != null && ChaosResist != null
+        FireResist != null && ColdResist != null && LightningResist != null
         && FireResistOver != null && ColdResistOver != null && LightningResistOver != null;
 
     /// <summary>

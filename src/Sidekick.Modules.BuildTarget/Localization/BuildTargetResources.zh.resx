@@ -1138,7 +1138,7 @@
     <value>引擎没确认这个场景 —— 这些数是按 BD 自己的配置算的，别当成所选场景的数据</value>
   </data>
   <data name="Pob_Resist_Guard_Off" xml:space="preserve">
-    <value>引擎没回报抗性字段 —— 这次的抗性上限守门没有生效</value>
+    <value>引擎没回报全部抗性字段 —— 抗性上限守门对缺的那些项不生效</value>
   </data>
   <data name="Engine_Axis_Label" xml:space="preserve">
     <value>按引擎算出来的 DPS / EHP 判（与上面那条门槛轴是两回事）。</value>

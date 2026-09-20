@@ -231,7 +231,7 @@ public class PobContextTests
     }
 
     [Fact]
-    public void 抗性七项缺任何一项都算没报全()
+    public void 抗性六项缺任何一项都算没报全_混沌抗不算()
     {
         // 全有 → 守门生效，界面不出提示
         var complete = new PobStats(1, 2, 3)
@@ -247,6 +247,13 @@ public class PobContextTests
 
         Assert.True(complete.ResistanceDataComplete);
         Assert.False(complete.ResistanceDataIncomplete);
+
+        // 审计 S3：守门只读六项（火/冰/电 的 Resist 与 ResistOver），**混沌抗不参与**（上限另算）。
+        // 只缺混沌抗时必须仍算「报全」—— 否则界面会把「逐元素」的守门说成「全局没生效」。
+        var chaosMissing = complete with { ChaosResist = null };
+
+        Assert.True(chaosMissing.ResistanceDataComplete);
+        Assert.False(chaosMissing.ResistanceDataIncomplete);
 
         // 老 helper：只报了有效抗性、没报溢出 → 守门看不出「顶到上限」，界面必须出提示
         var partial = complete with { FireResistOver = null };

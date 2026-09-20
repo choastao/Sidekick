@@ -123,8 +123,8 @@ public class PobCompareService(
             logger.LogInformation(
                 "[BuildTarget] PoB compare {Slot}: dps {BaseDps:0} → {Dps:0}, ehp {BaseEhp:0} → {Ehp:0} ({Elapsed:0} ms, unmapped {Unmapped}, annotation-stripped {Annotated}, metric {Metric})",
                 pobSlot,
-                measured.Baseline!.Dps,
-                current.Dps,
+                PobPrimaryMetric.Value(measured.Baseline!, metric.Key),
+                PobPrimaryMetric.Value(current, metric.Key),
                 measured.Baseline.Ehp,
                 current.Ehp,
                 stopwatch.ElapsedMilliseconds,

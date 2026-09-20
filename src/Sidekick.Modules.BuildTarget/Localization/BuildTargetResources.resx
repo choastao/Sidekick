@@ -1138,7 +1138,7 @@
     <value>the engine did not confirm this context - the numbers are the build's own config, so do not read them as the selected context</value>
   </data>
   <data name="Pob_Resist_Guard_Off" xml:space="preserve">
-    <value>the engine did not report the resistance fields - the resistance-cap guardrail is not active for this comparison</value>
+    <value>the engine did not report all resistance fields - the resistance-cap guardrail does not apply to the missing ones</value>
   </data>
   <data name="Engine_Axis_Label" xml:space="preserve">
     <value>Judged by the engine's DPS / EHP (a different axis from the threshold check above).</value>

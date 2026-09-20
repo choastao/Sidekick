@@ -89,11 +89,15 @@ public class PobCandidateRanker(
         // ⚠ 判据是 **DpsUnavailable**（= 三个伤害字段全算不出来），与逐条词缀收益（PobAffixGainService）
         //   用**同一个判据**，别在两处各写一套。
         //
-        //   **不再是** `Any(...)`：回退档（基线 TotalDPS = 0、CombinedDPS 有数）里每一行的 MetricValue
-        //   都是那个指标的数，照 DPS 排是实话 —— 只有「一个数都没有」的行才该让整批改按 EHP 排。
-        //   一批里的行确实可能是混的（比如基线缓存换代、某几行重算过），那时按「都不可用」才降级。
+        //   回退档（基线 TotalDPS = 0、CombinedDPS 有数）里每一行的 MetricValue 都是那个指标的数，
+        //   照 DPS 排是实话 —— 只有「伤害一个数都没有」的行才该让整批改按 EHP 排。
+        //
+        //   ⚠ **判据只看「算出来的行」（IsRanked）**：没算出来的行（`MissingText`：v3.7 之前的条目没存物品原文、
+        //     基底认不出、转换失败）走的是另一个工厂，它们的 `DpsUnavailable` 只是 `PobCompareResult.Not(...)`
+        //     的**默认值 false** —— 把它算进判据，会在「批次里混了一行没算出来的」时把降级判反，
+        //     于是重新出现「表头写按 DPS 排、整列 DPS 是「—」、名次实际由 EHP 决定」那种自相矛盾。
         var effectiveMetric = PobAffixGainService.EffectiveMetric(
-            rows.Count > 0 && rows.All(x => x.DpsUnavailable),
+            ShouldFallbackToEhp(rows),
             metric);
 
         logger.LogInformation(
@@ -142,6 +146,14 @@ public class PobCandidateRanker(
             return null;
         }
     }
+
+    /// <summary>
+    /// 整批是否该改按 EHP 排：**只看算出来的行**里有没有「伤害一个数都没有」的。
+    /// 没算出来的行不参与 —— 它们的 <see cref="CandidateRankRow.DpsUnavailable"/> 是默认值 false，
+    /// 拿默认值当事实正是本项目最容易出错的地方（审计 S2）。
+    /// </summary>
+    internal static bool ShouldFallbackToEhp(IEnumerable<CandidateRankRow> rows) =>
+        rows.Any(x => x.IsRanked && x.DpsUnavailable);
 
     private static CandidateRankRow Row(CandidateBasketItem entry, PobCompareResult result, bool hardGateFailed)
     {

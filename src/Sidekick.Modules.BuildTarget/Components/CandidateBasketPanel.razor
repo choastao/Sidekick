@@ -199,16 +199,14 @@
                 @* ④ 可比性 / 陈旧：数字照留，但换了模板 / 场景（或引擎重启过）之后它们不再对应当前前提 ——
                    这时候**不给名次**（把两套前提的行排成一条榜 = 拿两个口径的数比大小），
                    只打标记并指路「重新排序」（上面那颗按钮）。 *@
-                @* ⚠ 审计 A5：前提是**逐行**盖的（PobCandidateRanker），所以这里两条判据都能真的走到 ——
-                   「一批算到一半场景变了 / 引擎换代」时前半批与后半批的前提不同，
-                   AreComparable 就会判成不可比（老代码给整批盖同一个前提，这条永远是 true）。 *@
+                @* ⚠ 审计 R3：前提现在是**逐行**盖的（PobCandidateRanker），`AreComparable` 作为函数确实可达；
+                   但**界面上这两条文案互斥且「不可比」永远被「陈旧」遮住** —— 两行前提互不相同 ⇒
+                   至少一行 ≠ 当前前提 ⇒ `RankingStale` 必为 true（唯一绕开的路是「某算出的行没盖前提」，
+                   而 Ranker 对每个 IsRanked 行都盖了）。所以只保留一条文案，别留一个到不了的 else if；
+                   名次保护不受影响（Rank() 两条判据都会摘名次）。 *@
                 @if (RankingStale)
                 {
                     <TextBase Class="text-amber-400 text-xs mt-1">@Resources["Basket_Stale_Reason"]</TextBase>
-                }
-                else if (!RankingComparable)
-                {
-                    <TextBase Class="text-amber-400 text-xs mt-1">@Resources["Basket_Not_Comparable"]</TextBase>
                 }
 
                 <table class="w-full text-sm border-collapse mt-2">

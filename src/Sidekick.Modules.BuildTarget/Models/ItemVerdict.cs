@@ -231,7 +231,10 @@ public static class ItemVerdictDecider
         }
 
         // ⑨ 「只有一维有数」这条在输入里被**点明**了（MetricsPartial）—— 按有数的那一维定结论。
-        // ⚠ MetricsPartial 在这里**真的被读了**（以前写进去没人读，等于一个不生效的开关）：
+        // ⚠ MetricsPartial **不改变结论**，只把调用方的意图写在类型上：本调用方下
+        //   「offense 为 null」与「MetricsPartial 为 true」是同一个布尔（都源自 DpsUnavailable），
+        //   所以它两条分支逐条判据、逐条返回都相同 —— 判据始终是「另一维为 null」，别把它当开关。
+        //   （审计 R2：原来那句「本轮把它接上了线」会让人以为行为变了，实际是两份逐条相同的代码。）
         //   它把「只有一维有数」这件事在语义上点明，判据本身仍然是「另一维是 null」——
         //   所以「两维都有数」时它就算被误置位也不会改变结论（下面这条 else-if 会先被跳过）。
         if (input.MetricsPartial && defense is { } partialEhp)
