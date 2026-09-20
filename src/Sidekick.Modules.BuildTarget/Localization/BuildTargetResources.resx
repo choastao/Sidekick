@@ -670,7 +670,7 @@
     <value>Weight data source: {0}</value>
   </data>
   <data name="Craft_Prob_Note_Source" xml:space="preserve">
-    <value>Affix weights come from Path of Building's recombinator experiments plus trade-site statistics (a community reverse-engineering estimate). The game does not publish success rates, so this is a reference value, not a promise.</value>
+    <value>Data source: Craft of Exile's Path of Exile 2 crafting model. This is an expected average, not a promise — the game does not publish success rates.</value>
   </data>
   <data name="Craft_Prob_Note_Mean" xml:space="preserve">
     <value>Expected attempts is an average: on average 1 in N attempts hits the target — it does not mean &quot;N attempts is guaranteed&quot;.</value>
@@ -688,13 +688,13 @@
     <value>Pool tags used: {0}</value>
   </data>
   <data name="Craft_Prob_No_Weights" xml:space="preserve">
-    <value>No affix weight data found (affix-weights.json) — success chance and expected cost are hidden.</value>
+    <value>No crafting-model data found (affix-pool-coe.json) — success chance and expected cost are hidden.</value>
   </data>
   <data name="Craft_Prob_Weights_Hint" xml:space="preserve">
-    <value>Looked for affix-weights.json in:</value>
+    <value>Looked for affix-pool-coe.json in:</value>
   </data>
   <data name="Craft_Prob_Weights_Load_Failed" xml:space="preserve">
-    <value>Could not read the affix weight file: {0}</value>
+    <value>Could not read the crafting-model file: {0}</value>
   </data>
   <data name="Craft_Prob_No_Tags" xml:space="preserve">
     <value>This slot has no matching weight keys, so the pool (and the chance) cannot be built.</value>

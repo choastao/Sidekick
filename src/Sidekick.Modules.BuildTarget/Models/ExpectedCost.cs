@@ -15,7 +15,16 @@ public sealed record ExpectedCostEstimate
     /// <summary>目标条数（池里能满足目标的条目数）。</summary>
     public int TargetCount { get; init; }
 
-    /// <summary>P = 目标条数 / 池条数，取值 0-1。0 表示算不出来（池空 / 没有匹配的目标）。</summary>
+    /// <summary>池内条目的权重合计（真实权重，不是条数）。</summary>
+    public double PoolWeight { get; init; }
+
+    /// <summary>命中条目的权重合计（真实权重）。</summary>
+    public double TargetWeight { get; init; }
+
+    /// <summary>
+    /// P = 命中权重之和 / 池内权重之和，取值 0-1。0 表示算不出来
+    /// （池空 / 权重合计为 0 / 没有匹配的目标）。
+    /// </summary>
     public double Probability { get; init; }
 
     /// <summary>单次操作成本（神聖石计价，含预兆，与面板里的单次成本同一口径）。</summary>

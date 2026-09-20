@@ -92,7 +92,8 @@ public class AffixWeightService
     /// <summary>
     /// 建池：标签集内能出、侧别一致、ilvl 门槛达标（level &lt;= 物品等级）的全部词缀。
     ///
-    /// 权重只有 0/1，所以「池」就是条目集合，概率是条数比。
+    /// 权重只有 0/1，所以「池」就是条目集合 —— 这份池只用于浏览 / 搜索；
+    /// 概率与期望成本走 <see cref="AffixPoolCoEService"/>（真实权重、按底材建池）。
     /// </summary>
     public IReadOnlyList<ModWeight> GetPool(IReadOnlyCollection<string>? tags, AffixSide side, int itemLevel)
     {

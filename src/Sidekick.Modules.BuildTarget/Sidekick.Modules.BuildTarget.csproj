@@ -27,6 +27,11 @@
           Condition="Exists('affix-weights.json')">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <!-- CoE 做装模型数据（真实权重）随程序发布：复制到主程序根目录，供 AffixPoolCoEService 读取 -->
+    <None Include="affix-pool-coe.json"
+          Condition="Exists('affix-pool-coe.json')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <!-- 词缀类型数据（前缀/后缀）随程序发布：复制到主程序根目录，供 AffixTypeService 读取 -->
     <None Include="affix-types.json"
           Condition="Exists('affix-types.json')">

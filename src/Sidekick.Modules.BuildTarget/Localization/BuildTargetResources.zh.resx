@@ -670,7 +670,7 @@
     <value>权重数据来源：{0}</value>
   </data>
   <data name="Craft_Prob_Note_Source" xml:space="preserve">
-    <value>词缀权重来自 Path of Building 的重组器实验与交易站统计（社区逆向估算）。官方不公布成功率，所以这里算的是参考值，不是保证。</value>
+    <value>数据来源：Craft of Exile 的 PoE2 做装模型数据。这是期望均值、不是保证；官方不公布成功率。</value>
   </data>
   <data name="Craft_Prob_Note_Mean" xml:space="preserve">
     <value>期望次数是均值：平均 1/N 次能出，不等于「N 次必出」。</value>
@@ -688,13 +688,13 @@
     <value>建池用的标签：{0}</value>
   </data>
   <data name="Craft_Prob_No_Weights" xml:space="preserve">
-    <value>未找到词缀权重数据（affix-weights.json）—— 不显示成功率与期望成本。</value>
+    <value>未找到做装模型数据（affix-pool-coe.json）—— 不显示成功率与期望成本。</value>
   </data>
   <data name="Craft_Prob_Weights_Hint" xml:space="preserve">
-    <value>已在这些位置查找 affix-weights.json：</value>
+    <value>已在这些位置查找 affix-pool-coe.json：</value>
   </data>
   <data name="Craft_Prob_Weights_Load_Failed" xml:space="preserve">
-    <value>词缀权重文件读取失败：{0}</value>
+    <value>做装模型数据文件读取失败：{0}</value>
   </data>
   <data name="Craft_Prob_No_Tags" xml:space="preserve">
     <value>这个部位在权重数据里没有对应标签，建不出池，也算不出概率。</value>

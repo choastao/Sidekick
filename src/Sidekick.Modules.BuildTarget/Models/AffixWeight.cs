@@ -9,7 +9,8 @@ namespace Sidekick.Modules.BuildTarget.Models;
 /// <summary>
 /// 内置词缀权重表（affix-weights.json）的根节点。
 ///
-/// 这张表回答的是「这条词缀能不能出现在这个基底上」，用来算改造/洗装的期望成本。
+/// 这张表回答的是「这条词缀能不能出现在这个基底上」，现在只用来给词缀浏览 / 搜索建池
+/// （概率与期望成本已经改用带真实权重的 <see cref="AffixPoolCoeFile"/>）。
 /// 权重来自 PoB-PoE2 的重组器实验 + 交易站统计（社区逆向估算），**官方不公布成功率**，
 /// 所以这里只当参考值用，界面必须把这一点说出来。
 /// </summary>
@@ -29,8 +30,8 @@ public class AffixWeightFile
 /// 一条词缀的权重记录。
 ///
 /// <see cref="W"/> 是 weightKey -&gt; weightVal 的字典。这一版导出的数据里权重只有 0 和 1，
-/// 所以池内概率 = 条数比，不需要加权求和；但判定仍然按「权重 &gt; 0」来写，
-/// 以后数据换成真实权重也不用改调用方。
+/// 所以这份数据只够回答「能不能出」——**别拿它算概率**（那会退化成数条数）；
+/// 概率走 <see cref="AffixPoolCoeFile"/> 的真实权重，池也按底材建。
 ///
 /// 两个坑，别踩：
 /// 1. <c>w["default"]</c> 恒为 0，语义是「不在列举基底里的基底就不出这条」——
@@ -355,6 +356,143 @@ public static class AffixPoolTags
         [SlotKeys.Ring1] = Ring,
         [SlotKeys.Ring2] = Ring,
     };
+
+    // ---- 物品 -> Craft of Exile 底材 id（affix-pool-coe.json 的 bases 键） ----
+
+    /// <summary>
+    /// 物品类别就能定死底材的：首饰、法器、护身符、以及「按类型分底材」的武器。
+    ///
+    /// 剑 / 斧 / 锤在 CoE 数据里单手双手是**不同底材**（13 vs 22、15 vs 24、16 vs 23），
+    /// 所以这里必须用我们解析出来的具体类别，不能用 weightKey 那套「sword / axe / mace」。
+    /// </summary>
+    private static readonly Dictionary<ItemClass, string> BaseByClass = new()
+    {
+        [ItemClass.Belt] = "3",
+        [ItemClass.Ring] = "1",
+        [ItemClass.Amulet] = "2",
+        [ItemClass.Quiver] = "4",
+        [ItemClass.Focus] = "229",
+        [ItemClass.Talisman] = "244",
+        [ItemClass.Claw] = "11",
+        [ItemClass.Dagger] = "12",
+        [ItemClass.OneHandSword] = "13",
+        [ItemClass.TwoHandSword] = "22",
+        [ItemClass.OneHandAxe] = "15",
+        [ItemClass.TwoHandAxe] = "24",
+        [ItemClass.OneHandMace] = "16",
+        [ItemClass.TwoHandMace] = "23",
+        [ItemClass.Sceptre] = "17",
+        [ItemClass.Wand] = "18",
+        [ItemClass.Spear] = "216",
+        [ItemClass.Flail] = "217",
+        [ItemClass.Bow] = "20",
+        [ItemClass.Staff] = "21",
+        [ItemClass.Warstaff] = "25",
+        [ItemClass.Crossbow] = "228",
+    };
+
+    /// <summary>类别拿不到时，靠界面槽位键兜底的首饰类底材。</summary>
+    private static readonly Dictionary<string, string> BaseBySlot = new()
+    {
+        [Belt] = "3",
+        [Ring] = "1",
+        [Amulet] = "2",
+        [Quiver] = "4",
+        [Focus] = "229",
+    };
+
+    /// <summary>
+    /// 护甲部位 / 盾牌：底材随「属性组合」而变，属性组合由物品上解析出来的防御值推导。
+    /// 键里的属性顺序固定为 str / dex / int（与 <see cref="DefenceSubtype"/> 一致）。
+    /// </summary>
+    private static readonly Dictionary<(string Slot, string Attrs), string> BaseBySlotAndAttrs = new()
+    {
+        [(Shield, "str")] = "5",
+        [(Shield, "dex")] = "6",
+        [(Shield, "str_dex")] = "8",
+        [(Shield, "str_int")] = "9",
+
+        [(BodyArmour, "str")] = "45",
+        [(BodyArmour, "dex")] = "46",
+        [(BodyArmour, "int")] = "47",
+        [(BodyArmour, "str_dex")] = "48",
+        [(BodyArmour, "str_int")] = "49",
+        [(BodyArmour, "dex_int")] = "50",
+
+        [(Boots, "str")] = "39",
+        [(Boots, "dex")] = "40",
+        [(Boots, "int")] = "41",
+        [(Boots, "str_dex")] = "42",
+        [(Boots, "str_int")] = "43",
+        [(Boots, "dex_int")] = "44",
+
+        [(Gloves, "str")] = "33",
+        [(Gloves, "dex")] = "34",
+        [(Gloves, "int")] = "35",
+        [(Gloves, "str_dex")] = "36",
+        [(Gloves, "str_int")] = "37",
+        [(Gloves, "dex_int")] = "38",
+
+        [(Helmet, "str")] = "52",
+        [(Helmet, "dex")] = "53",
+        [(Helmet, "int")] = "54",
+        [(Helmet, "str_dex")] = "55",
+        [(Helmet, "str_int")] = "56",
+        [(Helmet, "dex_int")] = "57",
+    };
+
+    /// <summary>
+    /// 物品 -&gt; <c>affix-pool-coe.json</c> 里的底材 id（概率池是按**底材**取的，不是按标签集）。
+    ///
+    /// 为什么要按底材而不是标签集：同一个词缀族在不同底材上的权重可以不同
+    /// （例：Dexterity 在纯 DEX 底材是 1000、在 DEX/INT 底材是 500），
+    /// 用标签汇总会把权重算错。
+    ///
+    /// **判不出来就返回 null**（缺属性、三属性护甲、非常见底材、单手双手分不清的剑/斧/锤），
+    /// 调用方按「池不可用」处理，不猜一个近似的底材顶上。
+    /// </summary>
+    public static string? ResolveBase(Item? item, string? slotKey)
+    {
+        var type = item?.ItemClass?.Type ?? ItemClass.Unknown;
+        if (BaseByClass.TryGetValue(type, out var fixedBase))
+        {
+            return fixedBase;
+        }
+
+        var resolved = SlotKeyOf(item);
+        if (resolved is null && !string.IsNullOrWhiteSpace(slotKey))
+        {
+            SlotKeyBySlot.TryGetValue(slotKey, out resolved);
+        }
+
+        if (resolved is null)
+        {
+            return null;
+        }
+
+        if (BaseBySlot.TryGetValue(resolved, out var slotBase))
+        {
+            return slotBase;
+        }
+
+        var properties = item?.Properties;
+        var armour = properties?.Armour ?? 0;
+        var evasion = properties?.EvasionRating ?? 0;
+        var energyShield = properties?.EnergyShield ?? 0;
+
+        // 属性组合由物品上解析出来的防御值推导（str / dex / int 的七种组合之一）。
+        // 盾牌在这里走同一套：CoE 的盾牌底材是 5 / 6 / 8 / 9（str / dex / str+dex / str+int），
+        // 和权重表里 str_shield 那一族的键名不是一回事，所以不能复用 ShieldSubtype。
+        var subtype = DefenceSubtype(armour, evasion, energyShield);
+        if (subtype is null)
+        {
+            return null;
+        }
+
+        var attrs = subtype[..^"_armour".Length];
+
+        return BaseBySlotAndAttrs.GetValueOrDefault((resolved, attrs));
+    }
 
     /// <summary>按物品解析结果建标签集。</summary>
     public static AffixPoolTagSet Resolve(Item? item)

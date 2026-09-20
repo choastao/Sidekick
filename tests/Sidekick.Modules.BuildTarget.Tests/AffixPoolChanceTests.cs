@@ -14,24 +14,22 @@ using Xunit.Abstractions;
 namespace Sidekick.Modules.BuildTarget.Tests;
 
 /// <summary>
-/// 期望成本的核对：池条数 / 目标条数 / P / 期望次数。
+/// 期望成本的核对：池条数 / 池权重 / 目标条数 / 目标权重 / P / 期望次数。
 ///
-/// 期望值是用 Python 按「标签集 = {槽位键} ∪ {armour?} ∪ {子类?}」+「权重只有 0/1」+「目标值 10
-/// （这三条目标词缀池内任何一个 tier 的上限都 ≥ 10，等价于「不挑 tier」）」算出来的，逐条核对必须完全一致。
+/// 期望值是用 Python 直接从 <c>affix-pool-coe.json</c> 里按底材 + 侧别 + ilvl 建的池算出来的
+/// （P = Σ命中权重 / Σ池内权重），逐条核对必须完全一致。
 /// </summary>
 public class AffixPoolChanceTests
 {
     /// <summary>物品等级统一 80。</summary>
     private const int ItemLevel = 80;
 
-    /// <summary>目标数值下限（见类注释）。</summary>
-    private const double TargetValue = 10;
-
     /// <summary>单次操作成本（神聖石）——只用来验算「期望成本 = 期望次数 × 单次成本」。</summary>
     private const double SingleOperationCost = 0.1154;
 
     private readonly ITestOutputHelper output;
     private readonly AffixWeightService weights = new(NullLogger<AffixWeightService>.Instance);
+    private readonly AffixPoolCoEService coe = new(NullLogger<AffixPoolCoEService>.Instance);
 
     public AffixPoolChanceTests(ITestOutputHelper output)
     {
@@ -40,60 +38,58 @@ public class AffixPoolChanceTests
 
     public static IEnumerable<object[]> AcceptanceRows =>
     [
-        // 场景 | 槽位键 | 护甲 | 闪避 | 能量护盾 | 侧 | 目标词缀 | 池条数 | 目标条数 | P% | 期望次数
-        ["ilvl80 鞋子 dex_armour", AffixPoolTags.Boots, 0, 100, 0, AffixSide.Prefix, "to maximum Life", 65, 15, 23.08, 4.3],
-        ["ilvl80 鞋子 dex_armour", AffixPoolTags.Boots, 0, 100, 0, AffixSide.Suffix, "to Fire Resistance", 81, 7, 8.64, 11.6],
-        ["ilvl80 鞋子 dex_armour", AffixPoolTags.Boots, 0, 100, 0, AffixSide.Prefix, "Movement Speed", 65, 5, 7.69, 13.0],
-        ["ilvl80 头盔 dex_armour", AffixPoolTags.Helmet, 0, 100, 0, AffixSide.Prefix, "to maximum Life", 74, 16, 21.62, 4.6],
-        ["ilvl80 戒指（无 armour 标签）", AffixPoolTags.Ring, 0, 0, 0, AffixSide.Suffix, "to Fire Resistance", 99, 7, 7.07, 14.1],
-        ["ilvl80 戒指（无 armour 标签）", AffixPoolTags.Ring, 0, 0, 0, AffixSide.Prefix, "to maximum Life", 100, 8, 8.00, 12.5],
-        ["ilvl80 项链（无 armour 标签）", AffixPoolTags.Amulet, 0, 0, 0, AffixSide.Suffix, "to Fire Resistance", 123, 7, 5.69, 17.6],
-        ["ilvl80 鞋子退化路径（只用 {boots,armour}）", AffixPoolTags.Boots, 0, 0, 0, AffixSide.Prefix, "to maximum Life", 23, 9, 39.13, 2.6],
+        // 场景 | 底材 id | 侧 | 目标词缀 | 目标值 | 池条数 | 池权重 | 目标条数 | 目标权重 | P% | 期望次数
+        ["ilvl80 腰带 belt(3)", "3", AffixSide.Suffix, "to Fire Resistance", 10d, 85, 63262d, 7, 7000d, 11.07, 9.0],
+        ["ilvl80 腰带 belt(3)", "3", AffixSide.Prefix, "to maximum Life", 10d, 61, 49608d, 10, 10000d, 20.16, 5.0],
+        ["ilvl80 戒指 ring(1)", "1", AffixSide.Suffix, "to Fire Resistance", 10d, 114, 88865d, 7, 7000d, 7.88, 12.7],
+        ["ilvl80 项链 amulet(2)", "2", AffixSide.Suffix, "to Fire Resistance", 10d, 143, 97420d, 7, 7000d, 7.19, 13.9],
+        ["ilvl80 鞋子 boots DEX(40)", "40", AffixSide.Prefix, "to maximum Life", 10d, 43, 43000d, 9, 9000d, 20.93, 4.8],
+        ["ilvl80 鞋子 boots DEX(40)", "40", AffixSide.Prefix, "Movement Speed", 10d, 43, 43000d, 5, 5000d, 11.63, 8.6],
+        ["ilvl80 头盔 helmet DEX(53)", "53", AffixSide.Prefix, "to maximum Life", 10d, 59, 56200d, 16, 16000d, 28.47, 3.5],
 
-        // 武器：标签集 = {具体类型键} ∪ {weapon 伞} ∪ {单手/双手伞}
-        // （这里不传类别，走「按类型键推断单手双手」的兜底分支）
-        ["ilvl80 魔杖 wand", "wand", 0, 0, 0, AffixSide.Prefix, "increased Spell Damage", 116, 8, 6.90, 14.5],
-        ["ilvl80 魔杖 wand", "wand", 0, 0, 0, AffixSide.Suffix, "increased Cast Speed", 146, 7, 4.79, 20.9],
-        ["ilvl80 弓 bow", "bow", 0, 0, 0, AffixSide.Prefix, "increased Physical Damage", 78, 7, 8.97, 11.1],
-        // 剑/斧/锤的单手双手要靠物品类别才能定；不传类别时按「不猜」处理，
-        // 标签集只有 {sword, weapon}，池比带 handedness 时小（77 vs 91）。
-        ["ilvl80 剑 sword（无类别，不猜单手双手）", "sword", 0, 0, 0, AffixSide.Prefix, "increased Physical Damage", 77, 7, 9.09, 11.0],
+        // 武器（CoE 里按具体类型分底材）。单手剑那份数据的权重恰好只有 0/1，
+        // 池权重 = 池条数 —— 这不是特例，是数据的真实值，模型照样按权重算。
+        ["ilvl80 单手剑 One Hand Sword(13)", "13", AffixSide.Prefix, "increased Physical Damage", 10d, 67, 67d, 14, 14d, 20.90, 4.8],
+        ["ilvl80 弓 bow(20)", "20", AffixSide.Prefix, "increased Physical Damage", 10d, 72, 43758d, 14, 8950d, 20.45, 4.9],
+        ["ilvl80 魔杖 wand(18)", "18", AffixSide.Prefix, "increased Spell Damage", 10d, 85, 41156d, 17, 8652d, 21.02, 4.8],
     ];
 
     [Theory]
     [MemberData(nameof(AcceptanceRows))]
     public void Pool_chance_matches_expected_table(
         string scenario,
-        string slotKey,
-        int armour,
-        int evasion,
-        int energyShield,
+        string baseId,
         AffixSide side,
         string pattern,
+        double targetValue,
         int expectedPool,
+        double expectedPoolWeight,
         int expectedTarget,
+        double expectedTargetWeight,
         double expectedProbabilityPercent,
         double expectedTries)
     {
-        Assert.True(weights.HasData, $"找不到 affix-weights.json（查找路径：{string.Join(" | ", weights.SearchedPaths)}）");
+        Assert.True(coe.HasData, $"找不到 affix-pool-coe.json（查找路径：{string.Join(" | ", coe.SearchedPaths)}）");
 
-        var tags = AffixPoolTags.Resolve(slotKey, armour, evasion, energyShield);
-        var pool = weights.GetPool(tags.Tags, side, ItemLevel);
-        var estimate = ExpectedCostCalculator.Estimate(pool, [pattern], TargetValue, SingleOperationCost);
+        var pool = coe.GetPool(baseId, side, ItemLevel);
+        var estimate = ExpectedCostCalculator.Estimate(pool, [pattern], targetValue, SingleOperationCost);
 
         output.WriteLine(
-            "{0,-36} {1,-6} {2,-22} 池 {3,4} 目标 {4,2} P {5,6:0.00}% 平均 1/{6,5:0.0} 次  [标签 {7}]",
+            "{0,-32} {1,-6} {2,-26} 池 {3,4} 权重 {4,7} 目标 {5,2} 权重 {6,6} P {7,6:0.00}% 平均 1/{8,5:0.0} 次",
             scenario,
             side,
             pattern,
             estimate.PoolCount,
+            estimate.PoolWeight,
             estimate.TargetCount,
+            estimate.TargetWeight,
             estimate.ProbabilityPercent,
-            estimate.ExpectedTries,
-            tags.TagText);
+            estimate.ExpectedTries);
 
         Assert.Equal(expectedPool, estimate.PoolCount);
+        Assert.Equal(expectedPoolWeight, estimate.PoolWeight);
         Assert.Equal(expectedTarget, estimate.TargetCount);
+        Assert.Equal(expectedTargetWeight, estimate.TargetWeight);
         Assert.Equal(expectedProbabilityPercent, Math.Round(estimate.ProbabilityPercent, 2));
         Assert.Equal(expectedTries, Math.Round(estimate.ExpectedTries, 1));
 

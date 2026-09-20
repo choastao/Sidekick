@@ -27,19 +27,19 @@
                 </div>
             }
 
-            @* 0.5 词缀权重数据（概率 / 期望成本）：缺失时同样如实说出来 *@
-            @if (!AffixWeights.HasData)
+            @* 0.5 做装模型数据（概率 / 期望成本）：缺失时同样如实说出来 *@
+            @if (!AffixCoe.HasData)
             {
                 <div class="mt-2 flex flex-col gap-1">
                     <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Prob_No_Weights"]</TextBase>
-                    @if (!string.IsNullOrEmpty(AffixWeights.LoadError))
+                    @if (!string.IsNullOrEmpty(AffixCoe.LoadError))
                     {
                         <TextBase Class="text-stone-400 text-xs">
-                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Weights_Load_Failed"].Value, AffixWeights.LoadError)
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Weights_Load_Failed"].Value, AffixCoe.LoadError)
                         </TextBase>
                     }
                     <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Weights_Hint"]</TextBase>
-                    @foreach (var path in AffixWeights.SearchedPaths)
+                    @foreach (var path in AffixCoe.SearchedPaths)
                     {
                         <TextBase Class="text-stone-500 text-xs pl-3">@path</TextBase>
                     }
@@ -170,7 +170,7 @@
                 <div class="mt-3 flex flex-col gap-1">
                     <TextBase Class="text-amber-400 text-sm font-medium">@Resources["Craft_Prob_Total_Title"]</TextBase>
 
-                    @if (Prices.Data is null || !AffixWeights.HasData)
+                    @if (Prices.Data is null || !AffixCoe.HasData)
                     {
                         <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Total_None"]</TextBase>
                     }
@@ -208,14 +208,14 @@
             }
 
             @* 3.5 概率层的诚实提示：数据来路、均值不是保证、混沌石会删词缀、退化池偏乐观 —— 一条都不能省 *@
-            @if (AffixWeights.HasData && (RequiredNeeds.Count > 0 || OptionalNeeds.Count > 0))
+            @if (AffixCoe.HasData && (RequiredNeeds.Count > 0 || OptionalNeeds.Count > 0))
             {
                 <div class="mt-2 flex flex-col gap-1">
                     <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Source"]</TextBase>
-                    @if (!string.IsNullOrWhiteSpace(AffixWeights.Source))
+                    @if (!string.IsNullOrWhiteSpace(AffixCoe.Source))
                     {
                         <TextBase Class="text-stone-500 text-xs">
-                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Source_Data"].Value, AffixWeights.Source)
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Source_Data"].Value, AffixCoe.Source)
                         </TextBase>
                     }
                     <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Mean"]</TextBase>
@@ -314,7 +314,7 @@
 @inject BuildTargetEvaluator Evaluator
 @inject CurrencyPriceService Prices
 @inject AffixTypeService AffixTypes
-@inject AffixWeightService AffixWeights
+@inject AffixPoolCoEService AffixCoe
 
 @code {
 
@@ -347,6 +347,9 @@
 
     /// <summary>当前装备的词缀池标签集（槽位 + armour 伞 + 防御值子类）。</summary>
     private AffixPoolTagSet PoolTags { get; set; } = new([], Degraded: false);
+
+    /// <summary>当前装备对应的 Craft of Exile 底材 id；判不出来是 null（池不可用）。</summary>
+    private string? BaseId { get; set; }
 
     private List<CurrencyPriceLine> Rows { get; set; } = [];
 
@@ -408,6 +411,7 @@
         RequiredNeeds = [];
         OptionalNeeds = [];
         PoolTags = new AffixPoolTagSet([], Degraded: false);
+        BaseId = null;
         RefreshRows();
 
         BuildTargetResult? result;
@@ -430,6 +434,9 @@
 
         // 词缀池的标签集：从物品类别 + 解析出来的防御值推导，不按基底名查表。
         PoolTags = AffixPoolTags.Resolve(Item, Slot.SlotKey);
+
+        // 概率池要按 CoE 底材取（同一个族在不同底材上的权重可能不同），判不出来时为 null。
+        BaseId = AffixPoolTags.ResolveBase(Item, Slot.SlotKey);
 
         foreach (var check in Slot.Checks)
         {
@@ -537,9 +544,9 @@
     /// <summary>
     /// 这条需求的概率与期望成本。
     ///
-    /// 改造/替换（崇高石 / 混沌石）走词缀池：P = 命中条数 / 池条数；
+    /// 改造/替换（崇高石 / 混沌石）走词缀池：P = Σ命中档位权重 / Σ池内档位权重（真实权重，不是条数比）；
     /// 重掷数值（神圣石）走当前 tier 的均匀分布：P = (上限 - 目标 + 1) / (上限 - 下限 + 1)。
-    /// 任何一步数据不够（没有权重数据 / 认不出部位 / 读不到物品等级 / 判不出 tier），
+    /// 任何一步数据不够（没有做装数据 / 认不出部位或底材 / 读不到物品等级 / 判不出 tier），
     /// 都退化成一条「为什么算不出来」的说明，不编数字。
     /// </summary>
     private NeedChance BuildChance(Need need)
@@ -548,11 +555,12 @@
         var altCost = need.Kind == NeedKind.Add ? SingleOperationCost(need.AltCurrency, need.AltOmen) : 0;
         var isReroll = need.Kind == NeedKind.Reroll;
 
-        if (!AffixWeights.HasData)
+        if (!AffixCoe.HasData)
         {
             return NeedChance.Unavailable("Craft_Prob_No_Weights", singleCost, altCost, isReroll);
         }
 
+        // 池不可用：认不出部位标签。
         if (PoolTags.IsEmpty)
         {
             return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
@@ -587,7 +595,14 @@
             return NeedChance.Unavailable("Craft_Prob_No_Side", singleCost, altCost, isReroll);
         }
 
-        var pool = AffixWeights.GetPool(PoolTags.Tags, need.Side, ItemLevel);
+        // 认不出 CoE 底材（缺属性 / 非常见底材）→ 池建不出来，走同一条「池不可用」提示。
+        // 重掷数值（神圣石）不走池，所以在上面就分流了，不受这条影响。
+        if (BaseId is null)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
+        }
+
+        var pool = AffixCoe.GetPool(BaseId, need.Side, ItemLevel);
         var estimate = ExpectedCostCalculator.Estimate(pool, need.Patterns, need.TargetValue, singleCost);
 
         // 池里有同名词缀、但没有一条数值够得着目标（当前物品等级下 tier 上限不够）也要说清楚，
