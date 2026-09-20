@@ -1135,7 +1135,7 @@
     <value>cannot tell - one axis has no number from the engine</value>
   </data>
   <data name="Pob_Context_Unconfirmed" xml:space="preserve">
-    <value>the engine did not confirm this context - the numbers are the build's own config, so do not read them as the selected context</value>
+    <value>the engine did not report the context it applied - these numbers may not be from the selected context, so do not read them as the selected context</value>
   </data>
   <data name="Pob_Resist_Guard_Off" xml:space="preserve">
     <value>the engine did not report all resistance fields - the resistance-cap guardrail does not apply to the missing ones</value>

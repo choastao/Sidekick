@@ -13,13 +13,15 @@
             <TextBase Class="text-stone-500 text-xs">@ContextText()</TextBase>
 
             @* ⚠ S1：helper 没回 context（老 helper）时，上面那行只是「请求了打王」，
-               数值其实是 BD 原样 —— 照旧写「评估场景：打王」就是假话。
-               与「回了别的场景」那条硬失败态度一致：引擎没确认，界面就不许替它确认。 *@
-            @if (ContextUnconfirmed())
+               数值**可能**不是按所选场景算的 —— 照旧写「评估场景：打王」就是假话。
+               与「回了别的场景」那条硬失败态度一致：引擎没确认，界面就不许替它确认。
+               ⚠ 两条提示都串了 `!loading`：RefreshAsync 起跑处只清 gains 不清 result，
+               正在算的那一小段窗口里 result 还是**上一件**的 —— 显示出来就是拿上一件的条件说这一件。 *@
+            @if (!loading && ContextUnconfirmed())
             {
                 <TextBase Class="text-amber-400 text-xs">@Resources["Pob_Context_Unconfirmed"]</TextBase>
             }
-            @if (ResistanceGuardOff())
+            @if (!loading && ResistanceGuardOff())
             {
                 @* 同一形状：七个抗性字段没报全 = 守门静默失效，界面上要看得见（不阻塞计算）。 *@
                 <TextBase Class="text-amber-400 text-xs">@Resources["Pob_Resist_Guard_Off"]</TextBase>
@@ -54,9 +56,10 @@
                         else
                         {
                             @* 前三格显示的是**所选主指标**的绝对值（回退到 Combined / Full 时不是 TotalDPS）。
-                               表头挂上指标名，免得用户拿两个不同口径的绝对值去对照（见审计 B1）。 *@
-                            <td class="py-1 text-right text-stone-400">@Num(result.BaseMetricValue)@MetricSuffix(result)</td>
-                            <td class="py-1 text-right">@Num(result.CurrentMetricValue)</td>
+                               指标名挂在**两个数值格上**（前 / 后各一个），免得用户拿两个不同口径的绝对值去对照（见审计 B1）；
+                               只挂前一格会让两格看起来是两个口径（审计 R5-1）。 *@
+                            <td class="py-1 text-right text-stone-400">@Num(result.BaseMetricValue)@PobPrimaryMetric.Suffix(result.PrimaryMetricKey)</td>
+                            <td class="py-1 text-right">@Num(result.CurrentMetricValue)@PobPrimaryMetric.Suffix(result.PrimaryMetricKey)</td>
                             <td class="py-1 text-right @DeltaClass(result.DpsDelta)">@Signed(result.DpsDelta)@Pct(result.DpsPercent)</td>
                         }
                     </tr>
@@ -430,15 +433,6 @@
     /// ⚠ 别写成「对所有元素都不生效」：混沌抗本来就不在守门输入里，火/冰/电 三项可能都在守（审计 S3）。
     /// </summary>
     private bool ResistanceGuardOff() => result?.Base?.ResistanceDataIncomplete == true;
-
-    /// <summary>
-    /// 「前 / 后」两格里那个绝对值是**哪个指标**的（回退档下不是 TotalDPS）。
-    /// 默认档（TotalDPS）不显示后缀 —— 那是绝大多数情况，不必多一个字。
-    /// </summary>
-    private string MetricSuffix(PobCompareResult value) =>
-        string.IsNullOrEmpty(value.PrimaryMetricKey) || value.PrimaryMetricKey == PobPrimaryMetric.TotalDps
-            ? string.Empty
-            : $" · {PobPrimaryMetric.DisplayName(value.PrimaryMetricKey)}";
 
     /// <summary>
     /// 引擎指标判定（相对当前装备）。输入的两个百分比都来自这一次试穿对比；

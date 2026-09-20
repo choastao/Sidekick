@@ -1135,7 +1135,7 @@
     <value>判不了——有一维引擎没给出数字</value>
   </data>
   <data name="Pob_Context_Unconfirmed" xml:space="preserve">
-    <value>引擎没确认这个场景 —— 这些数是按 BD 自己的配置算的，别当成所选场景的数据</value>
+    <value>引擎没回报它实际用的场景 —— 这些数可能不是按所选场景算的，别当成所选场景的数据</value>
   </data>
   <data name="Pob_Resist_Guard_Off" xml:space="preserve">
     <value>引擎没回报全部抗性字段 —— 抗性上限守门对缺的那些项不生效</value>

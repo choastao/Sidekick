@@ -215,7 +215,7 @@
                         <th class="font-normal py-1 w-8">#</th>
                         <th class="font-normal py-1">@Resources["Basket_Col_Name"]</th>
                         <th class="font-normal py-1 w-16">@Resources["Basket_Col_Slot"]</th>
-                        <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
+                        <th class="font-normal py-1 text-right w-28">@DpsColumnLabel()</th>
                         <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
                         <th class="font-normal py-1 w-44"></th>
                         <th class="font-normal py-1 w-24"></th>
@@ -778,6 +778,21 @@
         CultureInfo.CurrentCulture,
         Resources["Pareto_Label"].Value,
         Resources["Pareto_" + row.Pareto].Value);
+
+    /// <summary>
+    /// 备选篮那张表「伤害」那一列的列头。回退档（引擎给不出 TotalDPS）下这一列的数字是**所选主指标**的增减，
+    /// 列头照旧写「DPS」等于把两个口径说成一个 —— 与悬浮窗对齐：把指标名带上列头（审计 R5-2）。
+    /// 判据在 <see cref="PobPrimaryMetric.UniformNonDefaultKey"/> 里（纯函数，单测直接钉）。
+    /// </summary>
+    private string DpsColumnLabel()
+    {
+        var keys = ranking == null
+            ? Enumerable.Empty<string?>()
+            : ranking.Rows.Where(row => row.IsRanked && !row.DpsUnavailable).Select(row => row.PrimaryMetricKey);
+
+        var key = PobPrimaryMetric.UniformNonDefaultKey(keys);
+        return key == null ? Resources["Pob_Dps"].Value : PobPrimaryMetric.DisplayName(key);
+    }
 
     /// <summary>行尾备注：算出来的把两个数分开说（我们没认出的 / 引擎不支持的），没算出来的说原因。</summary>
     private string RankNote(CandidateRankRow row)

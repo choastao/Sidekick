@@ -441,7 +441,7 @@ public class PobCompareService(
         //   1) 与请求一致 → 正常，记进缓存；
         //   2) **不一致** → 我们手里这份数值不是要的那个场景算出来的。当成刚才请求的场景用
         //      会让面板上的场景标签变成假话（用户以为自己看的是打王数据）→ 如实回失败，不缓存；
-        //   3) 老 helper 压根没这个字段（null）→ 只告警：数值是按 BD 自己的配置算的，
+        //   3) 老 helper 压根没这个字段（null）→ 只告警：数值**可能**是按 BD 自己的配置算的（我们没拿到确认），
         //      分发包里没同步 helper 时就是这个形状（%APPDATA% 那份是手动放的），不能因此把功能整个弄坏。
         var effective = ReadContext(response);
         if (effective != null &&

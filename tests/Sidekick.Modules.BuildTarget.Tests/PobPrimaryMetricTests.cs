@@ -230,6 +230,41 @@ public class PobPrimaryMetricTests
         Assert.True(unavailable.DpsUnavailable);
     }
 
+    // ---- R5（审计建议）：指标名要在**界面上**说得一致 ----
+    //
+    // 两个消费点共用下面这两个纯函数：悬浮窗的「前 / 后」两个数值格、备选篮那一列的列头。
+    // 病根是同一个：回退档下数字已经是别的指标了，界面上却只有一处（或压根不）写指标名，
+    // 用户会拿两个口径的数对照，或以为那一列是 TotalDPS 的增减。
+
+    /// <summary>默认档与空键不显示后缀（绝大多数情况不必多一个字）；回退档才显示，且前后两格用的是**同一个**后缀。</summary>
+    [Fact]
+    public void Suffix_只在回退档才给指标名()
+    {
+        Assert.Equal(string.Empty, PobPrimaryMetric.Suffix(PobPrimaryMetric.TotalDps));
+        Assert.Equal(string.Empty, PobPrimaryMetric.Suffix(""));
+        Assert.Equal(string.Empty, PobPrimaryMetric.Suffix(null));
+        Assert.Equal(" · 综合 DPS", PobPrimaryMetric.Suffix(PobPrimaryMetric.CombinedDps));
+        Assert.Equal(" · 全技能 DPS", PobPrimaryMetric.Suffix(PobPrimaryMetric.FullDps));
+    }
+
+    /// <summary>
+    /// 备选篮列头的判据：**统一到一个非默认键**才回那个键（此时列头写它的名字）；
+    /// 其余一律回 null（列头用基础标题）—— 行间口径不一致时挑一个当列头 = 替用户拍板。
+    /// 键名用字面量：它们就是 PoB 的字段名，改了这里就应该红。
+    /// </summary>
+    [Theory]
+    [InlineData(new[] { "CombinedDPS", "CombinedDPS" }, "CombinedDPS")]
+    [InlineData(new[] { "FullDPS" }, "FullDPS")]
+    [InlineData(new[] { "TotalDPS", "TotalDPS" }, null)]
+    [InlineData(new[] { "TotalDPS", "CombinedDPS" }, null)]
+    [InlineData(new[] { "CombinedDPS", "FullDPS" }, null)]
+    [InlineData(new[] { "", "CombinedDPS" }, null)]
+    [InlineData(new string[0], null)]
+    public void 列头只在口径统一时带指标名(string[] keys, string? expected)
+    {
+        Assert.Equal(expected, PobPrimaryMetric.UniformNonDefaultKey(keys));
+    }
+
     /// <summary>DPS 算不出来时，逐条词缀收益改按 EHP 排名（否则排的是一列 0）。</summary>
     [Theory]
     [InlineData(true, CandidateRankMetric.Dps, CandidateRankMetric.Ehp)]

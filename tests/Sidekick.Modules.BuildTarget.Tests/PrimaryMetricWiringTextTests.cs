@@ -68,6 +68,29 @@ public class PrimaryMetricWiringTextTests
         Assert.Equal(1, Placeholders(Manager.GetString(PrimaryMetric, CultureInfo.InvariantCulture)!));
     }
 
+    /// <summary>
+    /// 场景未确认那条文案**只许说「可能」**（审计 R4）。
+    ///
+    /// 病根：helper 没回 <c>context</c> 只说明「我们没拿到确认」，不等于「引擎一定没覆盖场景」——
+    /// 老文案写成「这些数是按 BD 自己的配置算的」是把一个我们不知道的事实说死了。
+    /// 本项目口径是「宁可说不确认，也不许说一个我们不知道的事实」。
+    /// </summary>
+    [Fact]
+    public void 场景未确认的文案不许把可能说成事实()
+    {
+        var chinese = Manager.GetString("Pob_Context_Unconfirmed", CultureInfo.GetCultureInfo("zh"))!;
+        var english = Manager.GetString("Pob_Context_Unconfirmed", CultureInfo.InvariantCulture)!;
+
+        Assert.Contains("可能", chinese, StringComparison.Ordinal);
+        Assert.DoesNotContain("这些数是按", chinese, StringComparison.Ordinal);   // 旧文案的断言式说法
+
+        Assert.Contains("may not", english, StringComparison.Ordinal);
+        Assert.DoesNotContain("the numbers are the build's own config", english, StringComparison.Ordinal);
+
+        // 前半句仍要说清「没拿到什么」：只说「可能不是」而不说清依据，等于把结论悬空
+        Assert.Contains("引擎没回报", chinese, StringComparison.Ordinal);
+    }
+
     /// <summary>文案里用到的参数个数（最大占位符下标 + 1）。</summary>
     private static int Placeholders(string format)
     {

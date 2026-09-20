@@ -91,4 +91,31 @@ public static class PobPrimaryMetric
         FullDps => "全技能 DPS",
         _ => "",
     };
+
+    /// <summary>
+    /// 界面上那个「 · 指标名」后缀（默认档 <see cref="TotalDps"/> 与空键回空串 —— 绝大多数情况不必多一个字）。
+    /// 悬浮窗的数值格与备选篮的列头共用它：同一个格式在两处各写一遍，迟早只改一处。
+    /// </summary>
+    public static string Suffix(string? key) =>
+        string.IsNullOrEmpty(key) || key == TotalDps ? string.Empty : $" · {DisplayName(key)}";
+
+    /// <summary>
+    /// 一组行的主指标键**是否统一到一个非默认键**：是则回那个键，否则回 null。
+    /// 备选篮列头用它 —— 回退档下那一列的数字是别的指标的增减，列头照旧写「DPS」等于把两个口径说成一个；
+    /// 但行与行口径不一致时**不能**挑一个当列头（那是替用户拍板），此时回 null 让调用方用基础标题。
+    /// 没有数字的行（空键）按「没口径」处理 —— 与 <see cref="Value"/> 的态度一致。
+    /// </summary>
+    public static string? UniformNonDefaultKey(IEnumerable<string?> keys)
+    {
+        ArgumentNullException.ThrowIfNull(keys);
+
+        var all = keys.ToList();
+        var first = all.Count > 0 ? all[0] : null;
+        if (string.IsNullOrEmpty(first) || first == TotalDps)
+        {
+            return null;
+        }
+
+        return all.All(x => x == first) ? first : null;
+    }
 }
