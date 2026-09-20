@@ -36,8 +36,13 @@ public static class PobItemText
         public IReadOnlyList<AffixLine> Affixes { get; init; } = [];
     }
 
-    /// <summary>一条送进引擎的词缀行：它在最终文本里的行号、文本内容、以及是不是隐式词缀。</summary>
-    public sealed record AffixLine(int LineIndex, string Text, bool Implicit);
+    /// <summary>
+    /// 一条送进引擎的词缀行：它在最终文本里的**物理行号**与**占用的物理行数**、文本内容、以及是不是隐式词缀。
+    ///
+    /// ⚠ 行号必须是物理行号、行数必须带上：一条词缀可能是多行文本（英文 trade-stats 里 105 条模板内嵌 `\n`），
+    /// 在 `lines` 里占 1 个下标但在文本里占 2 个物理行 —— 只记下标会让后续所有词缀定位错位。
+    /// </summary>
+    public sealed record AffixLine(int LineIndex, int LineCount, string Text, bool Implicit);
 
     public static BuildResult Build(Item item, IReadOnlyDictionary<string, string> invariantStatText)
     {
@@ -146,19 +151,39 @@ public static class PobItemText
         }
 
         var affixes = new List<AffixLine>(implicitLines.Count + explicitLines.Count);
+        var affixEntryIndex = new List<int>(implicitLines.Count + explicitLines.Count);
 
         var implicitStart = lines.Count;
         lines.AddRange(implicitLines);
         for (var i = 0; i < implicitLines.Count; i++)
         {
-            affixes.Add(new AffixLine(implicitStart + i, implicitLines[i], true));
+            affixEntryIndex.Add(implicitStart + i);
         }
 
         var explicitStart = lines.Count;
         lines.AddRange(explicitLines);
         for (var i = 0; i < explicitLines.Count; i++)
         {
-            affixes.Add(new AffixLine(explicitStart + i, explicitLines[i], false));
+            affixEntryIndex.Add(explicitStart + i);
+        }
+
+        // ⚠ `lines` 里的**一条词缀可能是多行文本**（英文 trade-stats 里有 105 条模板内嵌 `\n`，
+        //   例：`Burning Enemies you kill have a #% chance to Explode, dealing a\ntenth of their maximum Life as Fire Damage`；
+        //   而 zh 数据里有 127 条定义的首命中模板就是这种）。它在 `lines` 里占 **1 个下标**，
+        //   但在拼出来的文本里占 **2 个物理行** —— 所以对外的行号必须是**物理行号**，
+        //   否则 C2b 拿物理行去定位会从这条起全部错位（真机表现是「一整段后缀被排除在收益表外」，
+        //   而且报错会甩到引擎头上）。这里统一换算成物理行号 + 行数。
+        var physicalStart = new int[lines.Count];
+        var cursor = 0;
+        for (var i = 0; i < lines.Count; i++)
+        {
+            physicalStart[i] = cursor;
+            cursor += PhysicalLineCount(lines[i]);
+        }
+
+        foreach (var entry in affixEntryIndex)
+        {
+            affixes.Add(new AffixLine(physicalStart[entry], PhysicalLineCount(lines[entry]), lines[entry], entry < explicitStart));
         }
 
         return new BuildResult(string.Join('\n', lines) + "\n", totalStats, mapped, baseIdentified, annotationStripped)
@@ -167,25 +192,38 @@ public static class PobItemText
         };
     }
 
+    /// <summary>一段文本占几个物理行（内嵌 <c>\n</c> 的词缀算多行）。</summary>
+    private static int PhysicalLineCount(string text) => 1 + text.Count(x => x == '\n');
+
     /// <summary>
     /// 造一个「把某条词缀拿掉」的变体文本（C2b 的口径：这条词缀**当前值多少**）。
     ///
-    /// 两个必须处理的点：
-    ///   1. **隐式词缀**：`Implicits: N` 的条数要跟着减一（减到 0 时整行一起去掉），
+    /// 三个必须处理的点：
+    ///   1. **多行词缀**：一条词缀可能占多个物理行（见 <see cref="Build"/> 里的说明），
+    ///      要按 <see cref="AffixLine.LineCount"/> 整段比对、整段删除 —— 只删第一行会把
+    ///      剩下半条留在文本里（PoB 会把它当另一条词缀读，数字全错且毫无提示）；
+    ///   2. **隐式词缀**：`Implicits: N` 的条数要跟着减一（减到 0 时整行一起去掉），
     ///      否则 PoB 会把显式词缀当成隐式读 —— 数量对不上时它不一定报错，而是静默错读；
-    ///   2. **不许猜**：行号对不上文本时返回 null（调用方按「这条算不了」处理），
+    ///   3. **不许猜**：定位不到就返回 null（调用方按「这条算不了」处理），
     ///      不去别的地方找一条「看起来像」的行来删。
     /// </summary>
     public static string? WithoutAffix(string text, AffixLine affix)
     {
         var lines = text.TrimEnd('\n').Split('\n').ToList();
+        var lineCount = Math.Max(1, affix.LineCount);
 
-        if (affix.LineIndex < 0 || affix.LineIndex >= lines.Count || lines[affix.LineIndex] != affix.Text)
+        if (affix.LineIndex < 0 || affix.LineIndex + lineCount > lines.Count)
         {
             return null;
         }
 
-        lines.RemoveAt(affix.LineIndex);
+        var span = string.Join('\n', lines.GetRange(affix.LineIndex, lineCount));
+        if (span != affix.Text)
+        {
+            return null;
+        }
+
+        lines.RemoveRange(affix.LineIndex, lineCount);
 
         if (affix.Implicit)
         {

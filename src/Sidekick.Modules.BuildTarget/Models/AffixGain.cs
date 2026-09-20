@@ -68,11 +68,20 @@ public sealed class AffixGainRanking
     /// <summary>这批实验花掉的毫秒数（引擎热的时候约 15 ms/条）。</summary>
     public long ElapsedMs { get; init; }
 
+    /// <summary>
+    /// **真实发出的试穿次数**（含原物那次参照）。
+    ///
+    /// ⚠ 别拿 <see cref="Rows"/>.Count 当次数：定位失败的行、引擎中途失效后补齐的行都**没试穿过**，
+    /// 界面文案若用行数就会报一个虚高的数（本项目对「界面上说的数与实际不符」一律当问题）。
+    /// </summary>
+    public int Attempts { get; init; }
+
     public static AffixGainRanking Rank(
         IEnumerable<AffixGainRow> rows,
         CandidateRankMetric metric,
         int count,
-        long elapsedMs = 0)
+        long elapsedMs = 0,
+        int attempts = 0)
     {
         var other = metric == CandidateRankMetric.Dps ? CandidateRankMetric.Ehp : CandidateRankMetric.Dps;
 
@@ -90,6 +99,7 @@ public sealed class AffixGainRanking
             Top = [.. sorted.Where(x => x.IsRanked).Take(count)],
             NotRanked = [.. sorted.Where(x => !x.IsRanked)],
             ElapsedMs = elapsedMs,
+            Attempts = attempts,
         };
     }
 }

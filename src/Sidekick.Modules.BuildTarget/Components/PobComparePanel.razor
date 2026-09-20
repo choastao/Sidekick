@@ -66,65 +66,76 @@
         </FormFieldset>
     </div>
 
-    @* C2b：这件装备上每条词缀各自值多少（口径 = 把它拿掉再算一次）。 *@
-    <div class="mt-4">
-        <FormFieldset Legend="@Resources["Affix_Gain_Title"]">
-            @if (gainsLoading)
-            {
-                <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
-            }
-            else if (gains is { Top.Count: > 0 })
-            {
-                <table class="w-full text-sm border-collapse">
-                    <thead>
-                    <tr class="text-stone-500 text-xs text-left">
-                        <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
-                        <th class="font-normal py-1 text-right">@Resources["Pob_Dps"]</th>
-                        <th class="font-normal py-1 text-right">@Resources["Pob_Ehp"]</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var row in gains.Top)
-                    {
-                        <tr class="border-t border-stone-700">
-                            <td class="py-1">
-                                @row.Text
-                                @if (row.Implicit)
-                                {
-                                    <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
-                                }
-                            </td>
-                            <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>
-                            <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Pct(row.EhpPercent)</td>
-                        </tr>
-                    }
-                    </tbody>
-                </table>
-
-                @if (gains.NotRanked.Count > 0)
+    @* C2b：这件装备上每条词缀各自值多少（口径 = 把它拿掉再算一次）。
+       外层条件必须挡住「gains == null 且不在算」：服务契约就是「返回 null = 这一栏不该显示」，
+       否则会给用户一个有标题、没内容、没解释的空框（审计 F）。 *@
+    @if (gainsLoading || gains is { Rows.Count: > 0 })
+    {
+        <div class="mt-4">
+            <FormFieldset Legend="@Resources["Affix_Gain_Title"]">
+                @if (gainsLoading)
                 {
-                    <TextBase Class="text-amber-400 text-xs mt-2">
-                        @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, gains.NotRanked.Count)
-                    </TextBase>
-                    @foreach (var row in gains.NotRanked)
+                    <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
+                }
+                else if (gains is { } gain)
+                {
+                    @if (gain.Top.Count > 0)
                     {
-                        <TextBase Class="text-stone-500 text-xs">
-                            @row.Text —— @AffixStatusText(row)
+                        <table class="w-full text-sm border-collapse">
+                            <thead>
+                            <tr class="text-stone-500 text-xs text-left">
+                                <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
+                                <th class="font-normal py-1 text-right">@Resources["Pob_Dps"]</th>
+                                <th class="font-normal py-1 text-right">@Resources["Pob_Ehp"]</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var row in gain.Top)
+                            {
+                                <tr class="border-t border-stone-700">
+                                    <td class="py-1">
+                                        @AffixText(row.Text)
+                                        @if (row.Implicit)
+                                        {
+                                            <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
+                                        }
+                                    </td>
+                                    <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>
+                                    <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Pct(row.EhpPercent)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+
+                    @if (gain.NotRanked.Count > 0)
+                    {
+                        <TextBase Class="text-amber-400 text-xs mt-2">
+                            @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, gain.NotRanked.Count)
                         </TextBase>
+                        @foreach (var row in gain.NotRanked)
+                        {
+                            <TextBase Class="text-stone-500 text-xs">
+                                @AffixText(row.Text) —— @AffixStatusText(row)
+                            </TextBase>
+                        }
+                    }
+
+                    @* 口径与「不可相加」这两句必须在**真算出数字**时才有意义；一条都没算出来时只给原因，不给口径。 *@
+                    @if (gain.Top.Count > 0)
+                    {
+                        <TextBase Class="text-stone-500 text-xs mt-2">@Resources["Affix_Gain_Help"]</TextBase>
+                        @if (gain.ElapsedMs > 0)
+                        {
+                            <TextBase Class="text-stone-600 text-xs mt-1">
+                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, gain.Attempts, gain.ElapsedMs)
+                            </TextBase>
+                        }
                     }
                 }
-
-                @* 口径与「不可相加」这两句必须都写：前者防误解成「洗到顶档能涨多少」，后者防用户把几条加起来。 *@
-                <TextBase Class="text-stone-500 text-xs mt-2">@Resources["Affix_Gain_Help"]</TextBase>
-                @if (gains.ElapsedMs > 0)
-                {
-                    <TextBase Class="text-stone-600 text-xs mt-1">
-                        @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, gains.Rows.Count, gains.ElapsedMs)
-                    </TextBase>
-                }
-            }
-        </FormFieldset>
-    </div>
+            </FormFieldset>
+        </div>
+    }
 }
 
 @inject IStringLocalizer<BuildTargetResources> Resources
@@ -151,6 +162,9 @@
     protected override void OnInitialized()
     {
         Store.OnChanged += OnStoreChanged;
+        // 引擎开关在设置页拨动时本组件不会自动重算/重绘（审计 I）：订阅它，
+        // 关掉时把面板收干净、打开时立刻重算当前这件物品。
+        Options.OnChanged += OnStoreChanged;
         base.OnInitialized();
     }
 
@@ -159,7 +173,11 @@
         await RefreshAsync();
     }
 
-    private void OnStoreChanged() => _ = InvokeAsync(async () => await RefreshAsync());
+    private void OnStoreChanged() => _ = InvokeAsync(async () =>
+    {
+        await RefreshAsync();
+        StateHasChanged();
+    });
 
     private async Task RefreshAsync()
     {
@@ -167,6 +185,10 @@
         {
             result = null;
             gains = null;
+
+            // ⚠ 必须连 key 一起清（审计 C）：否则「开着算过 → 关掉 → 再打开」之后，
+            //   同一件物品会被 key 短路，面板永远只剩空框，直到换物品或换模板。
+            lastKey = null;
             return;
         }
 
@@ -214,12 +236,19 @@
         }
     }
 
-    /// <summary>没算出来的那条词缀为什么没算（照抄对比面板的口径，别造第二套说法）。</summary>
+    /// <summary>
+    /// 没算出来的那条词缀为什么没算（照抄对比面板的口径，别造第二套说法）。
+    /// ⚠ 「定位失败」是**我们自己转换层的缺陷**，与「引擎出错」不是一回事，必须分开说。
+    /// </summary>
     private string AffixStatusText(AffixGainRow row) => row.Status switch
     {
+        PobCompareStatus.AffixLost => Resources["Affix_Gain_No_Line"].Value,
         PobCompareStatus.EngineUnavailable => string.Format(CultureInfo.CurrentCulture, Resources["Pob_No_Engine"].Value, row.Error ?? "-"),
         _ => string.Format(CultureInfo.CurrentCulture, Resources["Pob_Failed"].Value, row.Error ?? "-"),
     };
+
+    /// <summary>多行词缀在表格里必须显示成一行（真换行会把表格撑破），断点用「⏎」标出来 —— 顺便让用户看得见这是多行词缀。</summary>
+    private static string AffixText(string text) => text.Replace("\n", " ⏎ ");
 
     private string StatusText(PobCompareResult value) => value.Status switch
     {
@@ -247,5 +276,6 @@
     public void Dispose()
     {
         Store.OnChanged -= OnStoreChanged;
+        Options.OnChanged -= OnStoreChanged;
     }
 }

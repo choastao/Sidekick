@@ -247,52 +247,65 @@
                         {
                             <tr>
                                 <td colspan="7" class="py-2 pl-6 border-t border-stone-800">
-                                    @if (gainsBusyId == row.Id)
+                                    @if (gainsBusy.Contains(row.Id))
                                     {
                                         <TextBase Class="text-stone-400 text-sm">@Resources["Basket_Gains_Running"]</TextBase>
                                     }
-                                    else if (gains.TryGetValue(row.Id, out var gain) && gain is { Top.Count: > 0 })
+                                    else if (gains.TryGetValue(row.Id, out var gain) && gain is { } ranking_)
                                     {
-                                        <table class="w-full text-sm border-collapse">
-                                            <thead>
-                                            <tr class="text-stone-500 text-xs text-left">
-                                                <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
-                                                <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
-                                                <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach (var affix in gain.Top)
-                                            {
-                                                <tr class="border-t border-stone-800">
-                                                    <td class="py-1">
-                                                        @affix.Text
-                                                        @if (affix.Implicit)
-                                                        {
-                                                            <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
-                                                        }
-                                                    </td>
-                                                    <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
-                                                    <td class="py-1 text-right @DeltaClass(affix.EhpDelta)">@Signed(affix.EhpDelta)@Percent(affix.EhpPercent)</td>
-                                                </tr>
-                                            }
-                                            </tbody>
-                                        </table>
-
-                                        @if (gain.NotRanked.Count > 0)
+                                        @if (ranking_.Top.Count > 0)
                                         {
-                                            <TextBase Class="text-amber-400 text-xs mt-1">
-                                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, gain.NotRanked.Count)
-                                            </TextBase>
+                                            <table class="w-full text-sm border-collapse">
+                                                <thead>
+                                                <tr class="text-stone-500 text-xs text-left">
+                                                    <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
+                                                    <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
+                                                    <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach (var affix in ranking_.Top)
+                                                {
+                                                    <tr class="border-t border-stone-800">
+                                                        <td class="py-1">
+                                                            @AffixText(affix.Text)
+                                                            @if (affix.Implicit)
+                                                            {
+                                                                <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
+                                                            }
+                                                        </td>
+                                                        <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
+                                                        <td class="py-1 text-right @DeltaClass(affix.EhpDelta)">@Signed(affix.EhpDelta)@Percent(affix.EhpPercent)</td>
+                                                    </tr>
+                                                }
+                                                </tbody>
+                                            </table>
                                         }
 
-                                        @* 口径与「不可相加」两句与悬浮窗那份完全一致（别造第二套说法）。 *@
-                                        <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Affix_Gain_Help"]</TextBase>
-                                        @if (gain.ElapsedMs > 0)
+                                        @* 没算出来的照样逐条列出来（与悬浮窗那份一致）——只给条数等于把原因藏起来。 *@
+                                        @if (ranking_.NotRanked.Count > 0)
                                         {
-                                            <TextBase Class="text-stone-600 text-xs">
-                                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, gain.Rows.Count, gain.ElapsedMs)
+                                            <TextBase Class="text-amber-400 text-xs mt-1">
+                                                @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, ranking_.NotRanked.Count)
                                             </TextBase>
+                                            @foreach (var affix in ranking_.NotRanked)
+                                            {
+                                                <TextBase Class="text-stone-500 text-xs">
+                                                    @AffixText(affix.Text) —— @AffixStatusText(affix)
+                                                </TextBase>
+                                            }
+                                        }
+
+                                        @if (ranking_.Top.Count > 0)
+                                        {
+                                            @* 口径与「不可相加」两句与悬浮窗那份完全一致（别造第二套说法）。 *@
+                                            <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Affix_Gain_Help"]</TextBase>
+                                            @if (ranking_.ElapsedMs > 0)
+                                            {
+                                                <TextBase Class="text-stone-600 text-xs">
+                                                    @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, ranking_.Attempts, ranking_.ElapsedMs)
+                                                </TextBase>
+                                            }
                                         }
                                     }
                                     else
@@ -337,11 +350,18 @@
     /// </summary>
     private readonly Dictionary<string, AffixGainRanking?> gains = new();
 
-    /// <summary>正在算哪一行（null = 没有在算）。</summary>
-    private string? gainsBusyId;
+    /// <summary>
+    /// 正在算的行 id 集合。**用集合而不是单个 id**：用户可以连点两行，两行会串行占引擎闸；
+    /// 若只记一个 id，先结束的那行会把状态清成「没在算」，于是**还在算的那行**会落到
+    /// 「这条算不了」的分支（审计 E：显示的是一条不成立的结论）。
+    /// </summary>
+    private readonly HashSet<string> gainsBusy = new();
 
     /// <summary>当前展开的是哪一行（同一时刻只展开一行，避免表格无限长）。</summary>
     private string? expandedId;
+
+    /// <summary>上一次排名所用模板的 id（换模板时用来判断「表里的数字是不是旧前提」）。</summary>
+    private string? rankedTemplateId;
 
     private BasketContribution Total { get; set; } = new();
 
@@ -353,6 +373,8 @@
     {
         Basket.OnChanged += OnChanged;
         Store.OnChanged += OnChanged;
+        // 引擎开关拨动时本组件不重绘（审计 I）——订阅它（板块的显示/隐藏条件就在 Options.PobEngine 上）。
+        Options.OnChanged += OnChanged;
 
         var keybind = await SettingsService.GetString(SettingKeys.KeyAddToBasket);
         if (!string.IsNullOrWhiteSpace(keybind))
@@ -379,6 +401,16 @@
         // 前半段等于在后台线程改组件状态。审计（2026-09-19）发现。
         _ = InvokeAsync(() =>
         {
+            // ⚠ 换了「目标BD」之后，上一次的排名与逐条收益都是**旧前提**下算的数字（审计 B）：
+            //   C2b 侧靠 key 里的模板 id 自动失效，这里必须自己清，否则表里会同时出现两种前提的数字。
+            var activeId = Store.Active?.Id;
+            if (activeId != rankedTemplateId)
+            {
+                rankedTemplateId = activeId;
+                ranking = null;
+                ResetGains();
+            }
+
             Refresh();
             StateHasChanged();
         });
@@ -476,6 +508,7 @@
 
         rankBusy = true;
         ranking = null;
+        rankedTemplateId = template.Id;   // 记下这批数字用的是哪个模板
         ResetGains();   // 列表要重算了，之前按行缓存的逐条收益不再对应当前这批行
         StateHasChanged();
 
@@ -523,7 +556,7 @@
 
         var entry = Basket.Items.FirstOrDefault(x => x.Id == row.Id);
 
-        gainsBusyId = row.Id;
+        gainsBusy.Add(row.Id);
         StateHasChanged();
 
         try
@@ -532,7 +565,8 @@
         }
         finally
         {
-            gainsBusyId = null;
+            // 只清自己这一行（连点两行时，另一行还在算，不能把它的忙碌状态清掉）
+            gainsBusy.Remove(row.Id);
         }
     }
 
@@ -567,7 +601,7 @@
     {
         gains.Clear();
         expandedId = null;
-        gainsBusyId = null;
+        gainsBusy.Clear();
     }
 
     private string Rank(CandidateRankRow row)
@@ -610,6 +644,20 @@
             row.Error ?? "-"),
         _ => Resources["Basket_Rank_Not_Ranked"].Value,
     };
+
+    /// <summary>逐条词缀收益里「这条没算出来」的原因（与悬浮窗那份同一套说法）。</summary>
+    private string AffixStatusText(AffixGainRow row) => row.Status switch
+    {
+        PobCompareStatus.AffixLost => Resources["Affix_Gain_No_Line"].Value,
+        PobCompareStatus.EngineUnavailable => string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Pob_No_Engine"].Value,
+            row.Error ?? "-"),
+        _ => string.Format(CultureInfo.CurrentCulture, Resources["Pob_Failed"].Value, row.Error ?? "-"),
+    };
+
+    /// <summary>多行词缀在表格里显示成一行（真换行会把表格撑破），断点用「⏎」标出来。</summary>
+    private static string AffixText(string text) => text.Replace("\n", " ⏎ ");
 
     private string MetricText(CandidateRankMetric metric) =>
         metric == CandidateRankMetric.Ehp
@@ -688,6 +736,7 @@
     {
         Basket.OnChanged -= OnChanged;
         Store.OnChanged -= OnChanged;
+        Options.OnChanged -= OnChanged;
     }
 
     private class BasketComparison

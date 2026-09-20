@@ -35,6 +35,10 @@ public class PobItemTextTests
         // 格挡只有注解版（真实数据里 5 条候选全是 `(Local)`）→ 走「剥掉注解」的兜底分支
         ["explicit.stat_2481353198"] = "#% increased Block chance (Local)",
         ["explicit.stat_3484657501"] = "# to Armour (Local)",
+        // **多行模板**：真实数据里 en trade-stats 有 105 条内嵌 `\n`（zh 侧 127 条定义的**首命中**就是这种），
+        // 例：`Burning Enemies you kill have a #% chance to Explode, dealing a\ntenth of their maximum Life as Fire Damage`。
+        // 它在 `lines` 里占 1 个下标、在文本里占 2 个物理行 —— 行号记法错了会让后续词缀全部定位错位（审计 C2 阻断 A）。
+        ["explicit.stat_multiline"] = "Burning Enemies you kill have a #% chance to Explode, dealing a\ntenth of their maximum Life as Fire Damage",
     };
 
     private static Item Helmet()
@@ -366,5 +370,64 @@ public class PobItemTextTests
 
         Assert.Null(PobItemText.WithoutAffix(built.Text, affix with { LineIndex = 999 }));
         Assert.Null(PobItemText.WithoutAffix(built.Text, affix with { Text = "+1 to something else" }));
+    }
+
+    /// <summary>
+    /// **多行词缀**（审计 C2 阻断 A 的回归）：一条词缀占两个物理行时，
+    /// 行号必须是**物理行号**、后续词缀的行号要跟着偏移；
+    /// 拿掉它必须**整段删净**（只删第一行会把剩下半条留在文本里，PoB 会当成另一条词缀读 —— 数字全错且毫无提示）。
+    /// </summary>
+    [Fact]
+    public void Multiline_affixes_get_physical_line_numbers_and_are_removed_as_a_block()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "击杀燃烧敌人有#%几率爆炸", [30], "explicit.stat_multiline", "#% 几率爆炸"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        Assert.Equal(2, built.Affixes.Count);
+
+        var multiline = built.Affixes[0];
+        var life = built.Affixes[1];
+
+        Assert.Equal(2, multiline.LineCount);                       // 占两个物理行
+        Assert.Contains('\n', multiline.Text);
+        Assert.Equal(1, life.LineCount);
+        // 关键：后一条词缀的行号要**跨过**前一条占的两行，而不是按 `lines` 下标紧挨着
+        Assert.Equal(multiline.LineIndex + 2, life.LineIndex);
+
+        // 拿掉多行词缀：整段（两行）都消失，另一条词缀原样还在
+        var withoutMultiline = PobItemText.WithoutAffix(built.Text, multiline)!;
+        Assert.DoesNotContain("Burning Enemies", withoutMultiline);
+        Assert.DoesNotContain("tenth of their maximum Life", withoutMultiline);   // 第二行也不许残留
+        Assert.Contains("+88 to maximum Life", withoutMultiline);
+        Assert.Equal(0, withoutMultiline.Split('\n').Count(x => x.StartsWith("tenth of")));
+
+        // 拿掉单行词缀：多行词缀必须完好（两行都在）
+        var withoutLife = PobItemText.WithoutAffix(built.Text, life)!;
+        Assert.DoesNotContain("+88 to maximum Life", withoutLife);
+        Assert.Contains("Burning Enemies", withoutLife);
+        Assert.Contains("tenth of their maximum Life", withoutLife);
+    }
+
+    /// <summary>审计建议的单测 (b)：`Implicits: 2` 拿掉一条后必须是 `Implicits: 1`（不是删掉声明、也不是不变）。</summary>
+    [Fact]
+    public void WithoutAffix_decrements_a_multi_implicit_declaration()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Implicit, "+30 最大能量护盾", [30], "implicit.stat_es", "+# 最大能量护盾"));
+        item.Stats.Add(Stat(StatCategory.Implicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+45% 火焰抗性", [45], "explicit.stat_fire_res", "+#% 火焰抗性"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        Assert.Contains("Implicits: 2", built.Text);
+
+        var first = built.Affixes[0];
+        var variant = PobItemText.WithoutAffix(built.Text, first)!;
+
+        Assert.Contains("Implicits: 1", variant);
+        Assert.DoesNotContain("Implicits: 2", variant);
+        Assert.Contains("+88 to maximum Life", variant);       // 另一条隐式还在（它的行号也要跟着上移）
+        Assert.Contains("+45% to Fire Resistance", variant);
     }
 }

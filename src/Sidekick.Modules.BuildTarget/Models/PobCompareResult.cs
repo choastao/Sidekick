@@ -38,6 +38,12 @@ public enum PobCompareStatus
     /// </summary>
     MissingText,
 
+    /// <summary>
+    /// **转换层自己的缺陷**：生成的文本里定位不到这条词缀（C2b/C2c 造变体时）。
+    /// 与「引擎出错」是两回事 —— 引擎压根没被调用过，别把它甩到引擎头上。
+    /// </summary>
+    AffixLost,
+
     /// <summary>其它失败（引擎原样带回的报错）。</summary>
     Failed,
 }

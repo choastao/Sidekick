@@ -74,6 +74,10 @@ public class PobAffixGainService(
         var rows = new List<AffixGainRow>(text.Affixes.Count);
         var engineDead = false;
 
+        // 真实发出的试穿次数（含原物那次）——**别拿「词缀行数」当次数**：
+        // 定位失败的行、引擎死掉后补齐的行都压根没试穿过，拿行数会在界面上报一个虚高的数。
+        var attempts = 1;
+
         foreach (var affix in text.Affixes)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -87,12 +91,14 @@ public class PobAffixGainService(
             var variant = PobItemText.WithoutAffix(text.Text, affix);
             if (variant == null)
             {
-                // 行号和文本对不上 = 我们自己造的文本有问题。如实标出来，别去猜
+                // 行号/行数对不上 = 我们自己造的文本有问题（**不是引擎出错**，引擎压根没被调用）。
+                // 如实标成转换层缺陷，别甩到引擎头上。
                 logger.LogWarning("[BuildTarget] Affix gain: could not locate the affix line '{Line}'", affix.Text);
-                rows.Add(Row(affix, PobCompareStatus.Failed, "affix line not found in the generated text"));
+                rows.Add(Row(affix, PobCompareStatus.AffixLost));
                 continue;
             }
 
+            attempts++;
             var measured = await compare.MeasureTextAsync(template, pobSlot, variant, cancellationToken);
             if (!measured.Ok)
             {
@@ -124,7 +130,7 @@ public class PobAffixGainService(
 
         stopwatch.Stop();
 
-        var ranking = AffixGainRanking.Rank(rows, metric, count, stopwatch.ElapsedMilliseconds);
+        var ranking = AffixGainRanking.Rank(rows, metric, count, stopwatch.ElapsedMilliseconds, attempts);
 
         logger.LogInformation(
             "[BuildTarget] Affix gains: {Ranked}/{Total} ranked by {Metric} in {Elapsed} ms",

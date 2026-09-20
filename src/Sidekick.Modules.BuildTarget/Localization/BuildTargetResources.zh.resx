@@ -190,7 +190,10 @@
     <value>{0} 条词缀没算出来，未参与排名：</value>
   </data>
   <data name="Affix_Gain_Elapsed" xml:space="preserve">
-    <value>逐条试穿 {0} 次，共 {1} 毫秒</value>
+    <value>共试穿 {0} 次（含原物那次），耗时 {1} 毫秒</value>
+  </data>
+  <data name="Affix_Gain_No_Line" xml:space="preserve">
+    <value>生成的物品文本里定位不到这条词缀 —— 这是转换层的问题（引擎压根没被调用），不是引擎出错。请把这条词缀报给作者。</value>
   </data>
   <data name="Basket_Gains_Button" xml:space="preserve">
     <value>词缀收益</value>
