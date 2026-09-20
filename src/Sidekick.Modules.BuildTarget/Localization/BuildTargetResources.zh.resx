@@ -1017,4 +1017,25 @@
   <data name="Preset_Spirit" xml:space="preserve">
     <value>精魂</value>
   </data>
+  <data name="Pob_Dps_Unavailable" xml:space="preserve">
+    <value>引擎算不出这份 BD 的伤害（召唤 / 触发类 BD 常见）—— DPS 这一列没有数字。</value>
+  </data>
+  <data name="Pob_Primary_Metric" xml:space="preserve">
+    <value>本次用的伤害指标：{0}</value>
+  </data>
+  <data name="Pob_Context" xml:space="preserve">
+    <value>评估场景：{0}</value>
+  </data>
+  <data name="Context_Build" xml:space="preserve">
+    <value>按 BD 原样</value>
+  </data>
+  <data name="Context_Map" xml:space="preserve">
+    <value>刷图（82 级）</value>
+  </data>
+  <data name="Context_Boss" xml:space="preserve">
+    <value>打王（84 级 Boss）</value>
+  </data>
+  <data name="Options_PobContext_Help" xml:space="preserve">
+    <value>切换后「下次载入生效」（BD 是载入那一刻算的）；改的是内存里的临时配置，不动你的 BD 文件。</value>
+  </data>
 </root>

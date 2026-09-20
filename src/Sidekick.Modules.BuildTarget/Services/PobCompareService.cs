@@ -32,7 +32,7 @@ public class PobCompareService(
 {
     private readonly SemaphoreSlim gate = new(1, 1);
 
-    /// <summary>「引擎里已载入哪份 BD」的缓存（键 = 模板 id + 引擎代际号，见 <see cref="BaselineCache"/>）。</summary>
+    /// <summary>「引擎里已载入哪份 BD」的缓存（键 = 模板 id + 引擎代际号 + 评估场景，见 <see cref="BaselineCache"/>）。</summary>
     private readonly BaselineCache baselineCache = new();
 
     /// <summary>侧边栏的部位键 → PoB 的槽位名（见 Engine/README.md，权威来源是 PoB 的 ItemsTab.baseSlots）。</summary>
@@ -91,8 +91,11 @@ public class PobCompareService(
             }
 
             stopwatch.Stop();
+
+            // 这次用的是哪个伤害指标（TotalDPS 是默认；回退到 Combined/Full 时要能从日志里看出来）
+            var metric = PobPrimaryMetric.Select(measured.Baseline!);
             logger.LogInformation(
-                "[BuildTarget] PoB compare {Slot}: dps {BaseDps:0} → {Dps:0}, ehp {BaseEhp:0} → {Ehp:0} ({Elapsed:0} ms, unmapped {Unmapped}, annotation-stripped {Annotated})",
+                "[BuildTarget] PoB compare {Slot}: dps {BaseDps:0} → {Dps:0}, ehp {BaseEhp:0} → {Ehp:0} ({Elapsed:0} ms, unmapped {Unmapped}, annotation-stripped {Annotated}, metric {Metric})",
                 pobSlot,
                 measured.Baseline!.Dps,
                 current.Dps,
@@ -100,7 +103,9 @@ public class PobCompareService(
                 current.Ehp,
                 stopwatch.ElapsedMilliseconds,
                 conversion.Result!.Skipped,
-                conversion.Result.AnnotationStripped);
+                conversion.Result.AnnotationStripped,
+                // 算不出伤害时 Select 给的是空串 —— 日志里写成 none，免得看起来像漏打了一个字段
+                string.IsNullOrEmpty(metric.Key) ? "none" : metric.Key);
 
             return PobCompareResult.Ok(
                 measured.Baseline,
@@ -244,9 +249,11 @@ public class PobCompareService(
         }
 
         var baseline = await EnsureBaselineAsync(template, cancellationToken);
-        if (baseline == null)
+        if (baseline.Stats is not { } baselineStats)
         {
-            return EngineFailure(null, engine.LastError);
+            // 载入失败的原因由 EnsureBaselineAsync 自己给（引擎起不来 / 场景核对不通过 …），
+            // 那时的 engine.LastError 往往是空的 —— 一律用它的原话，别在界面上留「引擎出错：-」。
+            return EngineFailure(null, baseline.Error ?? engine.LastError);
         }
 
         var response = await EquipAsync(pobSlot, itemText, cancellationToken);
@@ -259,12 +266,13 @@ public class PobCompareService(
             logger.LogWarning("[BuildTarget] Engine reports no build loaded, reloading the baseline once");
             baselineCache.Invalidate();
 
-            baseline = await EnsureBaselineAsync(template, cancellationToken);
-            if (baseline == null)
+            var reloaded = await EnsureBaselineAsync(template, cancellationToken);
+            if (reloaded.Stats is not { } reloadedStats)
             {
-                return EngineFailure(null, engine.LastError);
+                return EngineFailure(null, reloaded.Error ?? engine.LastError);
             }
 
+            baselineStats = reloadedStats;
             response = await EquipAsync(pobSlot, itemText, cancellationToken);
         }
 
@@ -287,16 +295,16 @@ public class PobCompareService(
                 "[BuildTarget] PoB equip failed: {Error}. Item text:\n{Text}",
                 response.Error ?? engine.LastError,
                 itemText);
-            return EngineFailure(baseline, response?.Error ?? engine.LastError);
+            return EngineFailure(baselineStats, response?.Error ?? engine.LastError);
         }
 
         var current = ReadStats(response);
         if (current == null)
         {
-            return EngineFailure(baseline, "engine returned no stats");
+            return EngineFailure(baselineStats, "engine returned no stats");
         }
 
-        return (PobCompareStatus.Success, baseline, current, null, ReadEngineUnsupported(response));
+        return (PobCompareStatus.Success, baselineStats, current, null, ReadEngineUnsupported(response));
     }
 
     /// <summary>
@@ -366,12 +374,19 @@ public class PobCompareService(
     private static bool IsEngineBaseNameFailure(PobEngineResponse? response) =>
         response?.Error?.Contains("baseName", StringComparison.OrdinalIgnoreCase) == true;
 
-    /// <summary>载入基准 BD。同一个模板 + 同一个引擎代次只载一次（引擎侧 load_build 约 400 ms）。</summary>
-    private async Task<PobStats?> EnsureBaselineAsync(BuildTargetTemplate template, CancellationToken cancellationToken)
+    /// <summary>
+    /// 载入基准 BD。同一个模板 + 同一个引擎代次 + **同一个评估场景**只载一次（引擎侧 load_build 约 400 ms）。
+    ///
+    /// 返回值带上失败原因：载入失败的原因不一定在 <see cref="PobEngineClient.LastError"/> 上
+    /// （例如「场景没生效」是我们自己判的），原话带出去才不会在界面上留下「引擎出错：-」。
+    /// </summary>
+    private async Task<(PobStats? Stats, string? Error)> EnsureBaselineAsync(BuildTargetTemplate template, CancellationToken cancellationToken)
     {
-        if (baselineCache.IsValid(template.Id, engine.Generation))
+        var context = options.PobContext;
+
+        if (baselineCache.IsValid(template.Id, engine.Generation, context))
         {
-            return baselineCache.Stats;
+            return (baselineCache.Stats, null);
         }
 
         // ⚠ 代际号要在发请求**之前**记下来：若引擎在载入过程中被杀/重启，
@@ -384,6 +399,8 @@ public class PobCompareService(
             {
                 ["xml"] = template.PobXml,
                 ["name"] = template.Name,
+                // 评估场景：Lua 侧在**内存里**临时覆盖敌人的等级 / Boss 标记，不写回 BD 源码
+                ["context"] = context,
             },
             TimeSpan.FromSeconds(90),   // 首次要加载引擎数据，给足时间
             cancellationToken);
@@ -391,19 +408,53 @@ public class PobCompareService(
         if (response is not { Ok: true })
         {
             baselineCache.Invalidate();
-            return null;
+            return (null, engine.LastError);
+        }
+
+        // 核对 Lua 侧回的「实际生效」标签（`result.context`）。三种形状：
+        //   1) 与请求一致 → 正常，记进缓存；
+        //   2) **不一致** → 我们手里这份数值不是要的那个场景算出来的。当成刚才请求的场景用
+        //      会让面板上的场景标签变成假话（用户以为自己看的是打王数据）→ 如实回失败，不缓存；
+        //   3) 老 helper 压根没这个字段（null）→ 只告警：数值是按 BD 自己的配置算的，
+        //      分发包里没同步 helper 时就是这个形状（%APPDATA% 那份是手动放的），不能因此把功能整个弄坏。
+        var effective = ReadContext(response);
+        if (effective != null &&
+            !string.Equals(PobContexts.Normalize(effective), context, StringComparison.OrdinalIgnoreCase))
+        {
+            baselineCache.Invalidate();
+            var error = $"engine reported evaluation context '{effective}' for a '{context}' request";
+            logger.LogWarning("[BuildTarget] PoB load_build {Error} — refusing to use it as the {Context} baseline", error, context);
+            return (null, error);
+        }
+
+        if (effective == null && context != PobContexts.Build)
+        {
+            logger.LogWarning(
+                "[BuildTarget] the engine helper did not report the evaluation context it applied (requested {Context}) — it is probably an older copy, so the numbers are the build's own config",
+                context);
         }
 
         var stats = ReadStats(response);
-        baselineCache.Store(template.Id, generation, stats);
-        return stats;
+        baselineCache.Store(template.Id, generation, context, stats);
+        return (stats, null);
     }
+
+    /// <summary>
+    /// 读 helper 回的「实际生效的场景标签」（Lua 侧的 <c>result.context</c>，值形如 <c>BUILD</c>/<c>MAP</c>/<c>BOSS</c>）。
+    /// 字段缺失 / 形状不对一律回 null =「老 helper，没告诉我们」——调用方按这个区分「没回」与「回了别的」。
+    /// internal 是为了让单测直接喂一段假应答验形状。
+    /// </summary>
+    internal static string? ReadContext(PobEngineResponse? response) => response?.GetString("context");
 
     /// <summary>
     /// 从 helper 的应答里读数值。**形状是嵌套的**：<c>{"stats":{"dps":…,"ehp":…,"life":…}}</c> ——
     /// 一开始按顶层读，结果 load_build 明明成功却拿到 null、界面显示「引擎出错：-」（本次实测踩到）。
+    ///
+    /// <c>combinedDps</c> / <c>fullDps</c>（主指标回退链要用的两个备选）缺字段时给 0，
+    /// 与 <c>life</c> 一样容错 —— 老 helper 没这两个字段时**不该让整份 stats 变成 null**。
+    /// internal 是为了让单测直接喂一段假应答验形状。
     /// </summary>
-    private static PobStats? ReadStats(PobEngineResponse response)
+    internal static PobStats? ReadStats(PobEngineResponse response)
     {
         var stats = response.GetObject("stats");
         if (stats == null)
@@ -418,6 +469,12 @@ public class PobCompareService(
 
         return Number("dps") is { } dps && Number("ehp") is { } ehp
             ? new PobStats(dps, ehp, Number("life") ?? 0)
+            {
+                // 回退链要用的两个字段：老 helper 没这两个字段时给 0（=「没有这个数」），
+                // 与 life 一样容错 —— 缺字段绝不能让整份 stats 变成 null。
+                CombinedDps = Number("combinedDps") ?? 0,
+                FullDps = Number("fullDps") ?? 0,
+            }
             : null;
     }
 }
@@ -439,19 +496,32 @@ public sealed class PobMeasure
     /// <summary>引擎自己不支持的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
     public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
 
+    /// <summary>这次用的伤害指标（见 <see cref="PobPrimaryMetric"/>）；空串 = 算不出伤害。</summary>
+    public string PrimaryMetricKey { get; init; } = "";
+
+    /// <summary>引擎算不出这份 BD 的伤害（见 <see cref="PobCompareResult.DpsUnavailable"/>）。</summary>
+    public bool DpsUnavailable { get; init; }
+
     public bool Ok => Stats != null;
 
     public static PobMeasure Succeeded(
         PobStats baseline,
         PobStats stats,
-        IReadOnlyList<string>? engineUnsupported = null) =>
-        new()
+        IReadOnlyList<string>? engineUnsupported = null)
+    {
+        // 与 PobCompareResult.Ok 同一条纪律：**只用基线那份选指标**，不能一处基线一处候选。
+        var metric = PobPrimaryMetric.Select(baseline);
+
+        return new()
         {
             Status = PobCompareStatus.Success,
             Baseline = baseline,
             Stats = stats,
             EngineUnsupportedLines = engineUnsupported ?? [],
+            PrimaryMetricKey = metric.Key,
+            DpsUnavailable = !metric.Resolved,
         };
+    }
 
     public static PobMeasure Not(
         PobCompareStatus status,

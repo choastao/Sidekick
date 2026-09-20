@@ -71,6 +71,12 @@ public sealed class AffixGainRanking
 
     public IReadOnlyList<AffixGainRow> NotRanked { get; init; } = [];
 
+    /// <summary>
+    /// 引擎算不出这份 BD 的伤害（见 <see cref="PobCompareResult.DpsUnavailable"/>）：这批行的
+    /// DPS 收益全是 0，界面必须显示成「—」而不是 0，排名也改按 EHP（见 <see cref="Metric"/>）。
+    /// </summary>
+    public bool DpsUnavailable { get; init; }
+
     /// <summary>这批实验花掉的毫秒数（引擎热的时候约 15 ms/条）。</summary>
     public long ElapsedMs { get; init; }
 
@@ -87,7 +93,8 @@ public sealed class AffixGainRanking
         CandidateRankMetric metric,
         int count,
         int attempts,
-        long elapsedMs = 0)
+        long elapsedMs = 0,
+        bool dpsUnavailable = false)
     {
         var other = metric == CandidateRankMetric.Dps ? CandidateRankMetric.Ehp : CandidateRankMetric.Dps;
 
@@ -106,6 +113,7 @@ public sealed class AffixGainRanking
             NotRanked = [.. sorted.Where(x => !x.IsRanked)],
             ElapsedMs = elapsedMs,
             Attempts = attempts,
+            DpsUnavailable = dpsUnavailable,
         };
     }
 }

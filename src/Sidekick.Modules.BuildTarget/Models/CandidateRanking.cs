@@ -39,6 +39,15 @@ public sealed class CandidateRankRow
     /// <summary>引擎自己不支持的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
     public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
 
+    /// <summary>这一行对比时用的伤害指标（见 <see cref="PobCompareResult.PrimaryMetricKey"/>）。</summary>
+    public string PrimaryMetricKey { get; init; } = "";
+
+    /// <summary>
+    /// 引擎算不出这份 BD 的伤害：这行的 DPS 差值必然是 0 ——
+    /// 界面显示「—」而不是 0（0 会被读成「这件没变化」）。
+    /// </summary>
+    public bool DpsUnavailable { get; init; }
+
     public string? Error { get; init; }
 
     /// <summary>算出来了（有差值），参与排序。</summary>

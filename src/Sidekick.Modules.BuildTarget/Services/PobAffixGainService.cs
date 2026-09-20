@@ -72,6 +72,11 @@ public class PobAffixGainService(
 
         var referenceStats = reference.Stats!;
 
+        // ⚠ 引擎算不出伤害时（DpsUnavailable）**按 EHP 排名**：否则排的是「一列 0」，
+        //   名次完全由并列规则（另一个指标）决定 —— 表上却写着「按 DPS 排序」，是假话。
+        //   这里只换排序指标，逐条的 EHP 收益本来就都算着（见下面 Row 的 ehpDelta）。
+        metric = EffectiveMetric(reference.DpsUnavailable, metric);
+
         // 引擎自己不支持的词缀行（拿原物那次试穿的结果读回来的）——
         // 这些词缀的收益必然是 0，界面上要标成「引擎不支持」而不是「没贡献」。
         var unsupportedByEngine = new HashSet<string>(reference.EngineUnsupportedLines, StringComparer.OrdinalIgnoreCase);
@@ -150,7 +155,7 @@ public class PobAffixGainService(
 
         stopwatch.Stop();
 
-        var ranking = AffixGainRanking.Rank(rows, metric, count, attempts, stopwatch.ElapsedMilliseconds);
+        var ranking = AffixGainRanking.Rank(rows, metric, count, attempts, stopwatch.ElapsedMilliseconds, reference.DpsUnavailable);
 
         logger.LogInformation(
             "[BuildTarget] Affix gains: {Ranked}/{Total} ranked by {Metric} in {Elapsed} ms",
@@ -161,6 +166,13 @@ public class PobAffixGainService(
 
         return ranking;
     }
+
+    /// <summary>
+    /// 这批实验实际按哪个指标排名：DPS 算不出来时一律改按 EHP。
+    /// 抽成纯函数是为了能单测钉住（真跑一遍引擎在单测里做不到）。
+    /// </summary>
+    internal static CandidateRankMetric EffectiveMetric(bool dpsUnavailable, CandidateRankMetric requested) =>
+        dpsUnavailable ? CandidateRankMetric.Ehp : requested;
 
     private static AffixGainRow Row(
         PobItemText.AffixLine affix,

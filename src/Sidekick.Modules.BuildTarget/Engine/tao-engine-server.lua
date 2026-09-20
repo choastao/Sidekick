@@ -54,6 +54,18 @@ local state = {
     calcFunc = nil,  -- calcsTab:GetMiscCalculator()
 }
 
+-- 评估场景：载入时对**内存里的** BD 配置临时覆盖敌人设定，不写回 BD 源码。
+--   BUILD = 什么都不做（按 BD 自己的配置，行为与加场景之前完全一致）
+--   MAP   = 刷图：82 级、非 Boss
+--   BOSS  = 打王：84 级 Boss
+-- ⚠ 全程只改 build.configTab.input 这两个字段，**不碰 xml 字符串**：
+--   用户的 BD 文件在磁盘上永远是他自己那份。
+local CONTEXTS = {
+    BUILD = nil,
+    MAP = { enemyLevel = 82, enemyIsBoss = "None" },
+    BOSS = { enemyLevel = 84, enemyIsBoss = "Boss" },
+}
+
 local function out(tbl)
     io.write(dkjson.encode(tbl), "\n")
     io.flush()
@@ -86,11 +98,23 @@ handlers.ping = function()
     return { pong = true, engine = "path-of-building-poe2", buildLoaded = state.base ~= nil }
 end
 
--- params: { xml = "<PathOfBuilding2>…", name = "…" }
+-- params: { xml = "<PathOfBuilding2>…", name = "…", context = "BUILD"|"MAP"|"BOSS" }
+-- 应答里回一个 context = **实际生效**的标签，供主程序核对（它对不上就不该把这份数值当成
+-- 那个场景的基线用）。
 handlers.load_build = function(params)
     local xml = params.xml
     if type(xml) ~= "string" or #xml == 0 then
         error("params.xml is required")
+    end
+
+    -- 缺省 / 空 / 认不出的标签一律当 BUILD（= 一句话都不改，按 BD 自己的配置）
+    local context = "BUILD"
+    local requested = ""
+    if type(params.context) == "string" then
+        requested = string.upper(string.match(params.context, "^%s*(.-)%s*$") or "")
+    end
+    if requested == "BUILD" or CONTEXTS[requested] ~= nil then
+        context = requested
     end
 
     loadBuildFromXML(xml, params.name or "tao-base")
@@ -98,9 +122,24 @@ handlers.load_build = function(params)
         error("engine did not expose a build object")
     end
 
+    -- 场景覆盖：必须在取 calcFunc / base **之前**做完（它是按当前配置算出来的）。
+    -- ⚠ 覆盖失败要**如实回错**，不能静默按原配置算 —— 那会让用户以为自己看的是刷图数据。
+    if CONTEXTS[context] ~= nil then
+        local override = CONTEXTS[context]
+        local ok, err = pcall(function()
+            build.configTab.input.enemyLevel = override.enemyLevel
+            build.configTab.input.enemyIsBoss = override.enemyIsBoss
+            build.configTab:BuildModList()
+            build.calcsTab:BuildOutput()
+        end)
+        if not ok then
+            error("context override failed: " .. tostring(err))
+        end
+    end
+
     state.calcFunc = build.calcsTab:GetMiscCalculator()
     state.base = statsFrom(build.calcsTab.mainOutput)
-    return { stats = state.base }
+    return { stats = state.base, context = context }
 end
 
 -- 基准数值（没有基准 BD 时给空表，主程序按"未载入"处理）

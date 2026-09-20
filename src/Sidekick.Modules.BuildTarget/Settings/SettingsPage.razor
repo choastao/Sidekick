@@ -1,5 +1,6 @@
 @page "/settings/buildtarget"
 @implements IDisposable
+@using System.Globalization
 @using Sidekick.Game.Parser
 @using Sidekick.Game.Parser.Items
 
@@ -29,6 +30,16 @@
                     <div class="text-base">@Resources["Option_PobEngine"]</div>
                     <div class="text-stone-500 text-xs">@Resources["Option_PobEngine_Help"]</div>
                 </div>
+            </div>
+
+            @* 评估场景：引擎在**载入那一刻**按它重算，所以是「下次载入生效」；
+               改的是内存里的临时配置，绝不写回用户的 BD 文件。 *@
+            <div class="mt-3">
+                <FormSelect Label="@ContextText()"
+                            Value="@Options.PobContext"
+                            ValueChanged="SetPobContext"
+                            Options="ContextOptions"/>
+                <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Options_PobContext_Help"]</TextBase>
             </div>
         </FormFieldset>
 
@@ -578,6 +589,22 @@
     private void SetCraftCost(bool value) => Options.SetCraftCost(value);
 
     private void SetPobEngine(bool value) => Options.SetPobEngine(value);
+
+    private void SetPobContext(string? value) => Options.SetPobContext(value);
+
+    /// <summary>场景下拉的三个选项（取值就是协议字面量，别在这里另写拼写）。</summary>
+    private List<SelectOption> ContextOptions =>
+    [
+        new() { Label = Resources["Context_Build"].Value, Value = PobContexts.Build },
+        new() { Label = Resources["Context_Map"].Value, Value = PobContexts.Map },
+        new() { Label = Resources["Context_Boss"].Value, Value = PobContexts.Boss },
+    ];
+
+    /// <summary>下拉的标题：用 <c>Pob_Context</c> 把**当前**场景填进去（顺便当"现在按哪个算"的显示）。</summary>
+    private string ContextText() => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources["Pob_Context"].Value,
+        Resources[PobContexts.ResourceKey(Options.PobContext)].Value);
 
     private void SaveActive()
     {

@@ -70,9 +70,28 @@ public class BuildTargetOptionsStore
         }
     }
 
+    /// <summary>
+    /// 评估场景（<c>BUILD</c> / <c>MAP</c> / <c>BOSS</c>）。
+    /// 读的时候也过一遍 <see cref="PobContexts.Normalize"/>：用户手改坏了 JSON 也不至于把
+    /// 一个我们都不认识的标签发给引擎（认不出 = 按 BD 原样算）。
+    /// </summary>
+    public string PobContext
+    {
+        get
+        {
+            lock (fileLock)
+            {
+                return PobContexts.Normalize(options.PobContext);
+            }
+        }
+    }
+
     public void SetCraftCost(bool value) => Set(x => x.CraftCost = value);
 
     public void SetPobEngine(bool value) => Set(x => x.PobEngine = value);
+
+    /// <summary>切评估场景。**下次载入生效**（引擎是 load_build 那一刻按场景重算的）。</summary>
+    public void SetPobContext(string? value) => Set(x => x.PobContext = PobContexts.Normalize(value));
 
     private void Set(Action<BuildTargetOptions> change)
     {
@@ -137,7 +156,12 @@ public class BuildTargetOptionsStore
 
                 var json = File.ReadAllText(FilePath);
                 options = JsonSerializer.Deserialize<BuildTargetOptions>(json, JsonOptions) ?? new BuildTargetOptions();
-                logger.LogInformation("[BuildTarget] Options loaded from {Path}: craftCost={CraftCost} pobEngine={PobEngine}", FilePath, options.CraftCost, options.PobEngine);
+                logger.LogInformation(
+                    "[BuildTarget] Options loaded from {Path}: craftCost={CraftCost} pobEngine={PobEngine} pobContext={PobContext}",
+                    FilePath,
+                    options.CraftCost,
+                    options.PobEngine,
+                    PobContexts.Normalize(options.PobContext));
             }
             catch (Exception ex)
             {

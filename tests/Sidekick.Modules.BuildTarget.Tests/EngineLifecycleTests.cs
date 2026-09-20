@@ -15,9 +15,10 @@ namespace Sidekick.Modules.BuildTarget.Tests;
 /// <summary>
 /// C1 审计出来的两条 🔴 的守门员：
 ///
-/// 1. **基线缓存必须把「引擎代际号」当缓存键**（审计 L1）—— 只认模板 id 的话，
+/// 1. **基线缓存必须把「引擎代际号」与「评估场景」都当缓存键**（审计 L1）—— 只认模板 id 的话，
 ///    引擎被超时杀掉之后缓存照样命中 → 跳过 `load_build` → `equip` 回 `no build loaded`
-///    → 此后每次试穿都失败且无自愈路径。C2 的批量会因此整批报销。
+///    → 此后每次试穿都失败且无自愈路径。C2 的批量会因此整批报销；
+///    漏掉场景的话，切了场景还会拿旧场景的基线做差（面板上的差值全是错的，还看不出来）。
 ///
 /// 2. **平添词缀要补上行首 `+`**（审计 C1 4.5）—— 英文 trade-stats 的模板不带 `+`，
 ///    而 PoB 对缺 `+` 的行是**静默忽略**的（实测：EHP 与不换装备逐位相同，Skipped 却为 0）。
@@ -29,7 +30,7 @@ public class EngineLifecycleTests
         Options.Create(new SidekickConfiguration { ApplicationType = SidekickApplicationType.Test }),
         NullLogger<DataProvider>.Instance);
 
-    // ---- L1：缓存键 = (模板 id, 引擎代际号) ----
+    // ---- L1：缓存键 = (模板 id, 引擎代际号, 评估场景) ----
 
     [Fact]
     public void Cache_invalidates_when_the_engine_restarts()
@@ -37,25 +38,25 @@ public class EngineLifecycleTests
         var cache = new BaselineCache();
         var stats = new PobStats(7_644_241, 23_554, 2_433);
 
-        cache.Store("template-a", engineGeneration: 1, stats);
-        Assert.True(cache.IsValid("template-a", 1));
+        cache.Store("template-a", engineGeneration: 1, PobContexts.Build, stats);
+        Assert.True(cache.IsValid("template-a", 1, PobContexts.Build));
         Assert.Same(stats, cache.Stats);
 
         // ⚠ 这一条就是 L1 的判据：同一个模板、但引擎换了一代（被杀过/重启过）
         //   → 缓存里的数值已经不属于当前引擎，必须重载。
-        Assert.False(cache.IsValid("template-a", 2));
+        Assert.False(cache.IsValid("template-a", 2, PobContexts.Build));
 
         // 换了模板当然也不认
-        Assert.False(cache.IsValid("template-b", 1));
+        Assert.False(cache.IsValid("template-b", 1, PobContexts.Build));
 
         // 载入失败 / 引擎报 no build loaded 之后清缓存
         cache.Invalidate();
-        Assert.False(cache.IsValid("template-a", 1));
+        Assert.False(cache.IsValid("template-a", 1, PobContexts.Build));
         Assert.Null(cache.Stats);
 
         // 「成功但没读到数值」不算有效缓存
-        cache.Store("template-a", 3, null);
-        Assert.False(cache.IsValid("template-a", 3));
+        cache.Store("template-a", 3, PobContexts.Build, null);
+        Assert.False(cache.IsValid("template-a", 3, PobContexts.Build));
     }
 
     [Fact]

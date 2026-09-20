@@ -1017,4 +1017,25 @@
   <data name="Preset_Spirit" xml:space="preserve">
     <value>Spirit</value>
   </data>
+  <data name="Pob_Dps_Unavailable" xml:space="preserve">
+    <value>The engine could not produce a damage number for this build (minion/trigger builds often do) — the DPS column is unavailable.</value>
+  </data>
+  <data name="Pob_Primary_Metric" xml:space="preserve">
+    <value>Damage metric used: {0}</value>
+  </data>
+  <data name="Pob_Context" xml:space="preserve">
+    <value>Evaluation context: {0}</value>
+  </data>
+  <data name="Context_Build" xml:space="preserve">
+    <value>as saved in the build</value>
+  </data>
+  <data name="Context_Map" xml:space="preserve">
+    <value>mapping (level 82)</value>
+  </data>
+  <data name="Context_Boss" xml:space="preserve">
+    <value>bossing (level 84 boss)</value>
+  </data>
+  <data name="Options_PobContext_Help" xml:space="preserve">
+    <value>Takes effect the next time the build is loaded (the engine computes the build when it loads it). The override is applied to the in-memory copy only — your BD file is never modified.</value>
+  </data>
 </root>

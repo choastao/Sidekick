@@ -1,7 +1,19 @@
 namespace Sidekick.Modules.BuildTarget.Models;
 
 /// <summary>引擎给出的一组数值。绝对值只能当参考（PoB 是模拟器，配置错就偏），**相对差值才是我们要的**。</summary>
-public sealed record PobStats(double Dps, double Ehp, double Life);
+public sealed record PobStats(double Dps, double Ehp, double Life)
+{
+    /// <summary>
+    /// PoB 的 <c>CombinedDPS</c>（主技能 + 其它技能的合计）。
+    /// **不是**默认主指标，只在 <see cref="Dps"/> 为 0 时按回退链使用（见 <see cref="PobPrimaryMetric"/>）。
+    /// </summary>
+    public double CombinedDps { get; init; }
+
+    /// <summary>
+    /// PoB 的 <c>FullDPS</c>（全部技能合计）。同 <see cref="CombinedDps"/>，只在回退链里用。
+    /// </summary>
+    public double FullDps { get; init; }
+}
 
 public enum PobCompareStatus
 {
@@ -61,6 +73,23 @@ public sealed class PobCompareResult
     public PobStats? Current { get; init; }
 
     /// <summary>
+    /// 这次对比用的是哪个伤害指标（<c>TotalDPS</c> / <c>CombinedDPS</c> / <c>FullDPS</c>，见
+    /// <see cref="PobPrimaryMetric"/>）。空串 = 一个数字都没有（<see cref="DpsUnavailable"/> 为真）。
+    ///
+    /// ⚠ 一定要说清楚用的是哪个数：回退到 Combined/Full 时，绝对值与默认的 TotalDPS **不是一回事**，
+    /// 不说就会让用户拿两个不同口径的数对照。
+    /// </summary>
+    public string PrimaryMetricKey { get; init; } = "";
+
+    /// <summary>
+    /// 引擎算不出这份 BD 的伤害（三个字段全为 0 / 负，召唤 / 触发类 BD 的典型症状）。
+    ///
+    /// **界面必须把 DPS 那一列显示成「—」而不是 0**：0 会被读成「没变化」，
+    /// 而事实是「这个数压根算不出来」——两种结论完全相反。
+    /// </summary>
+    public bool DpsUnavailable { get; init; }
+
+    /// <summary>
     /// **我们的转换层**没认出、因而压根没发出去的词缀条数（> 0 时这几条没参与计算）。
     /// ⚠ 与「引擎不支持」是两件事（见 <see cref="EngineUnsupportedLines"/>）：这一条是**我们**的缺口
     /// （词缀压根没发出去），说成「引擎不支持」就是甩锅给引擎 —— 旧文案犯过这个错，界面不许再出现。
@@ -95,14 +124,24 @@ public sealed class PobCompareResult
         PobStats baseline,
         PobStats current,
         int unmappedAffixes,
-        IReadOnlyList<string>? engineUnsupported = null) => new()
+        IReadOnlyList<string>? engineUnsupported = null)
     {
-        Status = PobCompareStatus.Success,
-        Base = baseline,
-        Current = current,
-        UnmappedAffixes = unmappedAffixes,
-        EngineUnsupportedLines = engineUnsupported ?? [],
-    };
+        // ⚠ 主指标**只按基线那份 stats 选**（不能一处用基线、一处用候选去选）：
+        //   两处若选了不同的回退档（例如基线回退到 Combined、候选没回退），
+        //   「涨了多少」就变成两个不同口径的数相减 —— 那是静默错数。
+        var metric = PobPrimaryMetric.Select(baseline);
+
+        return new()
+        {
+            Status = PobCompareStatus.Success,
+            Base = baseline,
+            Current = current,
+            UnmappedAffixes = unmappedAffixes,
+            EngineUnsupportedLines = engineUnsupported ?? [],
+            PrimaryMetricKey = metric.Key,
+            DpsUnavailable = !metric.Resolved,
+        };
+    }
 
     public static PobCompareResult Not(PobCompareStatus status, string? error = null) => new()
     {

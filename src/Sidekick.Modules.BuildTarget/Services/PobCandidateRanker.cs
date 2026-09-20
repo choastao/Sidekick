@@ -69,13 +69,18 @@ public class PobCandidateRanker(
             }
         }
 
+        // 主指标算不出来时，按 DPS 排名等于按一列 0 排名（名次只剩并列规则）→ 自动改用 EHP。
+        // 与逐条词缀收益（PobAffixGainService）用**同一个判据**，别在两处各写一套。
+        var effectiveMetric = PobAffixGainService.EffectiveMetric(rows.Any(x => x.DpsUnavailable), metric);
+
         logger.LogInformation(
-            "[BuildTarget] Candidate ranking done: {Ranked}/{Total} ranked by {Metric}",
+            "[BuildTarget] Candidate ranking done: {Ranked}/{Total} ranked by {Metric}{Fallback}",
             rows.Count(x => x.IsRanked),
             rows.Count,
-            metric);
+            effectiveMetric,
+            effectiveMetric == metric ? "" : "（DPS 算不出来，自动改用 EHP）");
 
-        return CandidateRanking.Sort(rows, metric);
+        return CandidateRanking.Sort(rows, effectiveMetric);
     }
 
     private static IEnumerable<CandidateBasketItem> Skip(IReadOnlyList<CandidateBasketItem> candidates, CandidateBasketItem current)
@@ -128,6 +133,8 @@ public class PobCandidateRanker(
         EhpPercent = result.EhpPercent,
         UnmappedAffixes = result.UnmappedAffixes,
         EngineUnsupportedLines = result.EngineUnsupportedLines,
+        PrimaryMetricKey = result.PrimaryMetricKey,
+        DpsUnavailable = result.DpsUnavailable,
         Error = result.Error,
     };
 

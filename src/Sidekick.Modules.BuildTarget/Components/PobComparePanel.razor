@@ -8,6 +8,10 @@
     <div class="mt-4">
         <FormFieldset Legend="@Resources["Pob_Title"]">
 
+            @* 当前评估场景：引擎在**载入那一刻**按这个场景重算（内存态覆盖，不动 BD 文件），
+               所以切换后是「下次载入生效」。副标题里带一个名字，用户不用去设置页猜现在按哪个算的。 *@
+            <TextBase Class="text-stone-500 text-xs">@ContextText()</TextBase>
+
             @if (loading)
             {
                 <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
@@ -26,9 +30,20 @@
                     <tbody>
                     <tr class="border-t border-stone-700">
                         <td class="py-1">@Resources["Pob_Dps"]</td>
-                        <td class="py-1 text-right text-stone-400">@Num(result.Base!.Dps)</td>
-                        <td class="py-1 text-right">@Num(result.Current!.Dps)</td>
-                        <td class="py-1 text-right @DeltaClass(result.DpsDelta)">@Signed(result.DpsDelta)@Pct(result.DpsPercent)</td>
+                        @if (result.DpsUnavailable)
+                        {
+                            @* 引擎算不出伤害时显示「—」而不是 0：0 会被读成「这件装备没变化」，
+                               而事实是「这个数压根算不出来」—— 两种结论完全相反。 *@
+                            <td class="py-1 text-right text-stone-500">—</td>
+                            <td class="py-1 text-right text-stone-500">—</td>
+                            <td class="py-1 text-right text-stone-500">—</td>
+                        }
+                        else
+                        {
+                            <td class="py-1 text-right text-stone-400">@Num(result.Base!.Dps)</td>
+                            <td class="py-1 text-right">@Num(result.Current!.Dps)</td>
+                            <td class="py-1 text-right @DeltaClass(result.DpsDelta)">@Signed(result.DpsDelta)@Pct(result.DpsPercent)</td>
+                        }
                     </tr>
                     <tr class="border-t border-stone-700">
                         <td class="py-1">@Resources["Pob_Ehp"]</td>
@@ -38,6 +53,15 @@
                     </tr>
                     </tbody>
                 </table>
+
+                @if (result.DpsUnavailable)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-2">@Resources["Pob_Dps_Unavailable"]</TextBase>
+                }
+                else if (PrimaryMetricText(result) is { } metricText)
+                {
+                    <TextBase Class="text-stone-500 text-xs mt-2">@metricText</TextBase>
+                }
 
                 @if (result.UnmappedAffixes > 0)
                 {
@@ -117,12 +141,26 @@
                                             <span class="text-amber-400 text-xs">@Resources["Affix_Engine_Unsupported"]</span>
                                         }
                                     </td>
-                                    <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>
+                                    @if (gain.DpsUnavailable)
+                                    {
+                                        @* 与上面那张表同一口径：算不出伤害时逐条 DPS 收益也没有数字，
+                                           0 会被读成「这条词缀没贡献」。 *@
+                                        <td class="py-1 text-right text-stone-500">—</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>
+                                    }
                                     <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Pct(row.EhpPercent)</td>
                                 </tr>
                             }
                             </tbody>
                         </table>
+
+                        @if (gain.DpsUnavailable)
+                        {
+                            <TextBase Class="text-amber-400 text-xs mt-2">@Resources["Pob_Dps_Unavailable"]</TextBase>
+                        }
                     }
 
                     @if (gain.NotRanked.Count > 0)
@@ -313,6 +351,32 @@
 
     /// <summary>多行词缀在表格里必须显示成一行（真换行会把表格撑破），断点用「⏎」标出来 —— 顺便让用户看得见这是多行词缀。</summary>
     private static string AffixText(string text) => text.Replace("\n", " ⏎ ");
+
+    /// <summary>
+    /// 「本次用的伤害指标是 …」那一行。**只在不是默认的 TotalDPS 时才显示**：
+    /// 默认路径本来就不该多一行字；回退到 Combined/Full 时必须说清楚 ——
+    /// 否则用户会拿两个不同口径的绝对值互相对照。
+    /// </summary>
+    private string? PrimaryMetricText(PobCompareResult value)
+    {
+        if (value.DpsUnavailable ||
+            string.IsNullOrEmpty(value.PrimaryMetricKey) ||
+            value.PrimaryMetricKey == PobPrimaryMetric.TotalDps)
+        {
+            return null;
+        }
+
+        return string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Pob_Primary_Metric"].Value,
+            PobPrimaryMetric.DisplayName(value.PrimaryMetricKey));
+    }
+
+    /// <summary>当前评估场景（设置里那份）：切换后**下次载入生效**，这里如实显示设置值。</summary>
+    private string ContextText() => string.Format(
+        CultureInfo.CurrentCulture,
+        Resources["Pob_Context"].Value,
+        Resources[PobContexts.ResourceKey(Options.PobContext)].Value);
 
     private string StatusText(PobCompareResult value) => value.Status switch
     {

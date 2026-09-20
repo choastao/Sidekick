@@ -223,7 +223,16 @@
                             <td class="py-1 text-stone-400">@SlotLabel(row.SlotKey)</td>
                             @if (row.IsRanked)
                             {
-                                <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Percent(row.DpsPercent)</td>
+                                @if (row.DpsUnavailable)
+                                {
+                                    @* 引擎算不出这份 BD 的伤害：显示「—」而不是 0 ——
+                                       0 会被读成「这件没变化」，与「算不出来」是两种相反的结论。 *@
+                                    <td class="py-1 text-right text-stone-500">—</td>
+                                }
+                                else
+                                {
+                                    <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Percent(row.DpsPercent)</td>
+                                }
                                 <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Percent(row.EhpPercent)</td>
                             }
                             else
@@ -278,7 +287,15 @@
                                                                 <span class="text-amber-400 text-xs">@Resources["Affix_Engine_Unsupported"]</span>
                                                             }
                                                         </td>
-                                                        <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
+                                                        @if (ranking_.DpsUnavailable)
+                                                        {
+                                                            @* 同上：逐条收益的 DPS 列也没有数字（与悬浮窗那份同一口径）。 *@
+                                                            <td class="py-1 text-right text-stone-500">—</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
+                                                        }
                                                         <td class="py-1 text-right @DeltaClass(affix.EhpDelta)">@Signed(affix.EhpDelta)@Percent(affix.EhpPercent)</td>
                                                     </tr>
                                                 }
@@ -649,6 +666,21 @@
 
         // 两个数分开说（与悬浮窗口径一致）：转换层的缺口是我们的锅，引擎的盲区是 PoB 的锅。
         var notes = new List<string>();
+
+        // 伤害口径：算不出来时说明 DPS 这一列没有数字；回退到别的字段时说明用的是哪个数。
+        // 文案与悬浮窗那份是同一套键，别在这里另造一套说法。
+        if (row.DpsUnavailable)
+        {
+            notes.Add(Resources["Pob_Dps_Unavailable"].Value);
+        }
+        else if (!string.IsNullOrEmpty(row.PrimaryMetricKey) && row.PrimaryMetricKey != PobPrimaryMetric.TotalDps)
+        {
+            notes.Add(string.Format(
+                CultureInfo.CurrentCulture,
+                Resources["Pob_Primary_Metric"].Value,
+                PobPrimaryMetric.DisplayName(row.PrimaryMetricKey)));
+        }
+
         if (row.EngineUnsupportedLines.Count > 0)
         {
             notes.Add(string.Format(
