@@ -135,7 +135,22 @@ handlers.equip = function(params)
         error("engine returned no output for slot " .. slot)
     end
 
-    return { stats = statsFrom(output) }
+    -- 「引擎不认识这条词缀」：PoB 解析不出 modList 的行会把**整行原文**写进 modLine.extra
+    -- （Classes/Item.lua:1360-1364），ItemTools.lua:350 就是拿 extra 标 UNSUPPORTED 的。
+    -- 透传给主程序 = 消灭界面上「收益 0 是这条词缀没贡献，还是引擎压根没算它」的歧义。
+    local unsupported = {}
+    for _, list in ipairs({ item.implicitModLines, item.explicitModLines, item.enchantModLines, item.runeModLines }) do
+        for _, modLine in ipairs(list or {}) do
+            if modLine.extra then
+                unsupported[#unsupported + 1] = modLine.line or tostring(modLine.extra)
+            end
+        end
+    end
+
+    return {
+        stats = statsFrom(output),
+        unsupported = { count = #unsupported, lines = unsupported },
+    }
 end
 
 -- 设备/槽位清单，界面用来做映射（省得主程序硬编码）

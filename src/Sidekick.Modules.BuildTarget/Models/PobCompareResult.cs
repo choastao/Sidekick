@@ -60,8 +60,22 @@ public sealed class PobCompareResult
 
     public PobStats? Current { get; init; }
 
-    /// <summary>引擎不认识的词缀条数（> 0 时结论偏乐观，界面必须如实标出来）。</summary>
+    /// <summary>
+    /// **我们的转换层**没认出、因而压根没发出去的词缀条数（> 0 时结论偏乐观）。
+    /// ⚠ 与「引擎不认识」是两件事（见 <see cref="EngineUnsupportedLines"/>）：这一条是**我们**的缺口，
+    /// 不要再说成「引擎不支持」（旧文案就是这么写的，属于说假话）。
+    /// </summary>
     public int UnmappedAffixes { get; init; }
+
+    /// <summary>
+    /// **引擎自己不认识**的词缀行原文（PoB 解析不了，helper 从 <c>modLine.extra</c> 读出来透传）。
+    ///
+    /// 为什么要逐条说出来：这类词缀进算式时是 0，而界面上的「0」会被读成「这条词缀没贡献」——
+    /// 于是用户会得出「火抗在这件装备上不值钱」这种**反结论**。引擎的盲区必须标成盲区。
+    /// </summary>
+    public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
+
+    public int EngineUnsupportedCount => EngineUnsupportedLines.Count;
 
     public string? Error { get; init; }
 
@@ -76,12 +90,17 @@ public sealed class PobCompareResult
 
     public double? EhpPercent => HasDelta && Base!.Ehp > 0 ? EhpDelta / Base!.Ehp * 100 : null;
 
-    public static PobCompareResult Ok(PobStats baseline, PobStats current, int unmappedAffixes) => new()
+    public static PobCompareResult Ok(
+        PobStats baseline,
+        PobStats current,
+        int unmappedAffixes,
+        IReadOnlyList<string>? engineUnsupported = null) => new()
     {
         Status = PobCompareStatus.Success,
         Base = baseline,
         Current = current,
         UnmappedAffixes = unmappedAffixes,
+        EngineUnsupportedLines = engineUnsupported ?? [],
     };
 
     public static PobCompareResult Not(PobCompareStatus status, string? error = null) => new()

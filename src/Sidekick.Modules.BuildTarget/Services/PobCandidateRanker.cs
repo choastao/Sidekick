@@ -127,6 +127,7 @@ public class PobCandidateRanker(
         DpsPercent = result.DpsPercent,
         EhpPercent = result.EhpPercent,
         UnmappedAffixes = result.UnmappedAffixes,
+        EngineUnsupportedLines = result.EngineUnsupportedLines,
         Error = result.Error,
     };
 

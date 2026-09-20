@@ -101,7 +101,11 @@ public class PobCompareService(
                 conversion.Result!.Skipped,
                 conversion.Result.AnnotationStripped);
 
-            return PobCompareResult.Ok(measured.Baseline, current, conversion.Result.Skipped);
+            return PobCompareResult.Ok(
+                measured.Baseline,
+                current,
+                conversion.Result.Skipped,
+                measured.EngineUnsupported);
         }
         catch (Exception ex)
         {
@@ -147,8 +151,8 @@ public class PobCompareService(
         {
             var measured = await EquipAndMeasureAsync(template, pobSlot, itemText, cancellationToken);
             return measured.Stats is { } stats
-                ? PobMeasure.Succeeded(measured.Baseline!, stats)
-                : PobMeasure.Not(measured.Status, measured.Error);
+                ? PobMeasure.Succeeded(measured.Baseline!, stats, measured.EngineUnsupported)
+                : PobMeasure.Not(measured.Status, measured.Error, measured.EngineUnsupported);
         }
         catch (OperationCanceledException)
         {
@@ -227,7 +231,7 @@ public class PobCompareService(
     }
 
     /// <summary>「试试这件东西」的全部引擎动作：起引擎 → 载基线 → equip → 读数值。</summary>
-    private async Task<(PobCompareStatus Status, PobStats? Baseline, PobStats? Stats, string? Error)> EquipAndMeasureAsync(
+    private async Task<(PobCompareStatus Status, PobStats? Baseline, PobStats? Stats, string? Error, IReadOnlyList<string> EngineUnsupported)> EquipAndMeasureAsync(
         BuildTargetTemplate template,
         string pobSlot,
         string itemText,
@@ -235,7 +239,7 @@ public class PobCompareService(
     {
         if (!await engine.EnsureStartedAsync(cancellationToken))
         {
-            return (PobCompareStatus.EngineUnavailable, null, null, engine.LastError);
+            return (PobCompareStatus.EngineUnavailable, null, null, engine.LastError, (IReadOnlyList<string>)[]);
         }
 
         var baseline = await EnsureBaselineAsync(template, cancellationToken);
@@ -274,7 +278,7 @@ public class PobCompareService(
                     "[BuildTarget] Engine could not resolve the item base ({Error}). Item text:\n{Text}",
                     response.Error,
                     itemText);
-                return (PobCompareStatus.BaseUnknown, null, null, null);
+                return (PobCompareStatus.BaseUnknown, null, null, null, (IReadOnlyList<string>)[]);
             }
 
             // 失败时把转换出来的文本一起记下来：没有它，下次定位要重跑一遍真机
@@ -291,7 +295,7 @@ public class PobCompareService(
             return EngineFailure(baseline, "engine returned no stats");
         }
 
-        return (PobCompareStatus.Success, baseline, current, null);
+        return (PobCompareStatus.Success, baseline, current, null, ReadEngineUnsupported(response));
     }
 
     /// <summary>
@@ -301,18 +305,42 @@ public class PobCompareService(
     /// 与本项目「非引擎原因不许说成引擎出错」的既有口径冲突（第二轮 3-3 修过同族）。
     /// 开关关着 → 归成 `Disabled`，界面上的现成文案正好是「先去设置里打开这个开关」。
     /// </summary>
-    private (PobCompareStatus Status, PobStats? Baseline, PobStats? Current, string? Error) EngineFailure(
+    private (PobCompareStatus Status, PobStats? Baseline, PobStats? Current, string? Error, IReadOnlyList<string> EngineUnsupported) EngineFailure(
         PobStats? baseline,
         string? error) =>
         options.PobEngine
-            ? (PobCompareStatus.Failed, baseline, null, error)
-            : (PobCompareStatus.Disabled, baseline, null, null);
+            ? (PobCompareStatus.Failed, baseline, null, error, (IReadOnlyList<string>)[])
+            : (PobCompareStatus.Disabled, baseline, null, null, (IReadOnlyList<string>)[]);
 
     /// <summary>同上，给 <see cref="MeasureTextAsync"/> 用的形态。</summary>
     private PobMeasure EngineFailure(string? error) =>
         options.PobEngine
             ? PobMeasure.Not(PobCompareStatus.Failed, error)
             : PobMeasure.Not(PobCompareStatus.Disabled);
+
+    /// <summary>
+    /// 读 helper 回来的「引擎自己不认识的词缀行」（`result.unsupported.lines`）。
+    /// 字段缺失 / 形状不对一律当**空**（engine 老版本没有这一项时行为不变），
+    /// 但**不许**把「读不出来」当成「没有盲区」以外的解释 —— 所以宁可空，也不编数字。
+    /// internal 是为了让单测直接喂一段假应答验形状。
+    /// </summary>
+    internal static IReadOnlyList<string> ReadEngineUnsupported(PobEngineResponse? response)
+    {
+        var node = response?.GetObject("unsupported");
+        if (node == null || !node.TryGetValue("lines", out var lines) || lines.ValueKind != JsonValueKind.Array)
+        {
+            return [];
+        }
+
+        return
+        [
+            .. lines.EnumerateArray()
+                    .Where(x => x.ValueKind == JsonValueKind.String)
+                    .Select(x => x.GetString())
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x!),
+        ];
+    }
 
     /// <summary>试穿一件物品到某个 PoB 槽位（单次 ~15 ms，超时给 15 s 是上限兜底）。</summary>
     private Task<PobEngineResponse?> EquipAsync(string pobSlot, string itemText, CancellationToken cancellationToken) =>
@@ -407,11 +435,31 @@ public sealed class PobMeasure
 
     public string? Error { get; init; }
 
+    /// <summary>引擎自己不认识的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
+    public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
+
     public bool Ok => Stats != null;
 
-    public static PobMeasure Succeeded(PobStats baseline, PobStats stats) =>
-        new() { Status = PobCompareStatus.Success, Baseline = baseline, Stats = stats };
+    public static PobMeasure Succeeded(
+        PobStats baseline,
+        PobStats stats,
+        IReadOnlyList<string>? engineUnsupported = null) =>
+        new()
+        {
+            Status = PobCompareStatus.Success,
+            Baseline = baseline,
+            Stats = stats,
+            EngineUnsupportedLines = engineUnsupported ?? [],
+        };
 
-    public static PobMeasure Not(PobCompareStatus status, string? error = null) =>
-        new() { Status = status, Error = error };
+    public static PobMeasure Not(
+        PobCompareStatus status,
+        string? error = null,
+        IReadOnlyList<string>? engineUnsupported = null) =>
+        new()
+        {
+            Status = status,
+            Error = error,
+            EngineUnsupportedLines = engineUnsupported ?? [],
+        };
 }

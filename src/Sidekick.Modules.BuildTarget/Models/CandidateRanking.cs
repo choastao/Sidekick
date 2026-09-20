@@ -36,6 +36,9 @@ public sealed class CandidateRankRow
     /// <summary>引擎不认识的词缀条数（>0 时结论偏乐观）。</summary>
     public int UnmappedAffixes { get; init; }
 
+    /// <summary>引擎自己不认识的词缀行（见 <see cref="PobCompareResult.EngineUnsupportedLines"/>）。</summary>
+    public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
+
     public string? Error { get; init; }
 
     /// <summary>算出来了（有差值），参与排序。</summary>

@@ -273,6 +273,10 @@
                                                             {
                                                                 <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
                                                             }
+                                                            @if (affix.UnsupportedByEngine)
+                                                            {
+                                                                <span class="text-amber-400 text-xs">@Resources["Affix_Engine_Unsupported"]</span>
+                                                            }
                                                         </td>
                                                         <td class="py-1 text-right @DeltaClass(affix.DpsDelta)">@Signed(affix.DpsDelta)@Percent(affix.DpsPercent)</td>
                                                         <td class="py-1 text-right @DeltaClass(affix.EhpDelta)">@Signed(affix.EhpDelta)@Percent(affix.EhpPercent)</td>
@@ -643,9 +647,22 @@
             return RankStatusText(row);
         }
 
-        return row.UnmappedAffixes > 0
-                   ? string.Format(CultureInfo.CurrentCulture, Resources["Pob_Unmapped"].Value, row.UnmappedAffixes)
-                   : string.Empty;
+        // 两个数分开说（与悬浮窗口径一致）：转换层的缺口是我们的锅，引擎的盲区是 PoB 的锅。
+        var notes = new List<string>();
+        if (row.EngineUnsupportedLines.Count > 0)
+        {
+            notes.Add(string.Format(
+                CultureInfo.CurrentCulture,
+                Resources["Pob_Engine_Unsupported"].Value,
+                row.EngineUnsupportedLines.Count));
+        }
+
+        if (row.UnmappedAffixes > 0)
+        {
+            notes.Add(string.Format(CultureInfo.CurrentCulture, Resources["Pob_Unmapped"].Value, row.UnmappedAffixes));
+        }
+
+        return string.Join("  ", notes);
     }
 
     private string RankStatusText(CandidateRankRow row) => row.Status switch

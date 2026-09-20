@@ -46,6 +46,19 @@
                     </TextBase>
                 }
 
+                @* 引擎自己的盲区：这条**不是**「我们没认出」，而是 PoB 解析不了它。
+                   必须逐条列出来 —— 否则用户会把 0 读成「这条词缀没贡献」，结论反了。 *@
+                @if (result.EngineUnsupportedCount > 0)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-2">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Pob_Engine_Unsupported"].Value, result.EngineUnsupportedCount)
+                    </TextBase>
+                    @foreach (var line in result.EngineUnsupportedLines)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">@AffixText(line)</TextBase>
+                    }
+                }
+
                 @* 这条是硬要求：PoB 是模拟器，绝对值不能拿去对游戏面板，可信的是差值。 *@
                 <TextBase Class="text-stone-500 text-xs mt-2">@Resources["Pob_Absolute_Caveat"]</TextBase>
                 @if (elapsedMs > 0)
@@ -98,6 +111,10 @@
                                         @if (row.Implicit)
                                         {
                                             <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
+                                        }
+                                        @if (row.UnsupportedByEngine)
+                                        {
+                                            <span class="text-amber-400 text-xs">@Resources["Affix_Engine_Unsupported"]</span>
                                         }
                                     </td>
                                     <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>

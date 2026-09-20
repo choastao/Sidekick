@@ -71,6 +71,11 @@ public class PobAffixGainService(
         }
 
         var referenceStats = reference.Stats!;
+
+        // 引擎自己不认识的词缀行（拿原物那次试穿的结果读回来的）——
+        // 这些词缀的收益必然是 0，界面上要标成「引擎不认识」而不是「没贡献」。
+        var unsupportedByEngine = new HashSet<string>(reference.EngineUnsupportedLines, StringComparer.OrdinalIgnoreCase);
+
         var rows = new List<AffixGainRow>(text.Affixes.Count);
         var engineDead = false;
 
@@ -84,7 +89,7 @@ public class PobAffixGainService(
 
             if (engineDead)
             {
-                rows.Add(Row(affix, PobCompareStatus.EngineUnavailable));
+                rows.Add(Row(affix, PobCompareStatus.EngineUnavailable, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
                 continue;
             }
 
@@ -94,7 +99,7 @@ public class PobAffixGainService(
                 // 行号/行数对不上 = 我们自己造的文本有问题（**不是引擎出错**，引擎压根没被调用）。
                 // 如实标成转换层缺陷，别甩到引擎头上。
                 logger.LogWarning("[BuildTarget] Affix gain: could not locate the affix line '{Line}'", affix.Text);
-                rows.Add(Row(affix, PobCompareStatus.AffixLost));
+                rows.Add(Row(affix, PobCompareStatus.AffixLost, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
                 continue;
             }
 
@@ -109,7 +114,7 @@ public class PobAffixGainService(
 
             if (!measured.Ok)
             {
-                rows.Add(Row(affix, measured.Status, measured.Error));
+                rows.Add(Row(affix, measured.Status, measured.Error, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
 
                 if (measured.Status == PobCompareStatus.EngineUnavailable)
                 {
@@ -131,6 +136,7 @@ public class PobAffixGainService(
                 PobCompareStatus.Success,
                 dpsDelta: dpsDelta,
                 ehpDelta: ehpDelta,
+                unsupportedByEngine: unsupportedByEngine.Contains(affix.Text),
                 dpsPercent: referenceStats.Dps > 0 ? dpsDelta / referenceStats.Dps * 100 : null,
                 ehpPercent: referenceStats.Ehp > 0 ? ehpDelta / referenceStats.Ehp * 100 : null));
         }
@@ -156,11 +162,13 @@ public class PobAffixGainService(
         double dpsDelta = 0,
         double ehpDelta = 0,
         double? dpsPercent = null,
-        double? ehpPercent = null) => new()
+        double? ehpPercent = null,
+        bool unsupportedByEngine = false) => new()
     {
         Text = affix.Text,
         Implicit = affix.Implicit,
         Status = status,
+        UnsupportedByEngine = unsupportedByEngine,
         DpsDelta = dpsDelta,
         EhpDelta = ehpDelta,
         DpsPercent = dpsPercent,
