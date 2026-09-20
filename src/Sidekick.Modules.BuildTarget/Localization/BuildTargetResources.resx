@@ -144,6 +144,60 @@
   <data name="Option_PobEngine_Help" xml:space="preserve">
     <value>Would start a separate local engine process and needs a PoB build file as the baseline. Not implemented yet — this switch is a placeholder.</value>
   </data>
+  <data name="Pob_Title" xml:space="preserve">
+    <value>PoB engine: equip &amp; compare</value>
+  </data>
+  <data name="Pob_Working" xml:space="preserve">
+    <value>Recalculating…</value>
+  </data>
+  <data name="Pob_Before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="Pob_After" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="Pob_Delta" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Pob_Dps" xml:space="preserve">
+    <value>DPS</value>
+  </data>
+  <data name="Pob_Ehp" xml:space="preserve">
+    <value>EHP</value>
+  </data>
+  <data name="Pob_Absolute_Caveat" xml:space="preserve">
+    <value>Absolute numbers are only a reference (the engine is a simulator — a wrong config skews them); the difference between two items is what you can trust.</value>
+  </data>
+  <data name="Pob_Unmapped" xml:space="preserve">
+    <value>⚠ {0} affix(es) on this item are not supported by the engine — the result is optimistic.</value>
+  </data>
+  <data name="Pob_Elapsed" xml:space="preserve">
+    <value>recalculated in {0} ms</value>
+  </data>
+  <data name="Pob_Disabled" xml:space="preserve">
+    <value>Turn on 'PoB2 engine' in Settings → Target BD → Features first.</value>
+  </data>
+  <data name="Pob_No_Template" xml:space="preserve">
+    <value>No target BD yet.</value>
+  </data>
+  <data name="Pob_No_Build" xml:space="preserve">
+    <value>This template has no build source saved — import the BD again (paste the share code or link) to enable comparing.</value>
+  </data>
+  <data name="Pob_Unsupported_Slot" xml:space="preserve">
+    <value>This item's slot is not in the engine's slot list.</value>
+  </data>
+  <data name="Pob_No_Engine" xml:space="preserve">
+    <value>Engine not available: {0}</value>
+  </data>
+  <data name="Pob_Base_Unknown" xml:space="preserve">
+    <value>Could not get this item's English base name — the engine cannot recognise it.</value>
+  </data>
+  <data name="Pob_Conversion_Failed" xml:space="preserve">
+    <value>Could not convert the item text for the engine.</value>
+  </data>
+  <data name="Pob_Failed" xml:space="preserve">
+    <value>Engine error: {0}</value>
+  </data>
   <data name="Template" xml:space="preserve">
     <value>Template</value>
   </data>

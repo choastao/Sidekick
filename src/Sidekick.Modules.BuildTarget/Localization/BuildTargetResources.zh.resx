@@ -144,6 +144,60 @@
   <data name="Option_PobEngine_Help" xml:space="preserve">
     <value>将来会按需启动一个独立的本地引擎进程，需要一份 PoB 的 BD 文件作基准。功能还没做 —— 这个开关先占位。</value>
   </data>
+  <data name="Pob_Title" xml:space="preserve">
+    <value>PoB 引擎：试穿对比</value>
+  </data>
+  <data name="Pob_Working" xml:space="preserve">
+    <value>正在重算…</value>
+  </data>
+  <data name="Pob_Before" xml:space="preserve">
+    <value>换之前</value>
+  </data>
+  <data name="Pob_After" xml:space="preserve">
+    <value>换之后</value>
+  </data>
+  <data name="Pob_Delta" xml:space="preserve">
+    <value>变化</value>
+  </data>
+  <data name="Pob_Dps" xml:space="preserve">
+    <value>DPS</value>
+  </data>
+  <data name="Pob_Ehp" xml:space="preserve">
+    <value>EHP</value>
+  </data>
+  <data name="Pob_Absolute_Caveat" xml:space="preserve">
+    <value>绝对值只作参考（引擎是模拟器，配置不对就偏）；两件物品之间的「差值」才是可信的。</value>
+  </data>
+  <data name="Pob_Unmapped" xml:space="preserve">
+    <value>⚠ 这件装备有 {0} 条词缀引擎不支持 —— 结论偏乐观。</value>
+  </data>
+  <data name="Pob_Elapsed" xml:space="preserve">
+    <value>{0} 毫秒算完</value>
+  </data>
+  <data name="Pob_Disabled" xml:space="preserve">
+    <value>先在 设置 → 目标BD → 功能开关 里打开「PoB2 引擎」。</value>
+  </data>
+  <data name="Pob_No_Template" xml:space="preserve">
+    <value>还没有目标BD。</value>
+  </data>
+  <data name="Pob_No_Build" xml:space="preserve">
+    <value>这个模板没有保存 BD 源码 —— 重新导入一次 BD（粘贴分享码或链接）才能试穿对比。</value>
+  </data>
+  <data name="Pob_Unsupported_Slot" xml:space="preserve">
+    <value>这件物品的部位不在引擎的槽位体系里。</value>
+  </data>
+  <data name="Pob_No_Engine" xml:space="preserve">
+    <value>引擎不可用：{0}</value>
+  </data>
+  <data name="Pob_Base_Unknown" xml:space="preserve">
+    <value>取不到这件物品的英文基底名 —— 引擎认不出它，算不了。</value>
+  </data>
+  <data name="Pob_Conversion_Failed" xml:space="preserve">
+    <value>物品文本转换失败，引擎算不了。</value>
+  </data>
+  <data name="Pob_Failed" xml:space="preserve">
+    <value>引擎出错：{0}</value>
+  </data>
   <data name="Template" xml:space="preserve">
     <value>模板</value>
   </data>

@@ -1,0 +1,160 @@
+@implements IDisposable
+@using System.Globalization
+@using Sidekick.Game.Parser.Items
+
+@* PoB2 引擎试穿对比：只在「开关打开 + 有目标BD + 这件物品算得了」时给数字。 *@
+@if (Options.PobEngine && Item != null)
+{
+    <div class="mt-4">
+        <FormFieldset Legend="@Resources["Pob_Title"]">
+
+            @if (loading)
+            {
+                <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
+            }
+            else if (result is { HasDelta: true })
+            {
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                    <tr class="text-stone-500 text-xs text-left">
+                        <th class="font-normal py-1"></th>
+                        <th class="font-normal py-1 text-right">@Resources["Pob_Before"]</th>
+                        <th class="font-normal py-1 text-right">@Resources["Pob_After"]</th>
+                        <th class="font-normal py-1 text-right">@Resources["Pob_Delta"]</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="border-t border-stone-700">
+                        <td class="py-1">@Resources["Pob_Dps"]</td>
+                        <td class="py-1 text-right text-stone-400">@Num(result.Base!.Dps)</td>
+                        <td class="py-1 text-right">@Num(result.Current!.Dps)</td>
+                        <td class="py-1 text-right @DeltaClass(result.DpsDelta)">@Signed(result.DpsDelta)@Pct(result.DpsPercent)</td>
+                    </tr>
+                    <tr class="border-t border-stone-700">
+                        <td class="py-1">@Resources["Pob_Ehp"]</td>
+                        <td class="py-1 text-right text-stone-400">@Num(result.Base!.Ehp)</td>
+                        <td class="py-1 text-right">@Num(result.Current!.Ehp)</td>
+                        <td class="py-1 text-right @DeltaClass(result.EhpDelta)">@Signed(result.EhpDelta)@Pct(result.EhpPercent)</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                @if (result.UnmappedAffixes > 0)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-2">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Pob_Unmapped"].Value, result.UnmappedAffixes)
+                    </TextBase>
+                }
+
+                @* 这条是硬要求：PoB 是模拟器，绝对值不能拿去对游戏面板，可信的是差值。 *@
+                <TextBase Class="text-stone-500 text-xs mt-2">@Resources["Pob_Absolute_Caveat"]</TextBase>
+                @if (elapsedMs > 0)
+                {
+                    <TextBase Class="text-stone-600 text-xs mt-1">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Pob_Elapsed"].Value, elapsedMs)
+                    </TextBase>
+                }
+            }
+            else if (result != null)
+            {
+                <TextBase Class="text-stone-400 text-sm">@StatusText(result)</TextBase>
+                @if (!string.IsNullOrWhiteSpace(result.Error) && result.Status != PobCompareStatus.BaseUnknown)
+                {
+                    <TextBase Class="text-stone-600 text-xs mt-1">@result.Error</TextBase>
+                }
+            }
+        </FormFieldset>
+    </div>
+}
+
+@inject IStringLocalizer<BuildTargetResources> Resources
+@inject PobCompareService Compare
+@inject BuildTargetStore Store
+@inject BuildTargetOptionsStore Options
+
+@code {
+
+    /// <summary>悬浮窗当前这件物品（ItemOverlay 已经用 CascadingValue 传下来）。</summary>
+    [CascadingParameter]
+    public required Item Item { get; set; }
+
+    private PobCompareResult? result;
+    private bool loading;
+    private long elapsedMs;
+
+    private string? lastKey;
+
+    protected override void OnInitialized()
+    {
+        Store.OnChanged += OnStoreChanged;
+        base.OnInitialized();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await RefreshAsync();
+    }
+
+    private void OnStoreChanged() => _ = InvokeAsync(async () => await RefreshAsync());
+
+    private async Task RefreshAsync()
+    {
+        if (!Options.PobEngine || Item == null)
+        {
+            result = null;
+            return;
+        }
+
+        var template = Store.Active;
+        var slotKey = SlotKeys.ResolveFor(Item).FirstOrDefault();
+
+        // 同一件物品 + 同一个模板不重复算（组件会因父级重渲染被反复调用）。
+        var key = $"{template?.Id}|{slotKey}|{Item.Text.Text?.GetHashCode()}";
+        if (key == lastKey)
+        {
+            return;
+        }
+
+        lastKey = key;
+        loading = true;
+        StateHasChanged();
+
+        try
+        {
+            var started = Environment.TickCount64;
+            result = await Compare.CompareAsync(template, Item, slotKey);
+            elapsedMs = Environment.TickCount64 - started;
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private string StatusText(PobCompareResult value) => value.Status switch
+    {
+        PobCompareStatus.Disabled => Resources["Pob_Disabled"].Value,
+        PobCompareStatus.NoTemplate => Resources["Pob_No_Template"].Value,
+        PobCompareStatus.NoBuildXml => Resources["Pob_No_Build"].Value,
+        PobCompareStatus.UnsupportedSlot => Resources["Pob_Unsupported_Slot"].Value,
+        PobCompareStatus.EngineUnavailable => string.Format(CultureInfo.CurrentCulture, Resources["Pob_No_Engine"].Value, value.Error ?? "-"),
+        PobCompareStatus.BaseUnknown => Resources["Pob_Base_Unknown"].Value,
+        PobCompareStatus.ConversionFailed => Resources["Pob_Conversion_Failed"].Value,
+        _ => string.Format(CultureInfo.CurrentCulture, Resources["Pob_Failed"].Value, value.Error ?? "-"),
+    };
+
+    /// <summary>大数字加千分位（DPS 动辄七位数，不分组根本看不出量级）。</summary>
+    private static string Num(double value) => value.ToString("#,0", CultureInfo.InvariantCulture);
+
+    private static string Signed(double value) => (value >= 0 ? "+" : "") + value.ToString("#,0", CultureInfo.InvariantCulture);
+
+    private static string Pct(double? percent) => percent is { } p ? $" ({p:+0.0;-0.0}%)" : "";
+
+    /// <summary>涨绿跌红（与查价那套配色一致，用户已核对过）。</summary>
+    private static string DeltaClass(double value) => value > 0 ? "text-green-400" : value < 0 ? "text-red-400" : "text-stone-400";
+
+    public void Dispose()
+    {
+        Store.OnChanged -= OnStoreChanged;
+    }
+}

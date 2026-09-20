@@ -70,6 +70,13 @@ public class BuildTargetTemplate
     public string? ImportedFrom { get; set; }
 
     /// <summary>
+    /// 导入时的 BD 源码（PoB 的 XML 原文）。PoB 引擎试穿要拿它当基准，所以导入时就存下来。
+    /// **不能靠 <see cref="ImportedFrom"/> 反推**：那个字段是截断过的展示用字符串
+    /// （而且链接形态还要联网再取一次）。老模板没有这个字段时，试穿功能按「请重新导入一次 BD」提示。
+    /// </summary>
+    public string? PobXml { get; set; }
+
+    /// <summary>
     /// 「从 BD 导入的部位门槛已改成参考值」的迁移标记。
     ///
     /// 早期版本把导入时那件装备的数值直接写成了该部位的**硬性门槛**（Required=true），

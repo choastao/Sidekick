@@ -189,8 +189,8 @@ public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTar
             _ => string.Empty,
         };
 
-    /// <summary>PoB 分享码 = base64url(zlib(xml))。</summary>
-    private static string Inflate(string code)
+    /// <summary>PoB 分享码 = base64url(zlib(xml))。internal：测试与引擎侧都直接用它。</summary>
+    internal static string Inflate(string code)
     {
         var normalized = code.Replace('-', '+').Replace('_', '/').Replace("\n", string.Empty).Replace("\r", string.Empty);
         normalized = normalized switch
@@ -226,6 +226,8 @@ public class PobBuildImporter(PoeNinjaClient poeNinja, IStringLocalizer<BuildTar
         {
             Name = BuildName(doc),
             ImportedFrom = source.Length > 120 ? source[..120] : source,
+            // BD 源码留着给 PoB 引擎当试穿基准（ImportedFrom 是截断过的，不能用来反推）
+            PobXml = xml,
             // 导入的门槛一律是参考值，不是硬性要求（见 TargetNormalizer 的说明）。
             ImportedTargetsOptional = true,
         };
