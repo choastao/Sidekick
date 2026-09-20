@@ -430,4 +430,32 @@ public class PobItemTextTests
         Assert.Contains("+88 to maximum Life", variant);       // 另一条隐式还在（它的行号也要跟着上移）
         Assert.Contains("+45% to Fire Resistance", variant);
     }
+
+    /// <summary>
+    /// 边界（审计第二轮 3-7）：**多行词缀是最后一条** + **没有隐式词缀**。
+    /// `LineIndex + LineCount == 物理行数` 是**合法边界**（不是越界，不许被守卫拒掉），
+    /// 且没有隐式时 `Implicit` 必须全为 false（否则 `Implicits:` 计数会被减花）。
+    /// </summary>
+    [Fact]
+    public void Multiline_affix_as_the_last_line_without_implicits_is_handled()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "击杀燃烧敌人有#%几率爆炸", [30], "explicit.stat_multiline", "#% 几率爆炸"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+
+        Assert.All(built.Affixes, x => Assert.False(x.Implicit));
+        Assert.DoesNotContain("Implicits:", built.Text);
+
+        var physicalLines = built.Text.TrimEnd('\n').Split('\n').Length;
+        var last = built.Affixes[^1];
+        Assert.Equal(2, last.LineCount);
+        Assert.Equal(physicalLines - 2, last.LineIndex);      // 末尾那条占两行 → 起点 = 行数 − 2
+
+        var variant = PobItemText.WithoutAffix(built.Text, last);
+        Assert.NotNull(variant);                              // 边界不许被守卫误判成越界
+        Assert.DoesNotContain("tenth of their maximum Life", variant);
+        Assert.Contains("+88 to maximum Life", variant);
+    }
 }

@@ -16,7 +16,10 @@ namespace Sidekick.Modules.BuildTarget.Services;
 ///   1. **只算得出来的才排名**：算不出来的行照样返回（带原因），由界面如实显示；
 ///   2. **引擎级失败立刻停**（没装引擎 / 超时崩溃）：后面的候选不用再白试一遍，
 ///      但**已算出来的保持排名** —— 一次超时不该让整批结果消失；
-///   3. **可取消**：批量会传 token，`PobCompareService` 侧已保证调用方取消不会杀引擎。
+///   3. **取消**：`cancellationToken` 一路透传到 `PobCompareService`（它已保证「调用方取消不杀引擎」），
+///      但**当前 UI 调用点没有传 token**（界面没有「取消排序」按钮），所以「可取消」目前是能力而非行为。
+///      ⚠ 将来接线时**必须同时 catch `OperationCanceledException`** —— `MeasureTextAsync` 对取消是
+///      **rethrow** 的，直接从 `@onclick` 处理器里抛出去会变成未处理异常（审计 C2 第二轮 G）。
 /// </summary>
 public class PobCandidateRanker(
     PobCompareService compare,

@@ -238,11 +238,19 @@
 
     /// <summary>
     /// 没算出来的那条词缀为什么没算（照抄对比面板的口径，别造第二套说法）。
-    /// ⚠ 「定位失败」是**我们自己转换层的缺陷**，与「引擎出错」不是一回事，必须分开说。
+    /// ⚠ 非引擎原因**不许说成「引擎出错」**（审计第二轮 3-3：运行中把引擎开关关掉会走到这里，
+    /// 那时错误串还是空的，会显示成「引擎出错：-」——第一轮阻断同族的毛病）。
     /// </summary>
     private string AffixStatusText(AffixGainRow row) => row.Status switch
     {
         PobCompareStatus.AffixLost => Resources["Affix_Gain_No_Line"].Value,
+        PobCompareStatus.Disabled => Resources["Pob_Disabled"].Value,
+        PobCompareStatus.NoTemplate => Resources["Pob_No_Template"].Value,
+        PobCompareStatus.NoBuildXml => Resources["Pob_No_Build"].Value,
+        PobCompareStatus.UnsupportedSlot => Resources["Pob_Unsupported_Slot"].Value,
+        PobCompareStatus.SocketedItem => Resources["Pob_Socketed_Item"].Value,
+        PobCompareStatus.BaseUnknown => Resources["Pob_Base_Unknown"].Value,
+        PobCompareStatus.ConversionFailed => Resources["Pob_Conversion_Failed"].Value,
         PobCompareStatus.EngineUnavailable => string.Format(CultureInfo.CurrentCulture, Resources["Pob_No_Engine"].Value, row.Error ?? "-"),
         _ => string.Format(CultureInfo.CurrentCulture, Resources["Pob_Failed"].Value, row.Error ?? "-"),
     };

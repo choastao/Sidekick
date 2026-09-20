@@ -80,8 +80,8 @@ public sealed class AffixGainRanking
         IEnumerable<AffixGainRow> rows,
         CandidateRankMetric metric,
         int count,
-        long elapsedMs = 0,
-        int attempts = 0)
+        int attempts,
+        long elapsedMs = 0)
     {
         var other = metric == CandidateRankMetric.Dps ? CandidateRankMetric.Ehp : CandidateRankMetric.Dps;
 

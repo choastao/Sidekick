@@ -98,8 +98,15 @@ public class PobAffixGainService(
                 continue;
             }
 
-            attempts++;
             var measured = await compare.MeasureTextAsync(template, pobSlot, variant, cancellationToken);
+
+            // 只在**真的走到了引擎**时才计数（审计第二轮 3-2）：`Disabled / NoTemplate / NoBuildXml`
+            // 是纯早退（例如运行中把引擎开关关掉），压根没有试穿，算进去会让「共试穿 N 次」虚高。
+            if (measured.Status is not (PobCompareStatus.Disabled or PobCompareStatus.NoTemplate or PobCompareStatus.NoBuildXml))
+            {
+                attempts++;
+            }
+
             if (!measured.Ok)
             {
                 rows.Add(Row(affix, measured.Status, measured.Error));
@@ -130,7 +137,7 @@ public class PobAffixGainService(
 
         stopwatch.Stop();
 
-        var ranking = AffixGainRanking.Rank(rows, metric, count, stopwatch.ElapsedMilliseconds, attempts);
+        var ranking = AffixGainRanking.Rank(rows, metric, count, attempts, stopwatch.ElapsedMilliseconds);
 
         logger.LogInformation(
             "[BuildTarget] Affix gains: {Ranked}/{Total} ranked by {Metric} in {Elapsed} ms",

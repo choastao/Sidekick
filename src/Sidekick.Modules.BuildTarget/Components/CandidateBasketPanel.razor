@@ -514,7 +514,17 @@
 
         try
         {
-            ranking = await Ranker.RankAsync(template, candidates, metric);
+            var result = await Ranker.RankAsync(template, candidates, metric);
+
+            // ⚠ await 之后必须复核前提（审计第二轮 3-1）：这批引擎调用在飞行途中，用户可能已经切了「目标BD」，
+            //   而 OnChanged 那时已经清过表；把旧前提的结果写回去会让表里同时出现两套前提的数字，
+            //   而且因为 rankedTemplateId 已被更新，之后再也不会被自动清掉（只能手动重排）。
+            if (template.Id != Store.Active?.Id)
+            {
+                return;
+            }
+
+            ranking = result;
         }
         finally
         {
@@ -555,13 +565,23 @@
         }
 
         var entry = Basket.Items.FirstOrDefault(x => x.Id == row.Id);
+        var templateId = Store.Active?.Id;
 
         gainsBusy.Add(row.Id);
         StateHasChanged();
 
         try
         {
-            gains[row.Id] = await LoadGainsAsync(entry);
+            var result = await LoadGainsAsync(entry);
+
+            // 同 3-1：await 期间换了「目标BD」就把这次结果丢掉（不写进缓存），
+            // 否则旧模板的数字会「复活」在切换后的表里。清也要连忙碌标记一起清自己的那一条。
+            if (templateId != Store.Active?.Id)
+            {
+                return;
+            }
+
+            gains[row.Id] = result;
         }
         finally
         {
@@ -645,10 +665,17 @@
         _ => Resources["Basket_Rank_Not_Ranked"].Value,
     };
 
-    /// <summary>逐条词缀收益里「这条没算出来」的原因（与悬浮窗那份同一套说法）。</summary>
+    /// <summary>逐条词缀收益里「这条没算出来」的原因（与悬浮窗那份同一套说法；非引擎原因不许说成引擎出错）。</summary>
     private string AffixStatusText(AffixGainRow row) => row.Status switch
     {
         PobCompareStatus.AffixLost => Resources["Affix_Gain_No_Line"].Value,
+        PobCompareStatus.Disabled => Resources["Pob_Disabled"].Value,
+        PobCompareStatus.NoTemplate => Resources["Pob_No_Template"].Value,
+        PobCompareStatus.NoBuildXml => Resources["Pob_No_Build"].Value,
+        PobCompareStatus.UnsupportedSlot => Resources["Pob_Unsupported_Slot"].Value,
+        PobCompareStatus.SocketedItem => Resources["Pob_Socketed_Item"].Value,
+        PobCompareStatus.BaseUnknown => Resources["Pob_Base_Unknown"].Value,
+        PobCompareStatus.ConversionFailed => Resources["Pob_Conversion_Failed"].Value,
         PobCompareStatus.EngineUnavailable => string.Format(
             CultureInfo.CurrentCulture,
             Resources["Pob_No_Engine"].Value,

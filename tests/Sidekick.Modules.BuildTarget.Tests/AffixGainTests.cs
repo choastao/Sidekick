@@ -42,14 +42,16 @@ public class AffixGainTests
             Row("+60 to maximum Life", 2_500, 20),
         };
 
-        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5);
+        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5, attempts: 7);
 
         Assert.Equal(5, ranking.Top.Count);
+        // 试穿次数要原样带出来（审计 3-7：这条通路以前没有任何测试；漏传/传错会让界面显示「共试穿 0 次」）
+        Assert.Equal(7, ranking.Attempts);
         Assert.Equal(["+50 to maximum Life", "+20 to maximum Life", "+60 to maximum Life", "+30 to maximum Life", "+10 to maximum Life"],
             ranking.Top.Select(x => x.Text));
 
         // 换指标只本地重排：EHP 最高的那条必须变成第一，而且样本一个不多一个不少
-        var byEhp = AffixGainRanking.Rank(rows, CandidateRankMetric.Ehp, count: 5);
+        var byEhp = AffixGainRanking.Rank(rows, CandidateRankMetric.Ehp, count: 5, attempts: 7);
         Assert.Equal("+40 to maximum Life", byEhp.Top[0].Text);
         Assert.Equal(rows.Length, byEhp.Rows.Count);
     }
@@ -63,7 +65,7 @@ public class AffixGainTests
             Row("better ehp", 2_000, 400),
         };
 
-        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5);
+        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5, attempts: 7);
 
         Assert.Equal(["better ehp", "worse ehp"], ranking.Top.Select(x => x.Text));
     }
@@ -78,7 +80,7 @@ public class AffixGainTests
             Unranked("bad line", PobCompareStatus.Failed),
         };
 
-        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5);
+        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5, attempts: 7);
 
         Assert.Single(ranking.Top);
         Assert.Equal("+20 to maximum Life", ranking.Top[0].Text);
@@ -97,7 +99,7 @@ public class AffixGainTests
     {
         var rows = new[] { Unranked("a", PobCompareStatus.EngineUnavailable), Unranked("b", PobCompareStatus.Failed) };
 
-        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5);
+        var ranking = AffixGainRanking.Rank(rows, CandidateRankMetric.Dps, count: 5, attempts: 7);
 
         Assert.Empty(ranking.Top);
         Assert.Equal(2, ranking.NotRanked.Count);
