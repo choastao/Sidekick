@@ -190,8 +190,9 @@
             //   同一件物品会被 key 短路，面板永远只剩空框，直到换物品或换模板。
             lastKey = null;
 
-            // 同时在飞的调用回来后会因为前提不符而丢弃（下面的 key 复核），
-            // 所以转圈标记必须由这里来收 —— 不收就永远停在「正在试穿…」。
+            // 同时在飞的调用会按 key 复核丢弃、不会来清这两个转圈标记，
+            // 顺手在这里收掉。守住的是「重新打开开关后面板别带着上一轮的状态起跑」——
+            // 不是「不收就永远转圈」（早退时面板整块不渲染，起跑处也会再清一次）。
             loading = false;
             gainsLoading = false;
             return;
@@ -201,7 +202,9 @@
         var slotKey = SlotKeys.ResolveFor(Item).FirstOrDefault();
 
         // 同一件物品 + 同一个模板不重复算（组件会因父级重渲染被反复调用）。
-        var key = $"{template?.Id}|{slotKey}|{Item.Text.Text?.GetHashCode()}";
+        // key 里放**物品原文本身**（不用 GetHashCode）：哈希是 32 位，两件不同物品理论上会撞同一个 key，
+        // 撞上就会短路成「显示另一件物品的数字」——又是一次静默说假话。整串比较成本一样。
+        var key = $"{template?.Id}|{slotKey}|{Item.Text.Text}";
         if (key == lastKey)
         {
             return;
@@ -210,6 +213,11 @@
         lastKey = key;
         loading = true;
         gains = null;
+        // ⚠ 起跑处必须连 gainsLoading 一起收（第四轮审计 3.1，是本次守卫带出的窄窗口）：
+        //   上一轮的收益还在算时被打断，老调用会按 key 丢弃、**不会**去清这个标记；
+        //   而新一轮若算出「不是 HasDelta」（悬停珠宝 / 基底认不出 / 槽位不支持），
+        //   整段收益分支根本不进 → 没人再清 → 留在「正在试穿…」永远转圈，只能靠关开关自愈。
+        gainsLoading = false;
         StateHasChanged();
 
         try
