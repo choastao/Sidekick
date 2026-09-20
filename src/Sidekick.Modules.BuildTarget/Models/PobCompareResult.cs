@@ -72,7 +72,7 @@ public sealed class PobCompareResult
     /// 这类行会被它跳过、不参与计算；helper 从 <c>modLine.extra</c> 读出来透传）。
     ///
     /// 为什么要逐条说出来：这类词缀进算式时是 0，而界面上的「0」会被读成「这条词缀没贡献」——
-    /// 于是用户会得出「火抗在这件装备上不值钱」这种**反结论**。引擎的盲区必须标成盲区。
+    /// 于是用户会得出「火抗在这件装备上不值钱」这种错误结论。引擎的盲区必须标成盲区。
     /// </summary>
     public IReadOnlyList<string> EngineUnsupportedLines { get; init; } = [];
 

@@ -9,7 +9,7 @@ namespace Sidekick.Modules.BuildTarget.Tests;
 /// 「引擎自己不支持的词缀」这条透传链的解析端（helper → 主程序）。
 ///
 /// 为什么要它：这类词缀进算式时是 0，而界面上的 0 会被用户读成「这条词缀没贡献」——
-/// 结论直接反了（「火抗在这件装备上不值钱」）。helper 侧从 PoB 的 `modLine.extra` 读出来透传
+/// 结论就错了（「火抗在这件装备上不值钱」）。helper 侧从 PoB 的 `modLine.extra` 读出来透传
 /// （见 Engine/tao-engine-server.lua），这里钉住「主程序正确读懂它」。
 /// </summary>
 public class EngineUnsupportedTests

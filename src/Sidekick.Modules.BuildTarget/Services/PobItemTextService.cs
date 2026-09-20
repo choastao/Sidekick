@@ -29,7 +29,8 @@ public class PobItemTextService(
 
     /// <summary>
     /// 把物品转成 PoB 认得的英文文本。取不到英文模板表时返回 null（调用方按「引擎算不了」处理），
-    /// **不要**用空表兜底 —— 空表会让每条词缀都变成「我们没认出」，数字少算一块、缺口却显示 0 条。
+    /// **不要**用空表兜底 —— 空表会让每条词缀都变成「我们没认出」（缺口计数会**报满**、不是 0），
+    /// 而送出去的物品形同空壳：试穿结果 = 没有任何变化，那是**假结论**，比「这件算不了」更坏。
     /// </summary>
     public async Task<PobItemText.BuildResult?> BuildAsync(Item? item)
     {
