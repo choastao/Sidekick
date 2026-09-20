@@ -169,7 +169,7 @@
     <value>绝对值只作参考（引擎是模拟器，配置不对就偏）；两件物品之间的「差值」才是可信的。</value>
   </data>
   <data name="Pob_Unmapped" xml:space="preserve">
-    <value>⚠ 我们没认出这 {0} 条词缀（转换层的缺口）—— 它们压根没被算进去，结论偏乐观。</value>
+    <value>⚠ 我们没认出这 {0} 条词缀（转换层的缺口）—— 它们没参与计算，结论可能有偏差。</value>
   </data>
   <data name="Pob_Elapsed" xml:space="preserve">
     <value>{0} 毫秒算完</value>
@@ -886,7 +886,7 @@
     <value>按 EHP 排</value>
   </data>
   <data name="Basket_Rank_Caveat" xml:space="preserve">
-    <value>绝对值来自模拟器、只作参考，行与行之间的差值才可信；备注里写了「有 N 条词缀引擎不认识」的行，结论偏乐观。</value>
+    <value>绝对值来自模拟器、只作参考，行与行之间的差值才可信；备注里写了「引擎不支持」的行，说明那几条词缀没被算进去。</value>
   </data>
   <data name="Basket_Rank_Not_Ranked" xml:space="preserve">
     <value>没有名次</value>
@@ -973,10 +973,10 @@
     <value>上面这个上限只在「目标BD 里没设该抗性目标」时生效。</value>
   </data>
   <data name="Pob_Engine_Unsupported" xml:space="preserve">
-    <value>⚠ 引擎不认识这 {0} 条词缀（PoB 解析不了）—— 它们算成 0 是引擎的盲区，不代表这条词缀没贡献：</value>
+    <value>⚠ 引擎不支持这 {0} 条词缀（PoB 自己的标记是「Not supported in PoB yet」）—— 它们没被算进去，收益显示 0 是引擎的锅，不代表这条词缀没贡献：</value>
   </data>
   <data name="Affix_Engine_Unsupported" xml:space="preserve">
-    <value>（引擎不认识）</value>
+    <value>（引擎不支持）</value>
   </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>最大生命</value>

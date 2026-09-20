@@ -72,9 +72,16 @@ public class PobAffixGainService(
 
         var referenceStats = reference.Stats!;
 
-        // 引擎自己不认识的词缀行（拿原物那次试穿的结果读回来的）——
-        // 这些词缀的收益必然是 0，界面上要标成「引擎不认识」而不是「没贡献」。
+        // 引擎自己不支持的词缀行（拿原物那次试穿的结果读回来的）——
+        // 这些词缀的收益必然是 0，界面上要标成「引擎不支持」而不是「没贡献」。
         var unsupportedByEngine = new HashSet<string>(reference.EngineUnsupportedLines, StringComparer.OrdinalIgnoreCase);
+
+        // ⚠ 一条词缀可能占**多个物理行**（英文模板里就有内嵌换行），而 helper 回的是 PoB 侧的
+        //   单行/多行原文。只比整串会失配 → 那条盲区词缀又会显示成裸的 +0（少标一档）。
+        //   所以整串与它的每一行都要比（Trim 过，免得行首空格对不上）。
+        bool EngineUnsupported(string text) =>
+            unsupportedByEngine.Contains(text) ||
+            text.Split('\n').Any(line => unsupportedByEngine.Contains(line.Trim()));
 
         var rows = new List<AffixGainRow>(text.Affixes.Count);
         var engineDead = false;
@@ -89,7 +96,7 @@ public class PobAffixGainService(
 
             if (engineDead)
             {
-                rows.Add(Row(affix, PobCompareStatus.EngineUnavailable, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
+                rows.Add(Row(affix, PobCompareStatus.EngineUnavailable, unsupportedByEngine: EngineUnsupported(affix.Text)));
                 continue;
             }
 
@@ -99,7 +106,7 @@ public class PobAffixGainService(
                 // 行号/行数对不上 = 我们自己造的文本有问题（**不是引擎出错**，引擎压根没被调用）。
                 // 如实标成转换层缺陷，别甩到引擎头上。
                 logger.LogWarning("[BuildTarget] Affix gain: could not locate the affix line '{Line}'", affix.Text);
-                rows.Add(Row(affix, PobCompareStatus.AffixLost, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
+                rows.Add(Row(affix, PobCompareStatus.AffixLost, unsupportedByEngine: EngineUnsupported(affix.Text)));
                 continue;
             }
 
@@ -114,7 +121,7 @@ public class PobAffixGainService(
 
             if (!measured.Ok)
             {
-                rows.Add(Row(affix, measured.Status, measured.Error, unsupportedByEngine: unsupportedByEngine.Contains(affix.Text)));
+                rows.Add(Row(affix, measured.Status, measured.Error, unsupportedByEngine: EngineUnsupported(affix.Text)));
 
                 if (measured.Status == PobCompareStatus.EngineUnavailable)
                 {
@@ -136,7 +143,7 @@ public class PobAffixGainService(
                 PobCompareStatus.Success,
                 dpsDelta: dpsDelta,
                 ehpDelta: ehpDelta,
-                unsupportedByEngine: unsupportedByEngine.Contains(affix.Text),
+                unsupportedByEngine: EngineUnsupported(affix.Text),
                 dpsPercent: referenceStats.Dps > 0 ? dpsDelta / referenceStats.Dps * 100 : null,
                 ehpPercent: referenceStats.Ehp > 0 ? ehpDelta / referenceStats.Ehp * 100 : null));
         }

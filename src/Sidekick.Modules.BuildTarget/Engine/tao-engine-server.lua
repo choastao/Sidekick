@@ -141,7 +141,8 @@ handlers.equip = function(params)
     local unsupported = {}
     for _, list in ipairs({ item.implicitModLines, item.explicitModLines, item.enchantModLines, item.runeModLines }) do
         for _, modLine in ipairs(list or {}) do
-            if modLine.extra then
+            -- 形状意外的行（不是表）不该让整个 equip 变成「引擎出错」：跳过就好。
+            if type(modLine) == "table" and modLine.extra then
                 unsupported[#unsupported + 1] = modLine.line or tostring(modLine.extra)
             end
         end

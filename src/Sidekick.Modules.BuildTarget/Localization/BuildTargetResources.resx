@@ -169,7 +169,7 @@
     <value>Absolute numbers are only a reference (the engine is a simulator — a wrong config skews them); the difference between two items is what you can trust.</value>
   </data>
   <data name="Pob_Unmapped" xml:space="preserve">
-    <value>⚠ our converter didn't recognise {0} affix(es) - they were never counted, so the verdict is optimistic.</value>
+    <value>⚠ our converter didn't recognise {0} affix(es) - they never made it into the calculation, so the numbers may be off.</value>
   </data>
   <data name="Pob_Elapsed" xml:space="preserve">
     <value>recalculated in {0} ms</value>
@@ -886,7 +886,7 @@
     <value>Sort by EHP</value>
   </data>
   <data name="Basket_Rank_Caveat" xml:space="preserve">
-    <value>Absolute values come from the simulator and are reference only — the differences between rows are what matters. Rows flagged with unmapped affixes are optimistic.</value>
+    <value>Absolute values come from a simulator - only the differences between rows are trustworthy. Rows noted as &quot;not supported by engine&quot; had affixes the engine could not apply.</value>
   </data>
   <data name="Basket_Rank_Not_Ranked" xml:space="preserve">
     <value>Not ranked</value>
@@ -973,10 +973,10 @@
     <value>This cap only applies to resistances that have no Build Target value.</value>
   </data>
   <data name="Pob_Engine_Unsupported" xml:space="preserve">
-    <value>⚠ the engine itself doesn't know {0} affix(es) (PoB cannot parse them) - their 0 is the engine's blind spot, not proof the affix is worthless:</value>
+    <value>⚠ the engine does not support {0} affix(es) (PoB labels them &quot;Not supported in PoB yet&quot;) - they are left out of the calculation, so a 0 below is the engine's doing, not proof the affix does nothing:</value>
   </data>
   <data name="Affix_Engine_Unsupported" xml:space="preserve">
-    <value>(unknown to engine)</value>
+    <value>(not supported by engine)</value>
   </data>
   <data name="Preset_Life" xml:space="preserve">
     <value>Maximum life</value>
