@@ -216,10 +216,14 @@ public class AffixWeightSnapshot
 }
 
 /// <summary>
-/// 词缀池的标签集（weightKey 集合）：用哪些标签去权重表里建池。
+/// 词缀池的标签集（weightKey 集合）。
 ///
-/// <see cref="Degraded"/> = true 表示拿不到防御值，池只按「槽位 + armour」估算，
-/// 会比真实池小、概率偏大、成本偏低 —— 界面必须把这条说出来。
+/// ⚠ v3.6 起两处用途要分清：
+///   · <b>概率/成本</b>已改为按 CoE 底材 id 取池（见 AffixPoolCoEService），**不再用本标签集建池**，
+///     所以标签集不参与任何概率计算；
+///   · 本标签集仍用于**词缀搜索过滤**（StatPicker / AffixPoolStatFilter）。
+/// <see cref="Degraded"/> = true 表示拿不到防御值，搜索过滤只能按「槽位 + armour」粗筛，
+/// 会把本部位出不了的词缀也列进来 —— 提示语只对搜索过滤成立，不要拿去描述概率。
 /// </summary>
 public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, string? Reason = null)
 {
@@ -248,7 +252,8 @@ public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, 
 ///      池子偏小 → 概率偏大 → 成本低估；
 ///   3. 护甲子类：用物品上解析出来的防御值推导（str/dex/int 七种组合），**不按基底名查表**；
 ///   4. 退化路径：防御值全为 0（拿不到）时只用 {槽位, armour}，并标记 <see cref="AffixPoolTagSet.Degraded"/>，
-///      不静默按某种子类猜。
+///      不静默按某种子类猜。⚠ v3.6 起这个标记**只影响搜索过滤的精度提示**，与概率/成本无关
+///      （概率池按 CoE 底材 id 取，见 AffixPoolCoEService）。
 /// </summary>
 public static class AffixPoolTags
 {

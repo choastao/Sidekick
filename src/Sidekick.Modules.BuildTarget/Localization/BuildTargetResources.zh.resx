@@ -678,15 +678,6 @@
   <data name="Craft_Prob_Note_Chaos" xml:space="preserve">
     <value>替换场景（混沌石）：每次都会随机删掉一条已有词缀，反复洗可能把其他好词缀洗掉；下面的期望次数只描述「出目标」的难度，不描述「洗完还剩几条好词缀」。</value>
   </data>
-  <data name="Craft_Prob_Note_Degraded" xml:space="preserve">
-    <value>⚠ 拿不到防御值，池按槽位估算（标签：{0}），结果偏乐观。</value>
-  </data>
-  <data name="Craft_Prob_Note_Degraded_Short" xml:space="preserve">
-    <value>⚠ 池按槽位估算，结果偏乐观。</value>
-  </data>
-  <data name="Craft_Prob_Tags" xml:space="preserve">
-    <value>建池用的标签：{0}</value>
-  </data>
   <data name="Craft_Prob_No_Weights" xml:space="preserve">
     <value>未找到做装模型数据（affix-pool-coe.json）—— 不显示成功率与期望成本。</value>
   </data>
@@ -698,6 +689,9 @@
   </data>
   <data name="Craft_Prob_No_Tags" xml:space="preserve">
     <value>这个部位在权重数据里没有对应标签，建不出池，也算不出概率。</value>
+  </data>
+  <data name="Craft_Prob_No_Base" xml:space="preserve">
+    <value>认不出这件物品在做装模型数据里的底材，建不出池，也算不出概率。</value>
   </data>
   <data name="Craft_Prob_No_Item_Level" xml:space="preserve">
     <value>读不到物品等级 —— 词缀有 ilvl 门槛，建不出池，也算不出概率。</value>

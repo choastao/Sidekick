@@ -207,7 +207,10 @@
                 </div>
             }
 
-            @* 3.5 概率层的诚实提示：数据来路、均值不是保证、混沌石会删词缀、退化池偏乐观 —— 一条都不能省 *@
+            @* 概率层的诚实提示：数据来路、均值不是保证、混沌石会删词缀 —— 一条都不能省。
+               ⚠ v3.6（2026-09-20 审计）：池已改为「按 CoE 底材取」，不再按槽位标签估算，
+                 所以这里不再有「池按槽位估算、结果偏乐观」这条提示 —— 认不出底材时直接不给概率。
+                 （Degraded 仍用于搜索过滤链路的精度提示，见 StatPicker.razor。） *@
             @if (AffixCoe.HasData && (RequiredNeeds.Count > 0 || OptionalNeeds.Count > 0))
             {
                 <div class="mt-2 flex flex-col gap-1">
@@ -222,18 +225,6 @@
                     @if (ShowChaosCaveat)
                     {
                         <TextBase Class="text-stone-500 text-xs">@Resources["Craft_Prob_Note_Chaos"]</TextBase>
-                    }
-                    @if (PoolTags.Degraded)
-                    {
-                        <TextBase Class="text-amber-400 text-xs">
-                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Note_Degraded"].Value, PoolTags.TagText)
-                        </TextBase>
-                    }
-                    @if (!PoolTags.IsEmpty)
-                    {
-                        <TextBase Class="text-stone-500 text-xs">
-                            @string.Format(CultureInfo.CurrentCulture, Resources["Craft_Prob_Tags"].Value, PoolTags.TagText)
-                        </TextBase>
                     }
                 </div>
             }
@@ -595,11 +586,12 @@
             return NeedChance.Unavailable("Craft_Prob_No_Side", singleCost, altCost, isReroll);
         }
 
-        // 认不出 CoE 底材（缺属性 / 非常见底材）→ 池建不出来，走同一条「池不可用」提示。
+        // 认不出 CoE 底材（缺防御值 / 三属性组合 / 模型未覆盖的类别）→ 池建不出来。
+        // 与上面「没标签」是两种不同的成因，文案分开（v3.6 审计：原来复用 No_Tags 会让用户查错方向）。
         // 重掷数值（神圣石）不走池，所以在上面就分流了，不受这条影响。
         if (BaseId is null)
         {
-            return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
+            return NeedChance.Unavailable("Craft_Prob_No_Base", singleCost, altCost, isReroll);
         }
 
         var pool = AffixCoe.GetPool(BaseId, need.Side, ItemLevel);
@@ -899,10 +891,8 @@
             }
         }
 
-        if (PoolTags.Degraded && !chance.IsReroll)
-        {
-            lines.Add(new ChanceLine(Resources["Craft_Prob_Note_Degraded_Short"].Value, "text-amber-400 text-xs pl-4"));
-        }
+        // v3.6：池已按 CoE 底材取，不存在「按槽位估算的退化池」，这条「结果偏乐观」提示随之删除。
+        // （Degraded 只对搜索过滤的精度提示成立，见 StatPicker.razor。）
 
         return lines;
     }
