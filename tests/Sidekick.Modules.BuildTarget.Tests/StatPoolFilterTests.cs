@@ -129,7 +129,8 @@ public class StatPoolFilterTests
     /// <summary>
     /// 审计（2026-09-19）抓到的回归：盾牌专用词缀挂的是 str_shield / str_dex_shield / str_int_shield，
     /// 而 DefenceSubtype 产出的是 *_armour 那一族 —— 两边对不上时盾牌能出的词缀会被**静默**藏掉
-    /// （Degraded=false，界面不给任何提示），同一个标签集进成本池还会让期望成本偏低。
+    /// （Degraded=false，界面不给任何提示）。⚠ v3.6 起这句只描述**搜索过滤**的后果：
+    /// 概率池已改为按 CoE 底材 id 取（AffixPoolCoEService），不再看标签集，不受此影响。
     /// </summary>
     [Fact]
     public async Task Shield_can_see_its_own_affix_family()

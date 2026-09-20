@@ -688,7 +688,7 @@
     <value>Could not read the crafting-model file: {0}</value>
   </data>
   <data name="Craft_Prob_No_Tags" xml:space="preserve">
-    <value>This slot has no matching weight keys, so the pool (and the chance) cannot be built.</value>
+    <value>Cannot tell this item's slot or class, so the pool (and the chance) cannot be built.</value>
   </data>
   <data name="Craft_Prob_No_Base" xml:space="preserve">
     <value>This item's base could not be identified in the crafting-model data, so the pool (and the chance) cannot be built.</value>

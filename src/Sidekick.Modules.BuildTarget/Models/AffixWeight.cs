@@ -222,8 +222,10 @@ public class AffixWeightSnapshot
 ///   · <b>概率/成本</b>已改为按 CoE 底材 id 取池（见 AffixPoolCoEService），**不再用本标签集建池**，
 ///     所以标签集不参与任何概率计算；
 ///   · 本标签集仍用于**词缀搜索过滤**（StatPicker / AffixPoolStatFilter）。
-/// <see cref="Degraded"/> = true 表示拿不到防御值，搜索过滤只能按「槽位 + armour」粗筛，
-/// 会把本部位出不了的词缀也列进来 —— 提示语只对搜索过滤成立，不要拿去描述概率。
+/// <see cref="Degraded"/> = true 表示拿不到防御值，标签集是完整标签集的**子集**
+/// （少了 str/dex/int 那些防御子类键）→ 搜索过滤按「任一标签命中」取并集，所以结果**只会漏、不会多列**。
+/// 用户可见文案 `Search_Filter_Degraded`（「护甲子类词缀可能被漏掉」）就是这个方向 —— 别写成相反。
+/// 该标记只对搜索过滤成立，不要拿去描述概率。
 /// </summary>
 public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, string? Reason = null)
 {
@@ -248,8 +250,8 @@ public sealed record AffixPoolTagSet(IReadOnlyList<string> Tags, bool Degraded, 
 ///
 ///   1. 槽位键：helmet | body_armour | gloves | boots | belt | amulet | ring | shield | focus | quiver；
 ///   2. 护甲槽位（helmet / body_armour / gloves / boots / shield）**额外加 armour 这把伞**——
-///      抗性之类的词缀挂的就是 {armour, ring, amulet, belt}，只看 boots 会漏掉一大堆，
-///      池子偏小 → 概率偏大 → 成本低估；
+///      抗性之类的词缀挂的就是 {armour, ring, amulet, belt}，只看 boots 会漏掉一大堆
+///      （影响的是**搜索过滤**召回；概率池按 CoE 底材 id 取，不走标签，见下面第 4 条）；
 ///   3. 护甲子类：用物品上解析出来的防御值推导（str/dex/int 七种组合），**不按基底名查表**；
 ///   4. 退化路径：防御值全为 0（拿不到）时只用 {槽位, armour}，并标记 <see cref="AffixPoolTagSet.Degraded"/>，
 ///      不静默按某种子类猜。⚠ v3.6 起这个标记**只影响搜索过滤的精度提示**，与概率/成本无关
@@ -587,7 +589,8 @@ public static class AffixPoolTags
         var subtype = DefenceSubtype(armour, evasion, energyShield);
         if (subtype is null)
         {
-            // 拿不到防御值：只说「这个槽位能出什么」，池会比真实的小，结果偏乐观。
+            // 拿不到防御值：只说「这个槽位能出什么」—— 搜索过滤会**漏掉**防御子类专属词缀（不会多列）。
+            // 概率池不走这条路径（按 CoE 底材 id 取），所以这里只影响搜索列表的召回。
             return new AffixPoolTagSet(tags, Degraded: true, "defence-unknown");
         }
 
@@ -596,7 +599,8 @@ public static class AffixPoolTags
         // 盾牌的防御子类键和护甲部位不是同一族：
         // 头盔/胸甲/手套/鞋用 str_armour 那一族，盾牌专用词缀挂的是 str_shield / str_dex_shield / str_int_shield。
         // 漏了这三个键的后果是静默的 —— 盾牌能出的 16 条词缀（含「+X% 全部元素抗性」）会被搜索过滤藏掉，
-        // 界面上不会有任何提示；同一标签集进成本池还会让期望成本偏低。审计（2026-09-19）发现。
+        // 界面上不会有任何提示。审计（2026-09-19）发现。
+        // （v3.6：概率池已改为按 CoE 底材 id 取，不再受标签集影响。）
         if (slotKey == Shield && ShieldSubtype(armour, evasion, energyShield) is { } shieldSubtype)
         {
             tags.Add(shieldSubtype);

@@ -551,7 +551,8 @@
             return NeedChance.Unavailable("Craft_Prob_No_Weights", singleCost, altCost, isReroll);
         }
 
-        // 池不可用：认不出部位标签。
+        // 池不可用：连部位/类别都认不出来（v3.6 起池按 CoE 底材取，标签不再参与建池；
+        // 这条分支现在只是把「认不出物品」说得比 No_Base 更早、更具体）。
         if (PoolTags.IsEmpty)
         {
             return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);

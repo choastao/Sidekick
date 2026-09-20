@@ -688,7 +688,7 @@
     <value>做装模型数据文件读取失败：{0}</value>
   </data>
   <data name="Craft_Prob_No_Tags" xml:space="preserve">
-    <value>这个部位在权重数据里没有对应标签，建不出池，也算不出概率。</value>
+    <value>认不出这件物品的部位或类别，建不出池，也算不出概率。</value>
   </data>
   <data name="Craft_Prob_No_Base" xml:space="preserve">
     <value>认不出这件物品在做装模型数据里的底材，建不出池，也算不出概率。</value>
