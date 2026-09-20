@@ -24,6 +24,10 @@ public static class StartupExtensions
         services.AddSingleton<AffixWeightService>();
         services.AddSingleton<AffixPoolCoEService>();
         services.AddSingleton<BuildTargetOptionsStore>();
+
+        // PoB2 引擎：helper 进程客户端 + 中文物品 → 英文 raw 文本的转换
+        services.AddSingleton<PobEngineClient>();
+        services.AddSingleton<PobItemTextService>();
         services.AddSingleton<AffixPoolStatFilter>();
 
         // 备选篮：内存态 + candidate-basket.json
