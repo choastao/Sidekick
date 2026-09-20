@@ -558,11 +558,9 @@
             return NeedChance.Unavailable("Craft_Prob_No_Tags", singleCost, altCost, isReroll);
         }
 
-        if (ItemLevel <= 0)
-        {
-            return NeedChance.Unavailable("Craft_Prob_No_Item_Level", singleCost, altCost, isReroll);
-        }
-
+        // ⚠ 重掷（神圣石）先分流，再判物品等级：重掷只看当前 tier 的数值区间，
+        //   不查词缀池、不受 ilvl 门槛影响 —— 放在 ilvl 检查之后就等于给重掷需求报一条无
+        //   关的理由（审计 2026-09-20 第二轮 🟡3，v3.6 后的整改）。
         if (isReroll)
         {
             if (need.TierMin is not { } tierMin || need.TierMax is not { } tierMax)
@@ -580,6 +578,11 @@
                 PrimaryCost = singleCost,
                 AltCost = altCost,
             };
+        }
+
+        if (ItemLevel <= 0)
+        {
+            return NeedChance.Unavailable("Craft_Prob_No_Item_Level", singleCost, altCost, isReroll);
         }
 
         if (need.Side == AffixSide.Unknown)

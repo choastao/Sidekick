@@ -112,13 +112,15 @@ public class AffixPoolChanceTests
         Assert.Equal(["shield", "armour", "str_int_armour", "str_int_shield"], AffixPoolTags.Resolve("shield", 10, 0, 30).Tags);
         Assert.Equal(["focus", "int_armour"], AffixPoolTags.Resolve("focus", 0, 0, 30).Tags);
 
-        // 首饰没有 armour 伞，也没有防御值子类（戒指/项链加 armour 会让池变大、P 偏小）
+        // 首饰没有 armour 伞，也没有防御值子类（戒指/项链若加 armour，搜索过滤会放宽、把出不了的词缀也列出来）
         var ring = AffixPoolTags.Resolve("ring", 0, 0, 0);
         Assert.Equal(["ring"], ring.Tags);
         Assert.False(ring.Degraded);
         Assert.Equal(["amulet"], AffixPoolTags.Resolve("amulet", 0, 0, 0).Tags);
 
-        // 退化路径：护甲槽位拿不到防御值 → 只用 {槽位, armour}，并且明确标成偏乐观
+        // 退化路径：护甲槽位拿不到防御值 → 只用 {槽位, armour} 并标记 Degraded。
+        // ⚠ 这个标记只对**搜索过滤**生效（标签集少一档 → 会漏掉防御子类专属词缀，不会多列）；
+        //    概率/成本自 v3.6 起按 CoE 底材取池，与本标签集无关。
         var degraded = AffixPoolTags.Resolve("boots", 0, 0, 0);
         Assert.Equal(["boots", "armour"], degraded.Tags);
         Assert.True(degraded.Degraded);
@@ -145,8 +147,8 @@ public class AffixPoolChanceTests
             AffixPoolTags.Resolve("bow", 0, 0, 0, ItemClass.Bow).Tags);
 
         // 剑/斧/锤是单手双手共用键：拿不到类别时不猜，只给 {类型, weapon}。
-        // 这会让池偏小、P 偏大、成本偏乐观 —— 但它只在类别解析不出来时发生，
-        // 面板走的是带类别的重载，拿得到就是精确的。
+        // 标签集少一档 → **搜索过滤**会漏掉单手/双手专属词缀（不会多列）；概率池按 CoE 底材取，不受影响。
+        // 而且它只在类别解析不出来时发生，面板走的是带类别的重载，拿得到就是精确的。
         Assert.Equal(["sword", "weapon"], AffixPoolTags.Resolve("sword", 0, 0, 0).Tags);
         Assert.Equal(["axe", "weapon"], AffixPoolTags.Resolve("axe", 0, 0, 0).Tags);
         Assert.Equal(["mace", "weapon"], AffixPoolTags.Resolve("mace", 0, 0, 0).Tags);
@@ -169,7 +171,7 @@ public class AffixPoolChanceTests
         Assert.Equal(["boots", "armour", "dex_armour"], resolved.Tags);
         Assert.False(resolved.Degraded);
 
-        // 防御值读不到（全 0）→ 退化路径 + 偏乐观标记
+        // 防御值读不到（全 0）→ 退化路径 + Degraded 标记（只影响搜索过滤：会漏）
         var unknown = new Item(GameType.Poe2, new OriginalText("Rarity: Rare\nTest Boots"))
         {
             ItemClass = new ItemClassDefinition { Id = "Boots", Type = ItemClass.Boots },
@@ -179,7 +181,7 @@ public class AffixPoolChanceTests
         Assert.Equal(["boots", "armour"], degraded.Tags);
         Assert.True(degraded.Degraded);
 
-        // 戒指：没有 armour 伞（加上会让池变大、P 偏小）
+        // 戒指：没有 armour 伞（若加上，搜索过滤会把出不了的词缀也列出来）
         var ring = new Item(GameType.Poe2, new OriginalText("Rarity: Rare\nTest Ring"))
         {
             ItemClass = new ItemClassDefinition { Id = "Ring", Type = ItemClass.Ring },
