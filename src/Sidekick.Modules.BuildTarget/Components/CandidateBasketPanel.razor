@@ -166,17 +166,101 @@
         <TextBase Class="text-stone-500 text-xs">@Resources["Basket_Note_Additive"]</TextBase>
     </div>
 
+    @* 7. 引擎排序（C2a）：把**勾选**的候选逐个试穿，按 DPS / EHP 的增减排名。
+          排序指标切换只是本地重排（不重跑引擎）；没算出来的行照样列出并说明原因。 *@
+    @if (Basket.Items.Count > 0 && Options.PobEngine)
+    {
+        <div class="mt-4">
+            <TextBase Class="text-sm font-medium text-stone-400">@Resources["Basket_Rank_Title"]</TextBase>
+
+            @if (rankBusy)
+            {
+                <TextBase Class="text-stone-400 text-sm mt-1">@Resources["Basket_Rank_Running"]</TextBase>
+            }
+            else if (ranking == null)
+            {
+                <div class="mt-1 flex flex-wrap items-center gap-2">
+                    <ButtonSecondary OnClick="RankAsync">@Resources["Basket_Rank_Start"]</ButtonSecondary>
+                    <TextBase Class="text-stone-500 text-xs">@Resources["Basket_Rank_Note"]</TextBase>
+                </div>
+            }
+            else
+            {
+                <div class="mt-1 flex flex-wrap items-center gap-3">
+                    <ButtonLink OnClick="@(() => SetMetric(CandidateRankMetric.Dps))">@Resources["Basket_Rank_By_Dps"]</ButtonLink>
+                    <ButtonLink OnClick="@(() => SetMetric(CandidateRankMetric.Ehp))">@Resources["Basket_Rank_By_Ehp"]</ButtonLink>
+                    <ButtonSecondary OnClick="RankAsync">@Resources["Basket_Rank_Again"]</ButtonSecondary>
+                    <TextBase Class="text-stone-500 text-xs">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Basket_Rank_Count"].Value, ranking.Ranked.Count, ranking.Rows.Count)
+                    </TextBase>
+                    <TextBase Class="text-stone-400 text-xs">@MetricText(ranking.Metric)</TextBase>
+                </div>
+
+                <table class="w-full text-sm border-collapse mt-2">
+                    <thead>
+                    <tr class="text-stone-500 text-xs text-left">
+                        <th class="font-normal py-1 w-8">#</th>
+                        <th class="font-normal py-1">@Resources["Basket_Col_Name"]</th>
+                        <th class="font-normal py-1 w-16">@Resources["Basket_Col_Slot"]</th>
+                        <th class="font-normal py-1 text-right w-28">@Resources["Pob_Dps"]</th>
+                        <th class="font-normal py-1 text-right w-28">@Resources["Pob_Ehp"]</th>
+                        <th class="font-normal py-1"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var row in ranking.Rows)
+                    {
+                        <tr class="border-t border-stone-700">
+                            <td class="py-1 text-stone-400">@Rank(row)</td>
+                            <td class="py-1">
+                                @row.Name
+                                @if (!string.IsNullOrWhiteSpace(row.BaseType) && row.BaseType != row.Name)
+                                {
+                                    <span class="text-stone-500 text-xs ml-1">@row.BaseType</span>
+                                }
+                            </td>
+                            <td class="py-1 text-stone-400">@SlotLabel(row.SlotKey)</td>
+                            @if (row.IsRanked)
+                            {
+                                <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Percent(row.DpsPercent)</td>
+                                <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Percent(row.EhpPercent)</td>
+                            }
+                            else
+                            {
+                                <td class="py-1 text-right text-stone-600">—</td>
+                                <td class="py-1 text-right text-stone-600">—</td>
+                            }
+                            <td class="py-1 text-xs text-amber-400">
+                                @RankNote(row)
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+                <TextBase Class="text-stone-500 text-xs mt-1">@Resources["Basket_Rank_Caveat"]</TextBase>
+            }
+        </div>
+    }
 </FormFieldset>
+
 
 @inject IStringLocalizer<BuildTargetResources> Resources
 @inject CandidateBasketService Basket
 @inject BuildTargetStore Store
 @inject ItemParser ItemParser
 @inject ISettingsService SettingsService
+@inject PobCandidateRanker Ranker
+@inject BuildTargetOptionsStore Options
 
 @code {
 
     private string KeybindText { get; set; } = "Ctrl+B";
+
+    /// <summary>最近一次引擎排序的结果（null = 还没排过）。</summary>
+    private CandidateRanking? ranking;
+
+    private bool rankBusy;
 
     private BasketContribution Total { get; set; } = new();
 
@@ -285,6 +369,110 @@
     private void SetEnabled(CandidateBasketItem entry, bool enabled) => Basket.SetEnabled(entry.Id, enabled);
 
     private void SetResistanceCap(double? value) => Basket.ResistanceCap = value ?? 75;
+
+    // ---- C2a：引擎排序 ----
+
+    /// <summary>
+    /// 把**勾选**的候选逐个交给引擎试穿并排名。未勾选的不算 —— 用户可能是特意把不想要的留在篮子里做参照。
+    /// 引擎级失败（没装/崩了）时 <see cref="PobCandidateRanker"/> 会提前收尾，已算出来的名次保留。
+    /// </summary>
+    private async Task RankAsync()
+    {
+        if (rankBusy)
+        {
+            return;
+        }
+
+        var template = Store.Active;
+        var candidates = Basket.Items.Where(x => x.Enabled).ToList();
+        if (template == null || candidates.Count == 0)
+        {
+            return;
+        }
+
+        // 记住用户选的指标，重排后不跳回默认
+        var metric = ranking?.Metric ?? CandidateRankMetric.Dps;
+
+        rankBusy = true;
+        ranking = null;
+        StateHasChanged();
+
+        try
+        {
+            ranking = await Ranker.RankAsync(template, candidates, metric);
+        }
+        finally
+        {
+            rankBusy = false;
+        }
+    }
+
+    /// <summary>切换排序指标：本地重排即可，**不重跑引擎**（数字已经拿到了）。</summary>
+    private void SetMetric(CandidateRankMetric metric)
+    {
+        if (ranking == null || ranking.Metric == metric)
+        {
+            return;
+        }
+
+        ranking = CandidateRanking.Sort(ranking.Rows, metric);
+    }
+
+    private string Rank(CandidateRankRow row)
+    {
+        if (!row.IsRanked || ranking == null)
+        {
+            return "—";
+        }
+
+        var index = ranking.Ranked.ToList().IndexOf(row);
+        return index < 0 ? "—" : (index + 1).ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>行尾备注：算出来的只说「引擎不认识的词缀 N 条」（结论偏乐观），没算出来的说原因。</summary>
+    private string RankNote(CandidateRankRow row)
+    {
+        if (!row.IsRanked)
+        {
+            return RankStatusText(row);
+        }
+
+        return row.UnmappedAffixes > 0
+                   ? string.Format(CultureInfo.CurrentCulture, Resources["Pob_Unmapped"].Value, row.UnmappedAffixes)
+                   : string.Empty;
+    }
+
+    private string RankStatusText(CandidateRankRow row) => row.Status switch
+    {
+        PobCompareStatus.MissingText => Resources["Pob_Missing_Text"].Value,
+        PobCompareStatus.Disabled => Resources["Pob_Disabled"].Value,
+        PobCompareStatus.NoTemplate => Resources["Pob_No_Template"].Value,
+        PobCompareStatus.NoBuildXml => Resources["Pob_No_Build"].Value,
+        PobCompareStatus.UnsupportedSlot => Resources["Pob_Unsupported_Slot"].Value,
+        PobCompareStatus.SocketedItem => Resources["Pob_Socketed_Item"].Value,
+        PobCompareStatus.BaseUnknown => Resources["Pob_Base_Unknown"].Value,
+        PobCompareStatus.ConversionFailed => Resources["Pob_Conversion_Failed"].Value,
+        PobCompareStatus.EngineUnavailable => string.Format(
+            CultureInfo.CurrentCulture,
+            Resources["Pob_No_Engine"].Value,
+            row.Error ?? "-"),
+        _ => Resources["Basket_Rank_Not_Ranked"].Value,
+    };
+
+    private string MetricText(CandidateRankMetric metric) =>
+        metric == CandidateRankMetric.Ehp
+            ? Resources["Basket_Rank_By_Ehp"].Value
+            : Resources["Basket_Rank_By_Dps"].Value;
+
+    /// <summary>涨绿跌红（与查价那套配色一致，用户已核对过）。</summary>
+    private static string DeltaClass(double value) =>
+        value > 0 ? "text-green-400" : value < 0 ? "text-red-400" : "text-stone-400";
+
+    private static string Signed(double value) =>
+        (value >= 0 ? "+" : "") + value.ToString("#,0", CultureInfo.InvariantCulture);
+
+    private static string Percent(double? percent) =>
+        percent is { } value ? $" ({value.ToString("+0.0;-0.0", CultureInfo.InvariantCulture)}%)" : string.Empty;
 
     /// <summary>
     /// 备选篮里每个统计项，对应「目标BD → 角色总目标」里可能用的匹配词。

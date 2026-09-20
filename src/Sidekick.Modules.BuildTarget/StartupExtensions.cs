@@ -29,6 +29,8 @@ public static class StartupExtensions
         services.AddSingleton<PobEngineClient>();
         services.AddSingleton<PobItemTextService>();
         services.AddSingleton<PobCompareService>();
+        services.AddSingleton<PobCandidateRanker>();
+
         services.AddSingleton<AffixPoolStatFilter>();
 
         // 备选篮：内存态 + candidate-basket.json

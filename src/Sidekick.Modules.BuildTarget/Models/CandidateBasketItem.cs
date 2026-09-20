@@ -20,6 +20,13 @@ public class CandidateBasketItem
     /// <summary>部位，取值见 <see cref="SlotKeys"/>。</summary>
     public string SlotKey { get; set; } = "";
 
+    /// <summary>
+    /// 物品原文（剪贴板里那份）。C2a 的引擎排序要用它重新解析并试穿，
+    /// **落盘的是原文而不是对象**：解析器/语言变了也能重算，且与 BasketContribution 一样不依赖客户端语言。
+    /// ⚠ v3.7 之前入篮的条目没有这个字段（空字符串）→ 排序时如实标成「没有原文，重新加一次」。
+    /// </summary>
+    public string Text { get; set; } = "";
+
     /// <summary>加入时间。</summary>
     public DateTimeOffset AddedAt { get; set; } = DateTimeOffset.Now;
 

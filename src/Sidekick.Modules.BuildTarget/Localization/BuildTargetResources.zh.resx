@@ -831,6 +831,39 @@
   <data name="Basket_Slot_Unknown" xml:space="preserve">
     <value>未知部位</value>
   </data>
+  <data name="Basket_Rank_Title" xml:space="preserve">
+    <value>引擎排序（逐个试穿对比）</value>
+  </data>
+  <data name="Basket_Rank_Start" xml:space="preserve">
+    <value>排序勾选的候选</value>
+  </data>
+  <data name="Basket_Rank_Again" xml:space="preserve">
+    <value>重新排序</value>
+  </data>
+  <data name="Basket_Rank_Running" xml:space="preserve">
+    <value>正在逐个试穿…</value>
+  </data>
+  <data name="Basket_Rank_Note" xml:space="preserve">
+    <value>勾选的每件都会挂进 BD 的引擎试穿，按 DPS / EHP 的增减排名。</value>
+  </data>
+  <data name="Basket_Rank_Count" xml:space="preserve">
+    <value>{0} / {1} 件算出了名次</value>
+  </data>
+  <data name="Basket_Rank_By_Dps" xml:space="preserve">
+    <value>按 DPS 排</value>
+  </data>
+  <data name="Basket_Rank_By_Ehp" xml:space="preserve">
+    <value>按 EHP 排</value>
+  </data>
+  <data name="Basket_Rank_Caveat" xml:space="preserve">
+    <value>绝对值来自模拟器、只作参考，行与行之间的差值才可信；备注里写了「有 N 条词缀引擎不认识」的行，结论偏乐观。</value>
+  </data>
+  <data name="Basket_Rank_Not_Ranked" xml:space="preserve">
+    <value>没有名次</value>
+  </data>
+  <data name="Pob_Missing_Text" xml:space="preserve">
+    <value>这条是旧版加进篮子的、没存物品原文 —— 在游戏里重新复制一次再加进来才能排序。</value>
+  </data>
   <data name="Basket_Cap" xml:space="preserve">
     <value>抗性上限</value>
   </data>

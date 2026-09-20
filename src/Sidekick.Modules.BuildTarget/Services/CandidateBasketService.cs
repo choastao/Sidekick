@@ -115,6 +115,7 @@ public class CandidateBasketService
                 existing.SlotKey = slotKey;
                 existing.AddedAt = DateTimeOffset.Now;
                 existing.Contribution = contribution;
+                existing.Text = item.Text.Text ?? "";
                 Persist();
                 return existing;
             }
@@ -128,6 +129,8 @@ public class CandidateBasketService
                 AddedAt = DateTimeOffset.Now,
                 Enabled = true,
                 Contribution = contribution,
+                // 原文留着，C2a 的引擎排序要靠它重新解析（见 CandidateBasketItem.Text 的说明）
+                Text = item.Text.Text ?? "",
             };
 
             file.Items.Add(entry);

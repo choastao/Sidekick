@@ -32,6 +32,12 @@ public enum PobCompareStatus
     /// <summary>中文 → 英文转换失败。</summary>
     ConversionFailed,
 
+    /// <summary>
+    /// 备选篮里的旧条目没有存物品原文（v3.7 之前只存算好的贡献值）→ 拿不去试穿。
+    /// 让它重新入篮一次即可，**不要**去猜原文。
+    /// </summary>
+    MissingText,
+
     /// <summary>其它失败（引擎原样带回的报错）。</summary>
     Failed,
 }
