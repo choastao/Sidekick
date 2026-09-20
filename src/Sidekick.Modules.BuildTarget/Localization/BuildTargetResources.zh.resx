@@ -174,6 +174,24 @@
   <data name="Pob_Elapsed" xml:space="preserve">
     <value>{0} 毫秒算完</value>
   </data>
+  <data name="Affix_Gain_Title" xml:space="preserve">
+    <value>收益最高的词缀（前5）</value>
+  </data>
+  <data name="Affix_Gain_Affix" xml:space="preserve">
+    <value>词缀</value>
+  </data>
+  <data name="Affix_Gain_Implicit" xml:space="preserve">
+    <value>（隐式）</value>
+  </data>
+  <data name="Affix_Gain_Help" xml:space="preserve">
+    <value>口径：每个数字是「把这条词缀拿掉、再算一次」得到的差值，也就是这条词缀现在值多少；不是「把它洗到顶档还能涨多少」。各条也不能相加（同区词缀相加、more 独立乘算，边际递减），几条之和 ≠ 整件装备的总变化。</value>
+  </data>
+  <data name="Affix_Gain_Not_Computed" xml:space="preserve">
+    <value>{0} 条词缀没算出来，未参与排名：</value>
+  </data>
+  <data name="Affix_Gain_Elapsed" xml:space="preserve">
+    <value>逐条试穿 {0} 次，共 {1} 毫秒</value>
+  </data>
   <data name="Pob_Disabled" xml:space="preserve">
     <value>先在 设置 → 目标BD → 功能开关 里打开「PoB2 引擎」。</value>
   </data>

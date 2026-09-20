@@ -174,6 +174,24 @@
   <data name="Pob_Elapsed" xml:space="preserve">
     <value>recalculated in {0} ms</value>
   </data>
+  <data name="Affix_Gain_Title" xml:space="preserve">
+    <value>Top 5 affixes by gain</value>
+  </data>
+  <data name="Affix_Gain_Affix" xml:space="preserve">
+    <value>Affix</value>
+  </data>
+  <data name="Affix_Gain_Implicit" xml:space="preserve">
+    <value>(implicit)</value>
+  </data>
+  <data name="Affix_Gain_Help" xml:space="preserve">
+    <value>How to read this: each number is what that one affix is worth right now — the item is re-run with that single line removed. It is NOT how much more you would gain by rolling it up to the top tier, and the rows must not be added up (bonuses to the same stat stack, 'more' multipliers are independent) — their sum is not the item's total change.</value>
+  </data>
+  <data name="Affix_Gain_Not_Computed" xml:space="preserve">
+    <value>{0} affix(es) could not be computed — they are not ranked:</value>
+  </data>
+  <data name="Affix_Gain_Elapsed" xml:space="preserve">
+    <value>ran {0} single-affix experiments in {1} ms</value>
+  </data>
   <data name="Pob_Disabled" xml:space="preserve">
     <value>Turn on 'PoB2 engine' in Settings → Target BD → Features first.</value>
   </data>

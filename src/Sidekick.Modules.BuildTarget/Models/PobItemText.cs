@@ -27,7 +27,17 @@ public static class PobItemText
     public sealed record BuildResult(string Text, int TotalStats, int MappedStats, bool BaseIdentified, int AnnotationStripped = 0)
     {
         public int Skipped => TotalStats - MappedStats;
+
+        /// <summary>
+        /// 转换出来的**词缀行**（按在 <see cref="Text"/> 里的行号）。
+        /// C2b 要对每条词缀做「拿掉它再试穿一次」的实验，就得能精确定位到那一行 ——
+        /// 用行号而不是文本去匹配：同一件装备上出现两行完全相同的文本时，按文本删会删错那条。
+        /// </summary>
+        public IReadOnlyList<AffixLine> Affixes { get; init; } = [];
     }
+
+    /// <summary>一条送进引擎的词缀行：它在最终文本里的行号、文本内容、以及是不是隐式词缀。</summary>
+    public sealed record AffixLine(int LineIndex, string Text, bool Implicit);
 
     public static BuildResult Build(Item item, IReadOnlyDictionary<string, string> invariantStatText)
     {
@@ -135,10 +145,69 @@ public static class PobItemText
             lines.Add("Implicits: " + implicitLines.Count.ToString(CultureInfo.InvariantCulture));
         }
 
-        lines.AddRange(implicitLines);
-        lines.AddRange(explicitLines);
+        var affixes = new List<AffixLine>(implicitLines.Count + explicitLines.Count);
 
-        return new BuildResult(string.Join('\n', lines) + "\n", totalStats, mapped, baseIdentified, annotationStripped);
+        var implicitStart = lines.Count;
+        lines.AddRange(implicitLines);
+        for (var i = 0; i < implicitLines.Count; i++)
+        {
+            affixes.Add(new AffixLine(implicitStart + i, implicitLines[i], true));
+        }
+
+        var explicitStart = lines.Count;
+        lines.AddRange(explicitLines);
+        for (var i = 0; i < explicitLines.Count; i++)
+        {
+            affixes.Add(new AffixLine(explicitStart + i, explicitLines[i], false));
+        }
+
+        return new BuildResult(string.Join('\n', lines) + "\n", totalStats, mapped, baseIdentified, annotationStripped)
+        {
+            Affixes = affixes,
+        };
+    }
+
+    /// <summary>
+    /// 造一个「把某条词缀拿掉」的变体文本（C2b 的口径：这条词缀**当前值多少**）。
+    ///
+    /// 两个必须处理的点：
+    ///   1. **隐式词缀**：`Implicits: N` 的条数要跟着减一（减到 0 时整行一起去掉），
+    ///      否则 PoB 会把显式词缀当成隐式读 —— 数量对不上时它不一定报错，而是静默错读；
+    ///   2. **不许猜**：行号对不上文本时返回 null（调用方按「这条算不了」处理），
+    ///      不去别的地方找一条「看起来像」的行来删。
+    /// </summary>
+    public static string? WithoutAffix(string text, AffixLine affix)
+    {
+        var lines = text.TrimEnd('\n').Split('\n').ToList();
+
+        if (affix.LineIndex < 0 || affix.LineIndex >= lines.Count || lines[affix.LineIndex] != affix.Text)
+        {
+            return null;
+        }
+
+        lines.RemoveAt(affix.LineIndex);
+
+        if (affix.Implicit)
+        {
+            var declaration = lines.FindIndex(x => x.StartsWith("Implicits: ", StringComparison.Ordinal));
+            if (declaration >= 0)
+            {
+                var parts = lines[declaration]["Implicits: ".Length..].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length == 1 && int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.InvariantCulture, out var count))
+                {
+                    if (count <= 1)
+                    {
+                        lines.RemoveAt(declaration);
+                    }
+                    else
+                    {
+                        lines[declaration] = "Implicits: " + (count - 1).ToString(CultureInfo.InvariantCulture);
+                    }
+                }
+            }
+        }
+
+        return string.Join('\n', lines) + "\n";
     }
 
     /// <summary>

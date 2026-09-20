@@ -65,10 +65,71 @@
             }
         </FormFieldset>
     </div>
+
+    @* C2b：这件装备上每条词缀各自值多少（口径 = 把它拿掉再算一次）。 *@
+    <div class="mt-4">
+        <FormFieldset Legend="@Resources["Affix_Gain_Title"]">
+            @if (gainsLoading)
+            {
+                <TextBase Class="text-stone-400 text-sm">@Resources["Pob_Working"]</TextBase>
+            }
+            else if (gains is { Top.Count: > 0 })
+            {
+                <table class="w-full text-sm border-collapse">
+                    <thead>
+                    <tr class="text-stone-500 text-xs text-left">
+                        <th class="font-normal py-1">@Resources["Affix_Gain_Affix"]</th>
+                        <th class="font-normal py-1 text-right">@Resources["Pob_Dps"]</th>
+                        <th class="font-normal py-1 text-right">@Resources["Pob_Ehp"]</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var row in gains.Top)
+                    {
+                        <tr class="border-t border-stone-700">
+                            <td class="py-1">
+                                @row.Text
+                                @if (row.Implicit)
+                                {
+                                    <span class="text-stone-500 text-xs">@Resources["Affix_Gain_Implicit"]</span>
+                                }
+                            </td>
+                            <td class="py-1 text-right @DeltaClass(row.DpsDelta)">@Signed(row.DpsDelta)@Pct(row.DpsPercent)</td>
+                            <td class="py-1 text-right @DeltaClass(row.EhpDelta)">@Signed(row.EhpDelta)@Pct(row.EhpPercent)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+
+                @if (gains.NotRanked.Count > 0)
+                {
+                    <TextBase Class="text-amber-400 text-xs mt-2">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Not_Computed"].Value, gains.NotRanked.Count)
+                    </TextBase>
+                    @foreach (var row in gains.NotRanked)
+                    {
+                        <TextBase Class="text-stone-500 text-xs">
+                            @row.Text —— @AffixStatusText(row)
+                        </TextBase>
+                    }
+                }
+
+                @* 口径与「不可相加」这两句必须都写：前者防误解成「洗到顶档能涨多少」，后者防用户把几条加起来。 *@
+                <TextBase Class="text-stone-500 text-xs mt-2">@Resources["Affix_Gain_Help"]</TextBase>
+                @if (gains.ElapsedMs > 0)
+                {
+                    <TextBase Class="text-stone-600 text-xs mt-1">
+                        @string.Format(CultureInfo.CurrentCulture, Resources["Affix_Gain_Elapsed"].Value, gains.Rows.Count, gains.ElapsedMs)
+                    </TextBase>
+                }
+            }
+        </FormFieldset>
+    </div>
 }
 
 @inject IStringLocalizer<BuildTargetResources> Resources
 @inject PobCompareService Compare
+@inject PobAffixGainService Gains
 @inject BuildTargetStore Store
 @inject BuildTargetOptionsStore Options
 
@@ -81,6 +142,9 @@
     private PobCompareResult? result;
     private bool loading;
     private long elapsedMs;
+
+    private AffixGainRanking? gains;
+    private bool gainsLoading;
 
     private string? lastKey;
 
@@ -102,6 +166,7 @@
         if (!Options.PobEngine || Item == null)
         {
             result = null;
+            gains = null;
             return;
         }
 
@@ -117,6 +182,7 @@
 
         lastKey = key;
         loading = true;
+        gains = null;
         StateHasChanged();
 
         try
@@ -124,12 +190,36 @@
             var started = Environment.TickCount64;
             result = await Compare.CompareAsync(template, Item, slotKey);
             elapsedMs = Environment.TickCount64 - started;
+
+            // 逐条词缀的收益要有个参照系（原物数值），所以只在对比算出来之后才跑。
+            // 成本：1 + N 次试穿，热引擎约 15 ms/次。
+            if (result is { HasDelta: true })
+            {
+                gainsLoading = true;
+                StateHasChanged();
+
+                try
+                {
+                    gains = await Gains.RankAsync(template, Item, slotKey);
+                }
+                finally
+                {
+                    gainsLoading = false;
+                }
+            }
         }
         finally
         {
             loading = false;
         }
     }
+
+    /// <summary>没算出来的那条词缀为什么没算（照抄对比面板的口径，别造第二套说法）。</summary>
+    private string AffixStatusText(AffixGainRow row) => row.Status switch
+    {
+        PobCompareStatus.EngineUnavailable => string.Format(CultureInfo.CurrentCulture, Resources["Pob_No_Engine"].Value, row.Error ?? "-"),
+        _ => string.Format(CultureInfo.CurrentCulture, Resources["Pob_Failed"].Value, row.Error ?? "-"),
+    };
 
     private string StatusText(PobCompareResult value) => value.Status switch
     {

@@ -30,6 +30,7 @@ public static class StartupExtensions
         services.AddSingleton<PobItemTextService>();
         services.AddSingleton<PobCompareService>();
         services.AddSingleton<PobCandidateRanker>();
+        services.AddSingleton<PobAffixGainService>();
 
         services.AddSingleton<AffixPoolStatFilter>();
 

@@ -284,4 +284,87 @@ public class PobItemTextTests
         Assert.False(result.BaseIdentified);
         Assert.Contains("破舊兜帽", result.Text);
     }
+
+    /// <summary>
+    /// C2b 的变体构造：拿掉一条显式词缀 = 只少那一行，别的行一行不动。
+    /// </summary>
+    [Fact]
+    public void WithoutAffix_removes_exactly_one_line()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "+45% 火焰抗性", [45], "explicit.stat_fire_res", "+#% 火焰抗性"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        var life = built.Affixes.Single(x => x.Text == "+88 to maximum Life");
+
+        var variant = PobItemText.WithoutAffix(built.Text, life);
+
+        Assert.NotNull(variant);
+        Assert.DoesNotContain("+88 to maximum Life", variant);
+        Assert.Contains("+45% to Fire Resistance", variant);      // 另一条词缀不受影响
+        Assert.Contains("Kamasan Tiara", variant);                 // 头部信息也在
+        Assert.Contains("Energy Shield: 436", variant);
+    }
+
+    /// <summary>
+    /// 拿掉隐式词缀时 `Implicits: N` 必须跟着减一 —— 数量对不上时 PoB 不一定报错，
+    /// 而是把显式词缀当隐式读（静默错读，比报错更难发现）。
+    /// </summary>
+    [Fact]
+    public void WithoutAffix_decrements_the_implicits_declaration()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Implicit, "+30 最大能量护盾", [30], "implicit.stat_es", "+# 最大能量护盾"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+45% 火焰抗性", [45], "explicit.stat_fire_res", "+#% 火焰抗性"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        Assert.Contains("Implicits: 1", built.Text);
+
+        var implicitAffix = built.Affixes.Single(x => x.Implicit);
+        var variant = PobItemText.WithoutAffix(built.Text, implicitAffix)!;
+
+        // 最后一条隐式被拿掉 → 整条 Implicits 声明一起去掉（留着 "Implicits: 0" 反而会让 PoB 困惑）
+        Assert.DoesNotContain("Implicits:", variant);
+        Assert.DoesNotContain("+30 to maximum Energy Shield", variant);
+        Assert.Contains("+45% to Fire Resistance", variant);
+    }
+
+    /// <summary>
+    /// 拿掉显式词缀**不许**动到 `Implicits: N`（只有隐式才要减）。
+    /// </summary>
+    [Fact]
+    public void WithoutAffix_keeps_the_implicits_declaration_for_explicit_affixes()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Implicit, "+30 最大能量护盾", [30], "implicit.stat_es", "+# 最大能量护盾"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+45% 火焰抗性", [45], "explicit.stat_fire_res", "+#% 火焰抗性"));
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        var explicitAffix = built.Affixes.Single(x => !x.Implicit && x.Text == "+88 to maximum Life");
+
+        var variant = PobItemText.WithoutAffix(built.Text, explicitAffix)!;
+
+        Assert.Contains("Implicits: 1", variant);
+        Assert.Contains("+30 to maximum Energy Shield", variant);
+        Assert.DoesNotContain("+88 to maximum Life", variant);
+    }
+
+    /// <summary>
+    /// 行号对不上文本时**返回 null**，不去别处找一条"看起来像"的行来删（宁可这条算不了）。
+    /// 这条守卫的存在理由：调用方按 null 走"这条没算出来"的分支，而不是删错一行后得出错误差值。
+    /// </summary>
+    [Fact]
+    public void WithoutAffix_refuses_when_the_line_number_does_not_match()
+    {
+        var item = Helmet();
+        item.Stats.Add(Stat(StatCategory.Explicit, "+88 最大生命", [88], "explicit.stat_life", "+# 最大生命"));
+
+        var built = PobItemText.Build(item, InvariantStats);
+        var affix = built.Affixes.Single();
+
+        Assert.Null(PobItemText.WithoutAffix(built.Text, affix with { LineIndex = 999 }));
+        Assert.Null(PobItemText.WithoutAffix(built.Text, affix with { Text = "+1 to something else" }));
+    }
 }
