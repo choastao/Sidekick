@@ -142,7 +142,7 @@
     <value>PoB2 引擎（试穿对比 DPS / EHP）</value>
   </data>
   <data name="Option_PobEngine_Help" xml:space="preserve">
-    <value>打开后悬浮窗会显示「试穿对比」：以当前模板的 BD 为基准，把复制的装备挂进本地引擎重算 DPS / EHP。需要引擎已装在程序目录旁（pob2/luajit.exe + tao-engine-server.lua）；没装的话面板会显示「引擎不可用」。</value>
+    <value>打开后悬浮窗会显示「试穿对比」：以当前模板的 BD 为基准，把复制的装备挂进本地引擎重算 DPS / EHP。引擎随本版一起装在程序目录的 pob2\ 下（也可自己放在 %APPDATA%\sidekick\pob2\），找不到时面板会说「引擎不可用」。开关是**即时生效**的：打开后不用重启，第一次用到时自动冷启动（约几秒）；关掉会把引擎进程一起停掉、内存释放，再打开时重新冷启动。</value>
   </data>
   <data name="Pob_Title" xml:space="preserve">
     <value>PoB 引擎：试穿对比</value>

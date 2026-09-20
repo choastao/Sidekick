@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Sidekick.Modules.BuildTarget.Models;
+using Sidekick.Modules.BuildTarget.Services;
 using Xunit;
 
 namespace Sidekick.Modules.BuildTarget.Tests;
@@ -31,6 +32,21 @@ public class BuildTargetOptionsTests
         Assert.NotNull(options);
         Assert.False(options!.CraftCost);
         Assert.False(options.PobEngine);
+    }
+
+    /// <summary>
+    /// 功能开关拨动时「该不该停引擎」的方向：**只有关掉才停，打开绝不停**。
+    /// 反过来（开着就把引擎杀掉）会让功能看起来随机失灵，而且因为引擎是懒启动的，
+    /// 错误方向在单测里看不出来 —— 所以单独钉住。
+    /// </summary>
+    [Theory]
+    [InlineData(true, true, false)]   // 打开 + 在跑 → 不停（引擎要留着用）
+    [InlineData(true, false, false)]  // 打开 + 没跑 → 无事可做（懒启动，不在这里起）
+    [InlineData(false, true, true)]   // 关掉 + 在跑 → 停（真的卸载，不是「不再调用」）
+    [InlineData(false, false, false)] // 关掉 + 没跑 → 空操作
+    public void Only_switching_off_stops_the_engine(bool enabled, bool running, bool expected)
+    {
+        Assert.Equal(expected, PobEngineClient.ShouldStopForOptions(enabled, running));
     }
 
     [Fact]

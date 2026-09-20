@@ -26,6 +26,7 @@ public sealed class PobEngineClient : IDisposable
     private const string LuaJitExecutable = "luajit.exe";
 
     private readonly ILogger<PobEngineClient> logger;
+    private readonly BuildTargetOptionsStore options;
     private readonly SemaphoreSlim gate = new(1, 1);
 
     private Process? process;
@@ -33,9 +34,53 @@ public sealed class PobEngineClient : IDisposable
     private bool disposed;
     private int generation;
 
-    public PobEngineClient(ILogger<PobEngineClient> logger)
+    public PobEngineClient(ILogger<PobEngineClient> logger, BuildTargetOptionsStore options)
     {
         this.logger = logger;
+        this.options = options;
+
+        // 开关一关就**真的把 helper 停掉**：否则「关」只是不再调用，进程还常驻吃内存（几百 MB 的
+        // PoB 数据在 Lua 里）—— 那是假关。用户问过「开关是否支持热开关」，答案必须是
+        // 「是，而且关掉会把引擎卸掉，下次打开重新冷启」。
+        // ⚠ 订阅方必须立即返回（见 BuildTargetOptionsStore.OnChanged 的契约）：杀进程丢线程池，
+        //   别占着用户拨开关那次 UI 操作。
+        options.OnChanged += OnOptionsChanged;
+    }
+
+    /// <summary>
+    /// 开关拨动后的反应。**打开时什么都不做**（引擎在第一次真要用时才懒启动，见 EnsureStartedAsync）；
+    /// 关掉时才停进程。方向被 <c>EngineSwitchTests</c> 钉住 —— 反过来（开着就把引擎杀掉）是最坏的错法。
+    /// </summary>
+    private void OnOptionsChanged()
+    {
+        if (!ShouldStopForOptions(options.PobEngine, IsRunning))
+        {
+            return;
+        }
+
+        _ = Task.Run(Stop);
+    }
+
+    /// <summary>
+    /// 「这次开关变化要不要停引擎」—— 抽成纯函数是为了能单测：真杀进程在单测里没法验，
+    /// 但「只有关掉才停、打开绝不停」这个方向必须被钉住。
+    /// </summary>
+    internal static bool ShouldStopForOptions(bool engineEnabled, bool running) => !engineEnabled && running;
+
+    /// <summary>
+    /// 停掉 helper，释放它占的内存。没在跑时是空操作。
+    /// 停掉之后**下次要用会重新冷启动**（约 1.5 秒 + 载入 Data 的时间），
+    /// 且 <see cref="Generation"/> 会 +1，任何「引擎里载入过哪份 BD」的缓存随之失效（自愈）。
+    /// </summary>
+    public void Stop()
+    {
+        if (process == null)
+        {
+            return;
+        }
+
+        logger.LogInformation("[BuildTarget] Stopping PoB engine helper (generation {Generation})", Generation);
+        StopProcess();
     }
 
     /// <summary>helper 是否活着。引擎没配好 / 已崩溃都是 false。</summary>
@@ -396,6 +441,7 @@ public sealed class PobEngineClient : IDisposable
         }
 
         disposed = true;
+        options.OnChanged -= OnOptionsChanged;
         StopProcess();
         gate.Dispose();
     }

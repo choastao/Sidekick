@@ -61,7 +61,11 @@ public class EngineLifecycleTests
     [Fact]
     public void Killing_the_helper_bumps_the_engine_generation()
     {
-        var client = new PobEngineClient(NullLogger<PobEngineClient>.Instance);
+        // 开关文件指到临时路径：单测不许碰用户真实的 %APPDATA%\sidekick
+        var store = new BuildTargetOptionsStore(
+            NullLogger<BuildTargetOptionsStore>.Instance,
+            Path.Combine(Path.GetTempPath(), "tao-options-test-" + Guid.NewGuid().ToString("N") + ".json"));
+        var client = new PobEngineClient(NullLogger<PobEngineClient>.Instance, store);
         var before = client.Generation;
 
         // Dispose → StopProcess：进程没了 = 引擎里载入过的 BD 也没了

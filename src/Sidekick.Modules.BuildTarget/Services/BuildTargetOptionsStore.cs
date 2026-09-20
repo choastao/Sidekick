@@ -19,13 +19,24 @@ public class BuildTargetOptionsStore
     };
 
     private readonly ILogger<BuildTargetOptionsStore> logger;
+    private readonly string? pathOverride;
     private readonly object fileLock = new();
 
     private BuildTargetOptions options = new();
 
     public BuildTargetOptionsStore(ILogger<BuildTargetOptionsStore> logger)
+        : this(logger, null)
+    {
+    }
+
+    /// <summary>
+    /// 测试用：把开关文件指到指定路径。**别让单测去读写用户真实的 %APPDATA%\sidekick** ——
+    /// 那会在开发机上改掉真人的开关（本轮加「关开关要停引擎」的测试时就撞上这个需求）。
+    /// </summary>
+    internal BuildTargetOptionsStore(ILogger<BuildTargetOptionsStore> logger, string? pathOverride)
     {
         this.logger = logger;
+        this.pathOverride = pathOverride;
         Load();
     }
 
@@ -35,7 +46,7 @@ public class BuildTargetOptionsStore
     /// </summary>
     public event Action? OnChanged;
 
-    public string FilePath => SidekickPaths.GetDataFilePath("buildtarget-options.json");
+    public string FilePath => pathOverride ?? SidekickPaths.GetDataFilePath("buildtarget-options.json");
 
     public bool CraftCost
     {
