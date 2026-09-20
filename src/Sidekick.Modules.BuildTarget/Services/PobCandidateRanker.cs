@@ -152,7 +152,7 @@ public class PobCandidateRanker(
     /// 没算出来的行不参与 —— 它们的 <see cref="CandidateRankRow.DpsUnavailable"/> 是默认值 false，
     /// 拿默认值当事实正是本项目最容易出错的地方（审计 S2）。
     /// </summary>
-    internal static bool ShouldFallbackToEhp(IEnumerable<CandidateRankRow> rows) =>
+    public static bool ShouldFallbackToEhp(IEnumerable<CandidateRankRow> rows) =>
         rows.Any(x => x.IsRanked && x.DpsUnavailable);
 
     private static CandidateRankRow Row(CandidateBasketItem entry, PobCompareResult result, bool hardGateFailed)

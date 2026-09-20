@@ -65,7 +65,7 @@ public sealed record PobStats(double Dps, double Ehp, double Life)
     public bool ContextConfirmed { get; init; } = true;
 
     /// <summary>
-    /// 抗性守门（<see cref="ResistanceGuardrail"/>）要看的**七个字段全都有数**。
+    /// 抗性守门（<see cref="ResistanceGuardrail"/>）要看的**六项（火 / 冰 / 电 的 <c>Resist</c> 与 <c>ResistOver</c>）全都有数**。
     ///
     /// <c>false</c> = 老 helper 没报全 → 界面要出提示（不阻塞计算），说明**守门对缺的那些项不生效**。
     /// 缺哪几项由 <see cref="PobStats"/> 里那几个可空属性自己说；这里只回「全不全」。
@@ -86,7 +86,7 @@ public sealed record PobStats(double Dps, double Ehp, double Life)
     /// </summary>
     public bool ContextUnconfirmed => RequestedContext != null && !ContextConfirmed;
 
-    /// <summary>抗性守门要看的七个字段**没报全** → 守门对缺的那些项不生效，界面要出提示（见 <see cref="ResistanceDataComplete"/>）。</summary>
+    /// <summary>抗性守门要看的那**六项**没报全 → 守门**对缺的那些项**不生效（不是全局失效），界面要出提示（见 <see cref="ResistanceDataComplete"/>）。</summary>
     public bool ResistanceDataIncomplete => !ResistanceDataComplete;
 }
 

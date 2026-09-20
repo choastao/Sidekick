@@ -425,8 +425,9 @@
     private bool ContextUnconfirmed() => result?.Base?.ContextUnconfirmed == true;
 
     /// <summary>
-    /// 抗性守门这次**对所有元素项**都不生效（七个字段没报全，见 <see cref="PobStats.ResistanceDataIncomplete"/>）。
+    /// 抗性守门要看的那六项（火 / 冰 / 电 的 Resist 与 ResistOver）没报全 → 守门**对缺的那些项**不生效。
     /// 不阻塞计算 —— 只是如实说「这道保护没有生效」，而不是让用户以为「检查过了，没问题」。
+    /// ⚠ 别写成「对所有元素都不生效」：混沌抗本来就不在守门输入里，火/冰/电 三项可能都在守（审计 S3）。
     /// </summary>
     private bool ResistanceGuardOff() => result?.Base?.ResistanceDataIncomplete == true;
 

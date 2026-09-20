@@ -131,6 +131,26 @@ public class CandidateRankingTests
     private static PobStats Stats(double dps, double combinedDps = 0) =>
         new(dps, 1, 1) { CombinedDps = combinedDps };
 
+    // ---- 审计 S2 / codex review [P3]-3：降级判据的合同（不是标签）----
+    // 触发档：批次里混一行「没算出来」的（MissingText 等，DpsUnavailable 只是默认值 false）
+    //          + 其余行伤害不可用 → **必须**改按 EHP 排（否则表头写「按 DPS 排」而整列是「—」）。
+
+    [Fact]
+    public void 降级判据_只看算出来的行()
+    {
+        var unranked = Unranked("a", PobCompareStatus.MissingText);           // 没算出来：DpsUnavailable = 默认 false
+        var noDamage = Unavailable("b");                                      // 算出来了，但伤害一个数都没有
+        var hasDamage = Row("c", 500, 1000);
+
+        // ① 混合批次：一行没算出来 + 一行伤害不可用 → 必须降级（老 All 判据会判反）
+        Assert.True(PobCandidateRanker.ShouldFallbackToEhp(new[] { unranked, noDamage }));
+        // ② 只有「没算出来的行」→ 不算有伤害不可用（不能拿默认值当事实）
+        Assert.False(PobCandidateRanker.ShouldFallbackToEhp(new[] { unranked }));
+        // ③ 算出来的行都有数 → 按 DPS
+        Assert.False(PobCandidateRanker.ShouldFallbackToEhp(new[] { hasDamage }));
+        Assert.False(PobCandidateRanker.ShouldFallbackToEhp(new[] { unranked, hasDamage }));
+    }
+
     private static CandidateRankRow RankedFromCompare(string id, PobCompareResult result) => new()
     {
         Id = id,
@@ -172,6 +192,16 @@ public class CandidateRankingTests
     }
 
     // ---- 脚手架 ----
+
+    /// <summary>算出来了、但引擎没给出伤害数（DpsUnavailable = true）的那一行。</summary>
+    private static CandidateRankRow Unavailable(string id) => new()
+    {
+        Id = id,
+        Name = id,
+        SlotKey = SlotKeys.Helmet,
+        Status = PobCompareStatus.Success,
+        DpsUnavailable = true,
+    };
 
     private static CandidateRankRow Row(string id, double dps, double ehp) => new()
     {

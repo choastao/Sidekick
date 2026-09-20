@@ -54,8 +54,9 @@ public enum ItemVerdict
 /// <param name="ResistanceDeficitWorsened">见 <see cref="ResistanceGuardrail.Worsened"/>。</param>
 /// <param name="MetricsPartial">
 /// true = **只有一维有数**（现在的调用方只在这一维是 EHP 时置位：DPS 算不出来）。
-/// 判定里真的读了它（见 <see cref="ItemVerdictDecider.Decide"/> 第 ⑨ 条）——
-/// 原来它写进去没人读，留着会被后来人当成一个不生效的开关，所以本轮把它接上了线。
+/// **它不改变结论**，只把调用方的意图写在类型上：本调用方下它与「<c>DpsPercent</c> 为 <c>null</c>」是同一个布尔
+/// （都源自 <c>DpsUnavailable</c>），判据始终是「另一维为 <c>null</c>」（见 <see cref="ItemVerdictDecider.Decide"/> 第 ⑨ 条）。
+/// 别把它当成一个开关（审计 R2：两处文档必须同一口径）。
 /// </param>
 public sealed record ItemVerdictInput(
     double? DpsPercent,
