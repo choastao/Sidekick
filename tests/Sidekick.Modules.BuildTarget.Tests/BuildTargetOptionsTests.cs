@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.Extensions.Logging.Abstractions;
 using Sidekick.Modules.BuildTarget.Models;
 using Sidekick.Modules.BuildTarget.Services;
 using Xunit;
@@ -68,5 +69,35 @@ public class BuildTargetOptionsTests
 
         Assert.True(back!.CraftCost);
         Assert.True(back.PobEngine);
+    }
+
+    /// <summary>
+    /// UI 契约：开关拨动时订阅方会被叫到，**而且叫到的时候读到的是新值**。
+    ///
+    /// 为什么单独钉一条：评估面板（<c>PobComparePanel</c> / <c>CraftCostPanel</c>）就是靠
+    /// 这个回调决定「收干净 / 立刻重算」的，而它们进入回调的第一件事是**再读一次这个 store**。
+    /// 所以「事件在改值之后触发」不是一个实现细节，是订阅方能拿到正确前提的必要条件 ——
+    /// 把 <c>Set</c> 里的顺序反过来（先 Invoke 再 change），面板会按**旧**开关值评估，
+    /// 而那种错在界面上的表现只是「拨开之后面板还是空的」，看日志也看不出来。
+    /// </summary>
+    [Fact]
+    public void 开关变化会通知订阅方且订阅方读到的是新值()
+    {
+        var path = Path.Combine(Path.GetTempPath(), "tao-options-test-" + Guid.NewGuid().ToString("N") + ".json");
+        var store = new BuildTargetOptionsStore(NullLogger<BuildTargetOptionsStore>.Instance, path);
+
+        var seen = new List<bool>();
+        store.OnChanged += () => seen.Add(store.CraftCost);
+
+        store.SetCraftCost(true);
+        store.SetCraftCost(false);
+
+        Assert.Equal([true, false], seen);
+
+        // 顺带确认落盘的是新值（订阅方之外还有人读这个文件）
+        var reloaded = new BuildTargetOptionsStore(NullLogger<BuildTargetOptionsStore>.Instance, path);
+        Assert.False(reloaded.CraftCost);
+
+        File.Delete(path);
     }
 }

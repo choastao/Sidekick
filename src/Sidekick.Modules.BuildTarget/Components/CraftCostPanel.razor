@@ -371,6 +371,10 @@
     protected override void OnInitialized()
     {
         Store.OnChanged += OnStoreChanged;
+        // 开关在设置页拨动时本组件收不到通知（审计 3-6）：订阅它。
+        // 关掉时 OnOptionsChanged 里那次 Evaluate() 会走早退分支（清空 + 不读数据文件），
+        // 打开时则立刻重算当前这件物品 —— 不必等下一次换物品或换槽位。
+        Options.OnChanged += OnOptionsChanged;
         Evaluate();
         base.OnInitialized();
     }
@@ -386,6 +390,15 @@
         Evaluate();
         _ = InvokeAsync(StateHasChanged);
     }
+
+    /// <summary>开关变化：与 <see cref="OnStoreChanged"/> 的差别只在「立即返回」这一条 ——
+    /// 本函数被设置页那次点击同步调用，评估要读价格表与词缀池，必须整段排到渲染器上去做
+    /// （订阅契约见 <see cref="Services.BuildTargetOptionsStore.OnChanged"/>）。</summary>
+    private void OnOptionsChanged() => _ = InvokeAsync(() =>
+    {
+        Evaluate();
+        StateHasChanged();
+    });
 
     /// <summary>
     /// 复用 BuildTargetResult：只挑「已采集当前装备」的部位，按词缀检查的当前取值分类。
@@ -1162,6 +1175,7 @@
     public void Dispose()
     {
         Store.OnChanged -= OnStoreChanged;
+        Options.OnChanged -= OnOptionsChanged;
     }
 
 }
